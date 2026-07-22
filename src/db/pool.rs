@@ -1,6 +1,6 @@
 use deadpool_diesel::{
-    postgres::{Manager, Pool},
     Runtime,
+    postgres::{Manager, Pool},
 };
 
 use crate::config::database::DatabaseConfig;

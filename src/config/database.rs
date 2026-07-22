@@ -10,8 +10,7 @@ impl DatabaseConfig {
         dotenv().ok();
 
         Self {
-            database_url: env::var("DATABASE_URL")
-                .expect("DATABASE_URL is not set"),
+            database_url: env::var("DATABASE_URL").expect("DATABASE_URL is not set"),
         }
     }
 }
