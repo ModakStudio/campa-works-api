@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:17
+
+    container_name: campa-postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: campa
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: campa
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
