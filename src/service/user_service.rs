@@ -32,7 +32,10 @@ impl UserService {
             status: UserStatus::Active,
         };
 
-        let user = UserRepository::create(conn, &new_user).map_err(|_| AppError::DatabaseError)?;
+        let user = UserRepository::create(conn, &new_user).map_err(|e| {
+            println!("DATABASE ERROR: {:#?}", e);
+            AppError::DatabaseError
+        })?;
 
         Ok(user.into())
     }

@@ -5,8 +5,13 @@ use serde::{Deserialize, Serialize};
 #[ExistingTypePath = "crate::schema::sql_types::UserRole"]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserRole {
+    #[db_rename = "ADMIN"]
     Admin,
+
+    #[db_rename = "PROFESSOR"]
     Professor,
+
+    #[db_rename = "ASSISTANT"]
     Assistant,
 }
 
@@ -14,6 +19,9 @@ pub enum UserRole {
 #[ExistingTypePath = "crate::schema::sql_types::UserStatus"]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum UserStatus {
+    #[db_rename = "ACTIVE"]
     Active,
+
+    #[db_rename = "INACTIVE"]
     Inactive,
 }
