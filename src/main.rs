@@ -9,6 +9,8 @@ mod db;
 use app_state::AppState;
 use db::pool::create_pool;
 
+use crate::router::user_router::user_router;
+
 async fn test_api() -> &'static str {
     "Server is running"
 }
@@ -21,7 +23,7 @@ async fn main() {
     let state = AppState { pool };
 
     let app = Router::new()
-        .route("/test", get(test_api))
+        .nest("/api/users", user_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
