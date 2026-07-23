@@ -1,26 +1,33 @@
-use axum::{Router, routing::get};
+use axum::Router;
 
 use tokio::net::TcpListener;
 
-mod app_state;
+use std::sync::Arc;
+
 mod config;
 mod db;
+mod dto;
+mod error;
+mod handler;
+mod models;
+mod repository;
+mod service;
+mod router;
+mod schema;
+mod state;
+mod utils;
 
-use app_state::AppState;
+use state::app_state::AppState;
 use db::pool::create_pool;
 
 use crate::router::user_router::user_router;
-
-async fn test_api() -> &'static str {
-    "Server is running"
-}
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
 
     let pool = create_pool();
-    let state = AppState { pool };
+    let state = Arc::new(AppState { pool });
 
     let app = Router::new()
         .nest("/api/users", user_router())

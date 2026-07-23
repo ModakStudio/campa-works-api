@@ -54,6 +54,11 @@ impl UserService {
         user_id: i64,
         request: UpdateUserRequest,
     ) -> Result<UserResponse, AppError> {
+        let update_user = UpdateUser {
+            name: request.name,
+            status: request.status,
+        };
+
         let user = UserRepository::update(conn, user_id, &update_user).map_err(|e| match e {
             diesel::result::Error::NotFound => AppError::UserNotFound,
             _ => AppError::DatabaseError,

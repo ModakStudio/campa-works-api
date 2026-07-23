@@ -1,69 +1,103 @@
+use std::sync::Arc;
+
 use axum::{
     Json,
     extract::{Path, State},
+    http::StatusCode,
 };
 
 use crate::{
-    dto::{
-        response::{ApiResponse, EmptyResponse},
-        user::{CreateUserRequest, UpdateUserRequest, UserResponse},
-    },
+    dto::user::{CreateUserRequest, UpdateUserRequest, UserResponse},
     error::app_error::AppError,
     service::user_service::UserService,
     state::app_state::AppState,
 };
 
 pub async fn create_user(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Json(request): Json<CreateUserRequest>,
-) -> Result<Json<ApiResponse<UserResponse>>, AppError> {
-    let mut conn = state.pool.get().map_err(|_| AppError::DatabaseError)?;
+) -> Result<(StatusCode, Json<UserResponse>), AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
 
-    let user = UserService::create(&mut conn, request)?;
+    let user = conn
+        .interact(move |conn| UserService::create(conn, request))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
-    Ok(Json(ApiResponse::ok(user)))
+    Ok((StatusCode::CREATED, Json(user)))
 }
 
 pub async fn get_users(
-    State(state): State<AppState>,
-) -> Result<Json<ApiResponse<Vec<UserResponse>>>, AppError> {
-    let mut conn = state.pool.get().map_err(|_| AppError::DatabaseError)?;
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<Vec<UserResponse>>, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
 
-    let users = UserService::get_all(&mut conn)?;
+    let users = conn
+        .interact(move |conn| UserService::get_all(conn))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
-    Ok(Json(ApiResponse::ok(users)))
+    Ok(Json(users))
 }
 
 pub async fn get_user(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
-) -> Result<Json<ApiResponse<UserResponse>>, AppError> {
-    let mut conn = state.pool.get().map_err(|_| AppError::DatabaseError)?;
+) -> Result<Json<UserResponse>, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
 
-    let user = UserService::get_by_id(&mut conn, id)?;
+    let user = conn
+        .interact(move |conn| UserService::get_by_id(conn, id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
-    Ok(Json(ApiResponse::ok(user)))
+    Ok(Json(user))
 }
 
 pub async fn update_user(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
     Json(request): Json<UpdateUserRequest>,
-) -> Result<Json<ApiResponse<UserResponse>>, AppError> {
-    let mut conn = state.pool.get().map_err(|_| AppError::DatabaseError)?;
+) -> Result<Json<UserResponse>, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
 
-    let user = UserService::update(&mut conn, id, request)?;
+    let user = conn
+        .interact(move |conn| UserService::update(conn, id, request))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
-    Ok(Json(ApiResponse::ok(user)))
+    Ok(Json(user))
 }
 
 pub async fn delete_user(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
-) -> Result<Json<EmptyResponse>, AppError> {
-    let mut conn = state.pool.get().map_err(|_| AppError::DatabaseError)?;
+) -> Result<StatusCode, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
 
-    UserService::delete(&mut conn, id)?;
+    conn.interact(move |conn| UserService::delete(conn, id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
-    Ok(Json(EmptyResponse { success: true }))
+    Ok(StatusCode::NO_CONTENT)
 }
