@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::enums::{UserRole, UserStatus};
+use crate::models::{
+    enums::{UserRole, UserStatus},
+    user::User,
+};
 
 #[derive(Debug, Deserialize)]
 pub struct CreateUserRequest {
@@ -23,4 +26,16 @@ pub struct UserResponse {
     pub name: String,
     pub role: UserRole,
     pub status: UserStatus,
+}
+
+impl From<User> for UserResponse {
+    fn from(user: User) -> Self {
+        Self {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            status: user.status,
+        }
+    }
 }
