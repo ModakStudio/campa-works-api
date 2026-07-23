@@ -17,6 +17,7 @@ diesel = { version = "2.3", features = [
     "uuid"
 ] }
 deadpool-diesel = { version = "0.6", features = ["postgres"] }
+diesel-derive-enum = { version = "2.1", features = ["postgres"] }
 
 chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
