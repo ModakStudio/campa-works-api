@@ -18,7 +18,7 @@ pub enum UserRole {
     Staff,
 }
 
-/// We will use this in professor table
+// We will use this in professor table
 // #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
 // #[ExistingTypePath = "crate::schema::sql_types::UserStatus"]
 // #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
