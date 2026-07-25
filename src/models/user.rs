@@ -16,7 +16,6 @@ pub struct User {
     pub name: String,
 
     pub role: UserRole,
-    pub status: UserStatus,
 
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
@@ -29,12 +28,10 @@ pub struct NewUser {
     pub password: String,
     pub name: String,
     pub role: UserRole,
-    pub status: UserStatus,
 }
 
 #[derive(Debug, AsChangeset)]
 #[diesel(table_name = users)]
 pub struct UpdateUser {
     pub name: Option<String>,
-    pub status: Option<UserStatus>,
 }
