@@ -3,10 +3,7 @@ use diesel::PgConnection;
 use crate::{
     dto::user::{CreateUserRequest, UpdateUserRequest, UserResponse},
     error::app_error::AppError,
-    models::{
-        enums::UserStatus,
-        user::{NewUser, UpdateUser},
-    },
+    models::user::{NewUser, UpdateUser},
     repository::user_repository::UserRepository,
     utils::password::hash_password,
 };
@@ -29,7 +26,6 @@ impl UserService {
             password: hashed_password,
             name: request.name,
             role: request.role,
-            status: UserStatus::Active,
         };
 
         let user = UserRepository::create(conn, &new_user).map_err(|e| {
@@ -57,10 +53,7 @@ impl UserService {
         user_id: i64,
         request: UpdateUserRequest,
     ) -> Result<UserResponse, AppError> {
-        let update_user = UpdateUser {
-            name: request.name,
-            status: request.status,
-        };
+        let update_user = UpdateUser { name: request.name };
 
         let user = UserRepository::update(conn, user_id, &update_user).map_err(|e| match e {
             diesel::result::Error::NotFound => AppError::UserNotFound,
