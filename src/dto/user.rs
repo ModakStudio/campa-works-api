@@ -1,9 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::{
-    enums::{UserRole, UserStatus},
-    user::User,
-};
+use crate::models::{enums::UserRole, user::User};
 
 #[derive(Debug, Deserialize)]
 pub struct CreateUserRequest {

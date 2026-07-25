@@ -1,10 +1,7 @@
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
-use crate::{
-    models::enums::{UserRole, UserStatus},
-    schema::users,
-};
+use crate::{models::enums::UserRole, schema::users};
 
 #[derive(Debug, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = users)]
