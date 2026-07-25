@@ -5,12 +5,8 @@
 CREATE TYPE user_role AS ENUM (
     'ADMIN',
     'PROFESSOR',
-    'ASSISTANT'
-);
-
-CREATE TYPE user_status AS ENUM (
-    'ACTIVE',
-    'INACTIVE'
+    'ASSISTANT',
+    'STAFF'
 );
 
 
@@ -26,7 +22,6 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
 
     role user_role NOT NULL,
-    status user_status NOT NULL DEFAULT 'ACTIVE',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
