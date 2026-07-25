@@ -16,7 +16,6 @@ pub struct CreateUserRequest {
 #[derive(Debug, Deserialize)]
 pub struct UpdateUserRequest {
     pub name: Option<String>,
-    pub status: Option<UserStatus>,
 }
 
 #[derive(Debug, Serialize)]
@@ -25,7 +24,6 @@ pub struct UserResponse {
     pub email: String,
     pub name: String,
     pub role: UserRole,
-    pub status: UserStatus,
 }
 
 impl From<User> for UserResponse {
@@ -35,7 +33,6 @@ impl From<User> for UserResponse {
             email: user.email,
             name: user.name,
             role: user.role,
-            status: user.status,
         }
     }
 }
