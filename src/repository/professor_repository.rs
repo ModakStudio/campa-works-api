@@ -8,8 +8,8 @@ use crate::{
     schema::{professor, users},
 };
 
-use crate::schema::professor::dsl as professor_dsl;
-use crate::schema::users::dsl as user_dsl;
+use crate::schema::professor::dsl::*;
+use crate::schema::users::dsl::*;
 
 pub struct ProfessorRepository;
 
