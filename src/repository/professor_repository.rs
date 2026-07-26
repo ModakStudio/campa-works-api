@@ -1,9 +1,15 @@
 use diesel::prelude::*;
 
 use crate::{
-    models::professor::{NewProfessor, Professor, UpdateProfessor},
-    schema::professor::dsl::*,
+    models::{
+        professor::{NewProfessor, Professor, UpdateProfessor},
+        user::User,
+    },
+    schema::{professor, users},
 };
+
+use crate::schema::professor::dsl as professor_dsl;
+use crate::schema::users::dsl as user_dsl;
 
 pub struct ProfessorRepository;
 
@@ -15,16 +21,33 @@ impl ProfessorRepository {
             .get_result(conn)
     }
 
-    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Professor>> {
-        professor.load(conn)
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<(Professor, User)>> {
+        professor::table
+            .inner_join(users::table)
+            .select((Professor::as_select(), User::as_select()))
+            .load(conn)
     }
 
-    pub fn find_by_id(conn: &mut PgConnection, professor_id: i64) -> QueryResult<Professor> {
-        professor.filter(id.eq(professor_id)).first(conn)
+    pub fn find_by_id(
+        conn: &mut PgConnection,
+        professor_id: i64,
+    ) -> QueryResult<(Professor, User)> {
+        professor::table
+            .inner_join(users::table)
+            .filter(professor::id.eq(professor_id))
+            .select((Professor::as_select(), User::as_select()))
+            .first(conn)
     }
 
-    pub fn find_by_user_id(conn: &mut PgConnection, target_user_id: i64) -> QueryResult<Professor> {
-        professor.filter(user_id.eq(target_user_id)).first(conn)
+    pub fn find_by_user_id(
+        conn: &mut PgConnection,
+        target_user_id: i64,
+    ) -> QueryResult<(Professor, User)> {
+        professor::table
+            .inner_join(users::table)
+            .filter(professor::user_id.eq(target_user_id))
+            .select((Professor::as_select(), User::as_select()))
+            .first(conn)
     }
 
     pub fn update(

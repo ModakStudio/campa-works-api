@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::models::{
-    enums::{ProfessorPosition, ProfessorStatus},
+    enums::{ProfessorPosition, ProfessorStatus, UserRole},
     professor::Professor,
+    user::User,
 };
 
 #[derive(Debug, Deserialize)]
@@ -28,10 +29,18 @@ pub struct UpdateProfessorRequest {
 }
 
 #[derive(Debug, Serialize)]
+pub struct ProfessorUserResponse {
+    pub id: i64,
+    pub email: String,
+    pub name: String,
+    pub role: UserRole,
+}
+
+#[derive(Debug, Serialize)]
 pub struct ProfessorResponse {
     pub id: i64,
 
-    pub user_id: i64,
+    pub user: ProfessorUserResponse,
 
     pub position: ProfessorPosition,
 
@@ -42,11 +51,17 @@ pub struct ProfessorResponse {
     pub status: ProfessorStatus,
 }
 
-impl From<Professor> for ProfessorResponse {
-    fn from(professor: Professor) -> Self {
+impl From<(Professor, User)> for ProfessorResponse {
+    fn from((professor, user): (Professor, User)) -> Self {
         Self {
             id: professor.id,
-            user_id: professor.user_id,
+
+            user: ProfessorUserResponse {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+            },
 
             position: professor.position,
 

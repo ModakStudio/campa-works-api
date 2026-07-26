@@ -1,7 +1,7 @@
 use diesel::prelude::*;
 
 use crate::{
-    models::enums::{ProfessorPosition, ProfessorStatus},
+    models::enums::{ProfessorPosition, ProfessorStatus, UserRole},
     schema::professor,
 };
 
@@ -45,4 +45,22 @@ pub struct UpdateProfessor {
     pub research_field: Option<String>,
 
     pub status: Option<ProfessorStatus>,
+}
+
+#[derive(Debug, Queryable, Selectable)]
+pub struct ProfessorWithUser {
+    pub id: i64,
+    pub user_id: i64,
+
+    pub position: ProfessorPosition,
+
+    pub office: Option<String>,
+    pub tel: Option<String>,
+    pub research_field: Option<String>,
+
+    pub status: ProfessorStatus,
+
+    pub user_name: String,
+    pub user_email: String,
+    pub user_role: UserRole,
 }
