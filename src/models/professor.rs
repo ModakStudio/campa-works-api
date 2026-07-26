@@ -47,7 +47,7 @@ pub struct UpdateProfessor {
     pub status: Option<ProfessorStatus>,
 }
 
-#[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable)]
 pub struct ProfessorWithUser {
     pub id: i64,
     pub user_id: i64,
