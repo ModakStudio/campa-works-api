@@ -23,7 +23,10 @@ pub async fn create_professor(
         .await
         .map_err(|_| AppError::DatabaseError)?;
 
-    let professor = ProfessorService::create(conn.as_mut(), request)?;
+    let professor = conn
+        .interact(move |conn| ProfessorService::create(conn, request))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
     Ok((StatusCode::CREATED, Json(professor)))
 }
@@ -37,7 +40,10 @@ pub async fn get_professors(
         .await
         .map_err(|_| AppError::DatabaseError)?;
 
-    let professors = ProfessorService::get_all(conn.as_mut())?;
+    let professors = conn
+        .interact(move |conn| ProfessorService::get_all(conn))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
     Ok(Json(professors))
 }
@@ -52,7 +58,10 @@ pub async fn get_professor(
         .await
         .map_err(|_| AppError::DatabaseError)?;
 
-    let professor = ProfessorService::get_by_id(conn.as_mut(), id)?;
+    let professor = conn
+        .interact(move |conn| ProfessorService::get_by_id(conn, id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
     Ok(Json(professor))
 }
@@ -68,7 +77,10 @@ pub async fn update_professor(
         .await
         .map_err(|_| AppError::DatabaseError)?;
 
-    let professor = ProfessorService::update(conn.as_mut(), id, request)?;
+    let professor = conn
+        .interact(move |conn| ProfessorService::update(conn, id, request))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
     Ok(Json(professor))
 }
@@ -83,7 +95,9 @@ pub async fn delete_professor(
         .await
         .map_err(|_| AppError::DatabaseError)?;
 
-    ProfessorService::delete(conn.as_mut(), id)?;
+    conn.interact(move |conn| ProfessorService::delete(conn, id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
 
     Ok(StatusCode::NO_CONTENT)
 }
