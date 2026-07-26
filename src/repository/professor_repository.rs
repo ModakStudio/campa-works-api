@@ -8,14 +8,11 @@ use crate::{
     schema::{professor, users},
 };
 
-use crate::schema::professor::dsl::*;
-use crate::schema::users::dsl::*;
-
 pub struct ProfessorRepository;
 
 impl ProfessorRepository {
     pub fn create(conn: &mut PgConnection, new_professor: &NewProfessor) -> QueryResult<Professor> {
-        diesel::insert_into(professor)
+        diesel::insert_into(professor::table)
             .values(new_professor)
             .returning(Professor::as_returning())
             .get_result(conn)
@@ -55,13 +52,13 @@ impl ProfessorRepository {
         professor_id: i64,
         update_professor: &UpdateProfessor,
     ) -> QueryResult<Professor> {
-        diesel::update(professor.filter(id.eq(professor_id)))
+        diesel::update(professor::table.filter(professor::id.eq(professor_id)))
             .set(update_professor)
             .returning(Professor::as_returning())
             .get_result(conn)
     }
 
     pub fn delete(conn: &mut PgConnection, professor_id: i64) -> QueryResult<usize> {
-        diesel::delete(professor.filter(id.eq(professor_id))).execute(conn)
+        diesel::delete(professor::table.filter(professor::id.eq(professor_id))).execute(conn)
     }
 }
