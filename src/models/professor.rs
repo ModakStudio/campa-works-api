@@ -46,21 +46,3 @@ pub struct UpdateProfessor {
 
     pub status: Option<ProfessorStatus>,
 }
-
-#[derive(Debug, Queryable)]
-pub struct ProfessorWithUser {
-    pub id: i64,
-    pub user_id: i64,
-
-    pub position: ProfessorPosition,
-
-    pub office: Option<String>,
-    pub tel: Option<String>,
-    pub research_field: Option<String>,
-
-    pub status: ProfessorStatus,
-
-    pub user_name: String,
-    pub user_email: String,
-    pub user_role: UserRole,
-}
