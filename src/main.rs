@@ -21,6 +21,7 @@ use state::app_state::AppState;
 use db::pool::create_pool;
 
 use crate::router::user_router::user_router;
+use crate::router::professor_router::professor_router;
 
 #[tokio::main]
 async fn main() {
@@ -31,6 +32,7 @@ async fn main() {
 
     let app = Router::new()
         .nest("/api/users", user_router())
+        .nest("/api/professors", professor_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
