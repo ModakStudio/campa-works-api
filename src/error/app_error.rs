@@ -27,6 +27,12 @@ pub enum AppError {
     #[error("Semester already exists")]
     SemesterAlreadyExists,
 
+    #[error("Major not found")]
+    MajorNotFound,
+
+    #[error("Major already exists")]
+    MajorAlreadyExists,
+
     #[error("Database error")]
     DatabaseError,
 
@@ -54,6 +60,10 @@ impl IntoResponse for AppError {
             AppError::SemesterNotFound => StatusCode::NOT_FOUND,
 
             AppError::SemesterAlreadyExists => StatusCode::CONFLICT,
+
+            AppError::MajorNotFound => StatusCode::NOT_FOUND,
+
+            AppError::MajorAlreadyExists => StatusCode::CONFLICT,
 
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
 
