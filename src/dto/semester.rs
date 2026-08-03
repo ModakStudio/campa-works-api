@@ -8,13 +8,13 @@ use crate::models::{
 #[derive(Debug, Deserialize)]
 pub struct CreateSemesterRequest {
     pub year: i32,
-    pub semester: SemesterType,
+    pub semester_: SemesterType,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct UpdateSemesterRequest {
     pub year: Option<i32>,
-    pub semester: Option<SemesterType>,
+    pub semester_: Option<SemesterType>,
     pub status: Option<SemesterStatus>,
 }
 
@@ -23,7 +23,7 @@ pub struct SemesterResponse {
     pub id: i64,
 
     pub year: i32,
-    pub semester: SemesterType,
+    pub semester_: SemesterType,
 
     pub status: SemesterStatus,
 }
@@ -33,7 +33,7 @@ impl From<Semester> for SemesterResponse {
         Self {
             id: semester.id,
             year: semester.year,
-            semester: semester.semester_,
+            semester_: semester.semester_,
             status: semester.status,
         }
     }
