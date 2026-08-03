@@ -21,7 +21,8 @@ use db::pool::create_pool;
 use state::app_state::AppState;
 
 use crate::router::{
-    professor_router::professor_router, semester_router::semester_router, user_router::user_router,
+    major_router::major_router, professor_router::professor_router,
+    semester_router::semester_router, user_router::user_router,
 };
 
 #[tokio::main]
