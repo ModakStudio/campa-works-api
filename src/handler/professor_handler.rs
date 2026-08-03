@@ -17,7 +17,7 @@ pub async fn create_professor(
     State(state): State<Arc<AppState>>,
     Json(request): Json<CreateProfessorRequest>,
 ) -> Result<(StatusCode, Json<ProfessorResponse>), AppError> {
-    let mut conn = state
+    let conn = state
         .pool
         .get()
         .await
@@ -34,7 +34,7 @@ pub async fn create_professor(
 pub async fn get_professors(
     State(state): State<Arc<AppState>>,
 ) -> Result<Json<Vec<ProfessorResponse>>, AppError> {
-    let mut conn = state
+    let conn = state
         .pool
         .get()
         .await
@@ -52,7 +52,7 @@ pub async fn get_professor(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
 ) -> Result<Json<ProfessorResponse>, AppError> {
-    let mut conn = state
+    let conn = state
         .pool
         .get()
         .await
@@ -71,7 +71,7 @@ pub async fn update_professor(
     Path(id): Path<i64>,
     Json(request): Json<UpdateProfessorRequest>,
 ) -> Result<Json<ProfessorResponse>, AppError> {
-    let mut conn = state
+    let conn = state
         .pool
         .get()
         .await
@@ -89,7 +89,7 @@ pub async fn delete_professor(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
 ) -> Result<StatusCode, AppError> {
-    let mut conn = state
+    let conn = state
         .pool
         .get()
         .await
