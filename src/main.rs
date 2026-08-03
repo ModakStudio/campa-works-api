@@ -36,6 +36,7 @@ async fn main() {
         .nest("/api/users", user_router())
         .nest("/api/professors", professor_router())
         .nest("/api/semesters", semester_router())
+        .nest("/api/majors", major_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
