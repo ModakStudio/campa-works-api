@@ -22,7 +22,6 @@ pub enum UserRole {
     Staff,
 }
 
-
 //
 // Professor
 //

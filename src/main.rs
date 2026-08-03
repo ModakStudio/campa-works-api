@@ -11,17 +11,17 @@ mod error;
 mod handler;
 mod models;
 mod repository;
-mod service;
 mod router;
 mod schema;
+mod service;
 mod state;
 mod utils;
 
-use state::app_state::AppState;
 use db::pool::create_pool;
+use state::app_state::AppState;
 
-use crate::router::user_router::user_router;
 use crate::router::professor_router::professor_router;
+use crate::router::user_router::user_router;
 
 #[tokio::main]
 async fn main() {
