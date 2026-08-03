@@ -56,3 +56,35 @@ pub enum ProfessorStatus {
     #[db_rename = "INACTIVE"]
     Inactive,
 }
+
+//
+// Semester
+//
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::SemesterType"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum SemesterType {
+    #[db_rename = "FIRST"]
+    First,
+
+    #[db_rename = "SUMMER"]
+    Summer,
+
+    #[db_rename = "SECOND"]
+    Second,
+
+    #[db_rename = "WINTER"]
+    Winter,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::SemesterStatus"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum SemesterStatus {
+    #[db_rename = "OPEN"]
+    Open,
+
+    #[db_rename = "CLOSED"]
+    Closed,
+}
