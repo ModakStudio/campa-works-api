@@ -10,6 +10,14 @@ pub mod sql_types {
     pub struct ProfessorStatus;
 
     #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "semester_status"))]
+    pub struct SemesterStatus;
+
+    #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "semester_type"))]
+    pub struct SemesterType;
+
+    #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "user_role"))]
     pub struct UserRole;
 }
@@ -35,6 +43,22 @@ diesel::table! {
 
 diesel::table! {
     use diesel::sql_types::*;
+    use super::sql_types::SemesterType;
+    use super::sql_types::SemesterStatus;
+
+    semester (id) {
+        id -> Int8,
+        year -> Int4,
+        #[sql_name = "semester"]
+        semester_ -> SemesterType,
+        status -> SemesterStatus,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
     use super::sql_types::UserRole;
 
     users (id) {
@@ -53,4 +77,4 @@ diesel::table! {
 
 diesel::joinable!(professor -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(professor, users,);
+diesel::allow_tables_to_appear_in_same_query!(professor, semester, users,);
