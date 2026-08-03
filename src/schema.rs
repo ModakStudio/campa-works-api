@@ -23,6 +23,14 @@ pub mod sql_types {
 }
 
 diesel::table! {
+    major (id) {
+        id -> Int8,
+        #[max_length = 100]
+        name -> Varchar,
+    }
+}
+
+diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::ProfessorPosition;
     use super::sql_types::ProfessorStatus;
@@ -77,4 +85,4 @@ diesel::table! {
 
 diesel::joinable!(professor -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(professor, semester, users,);
+diesel::allow_tables_to_appear_in_same_query!(major, professor, semester, users,);
