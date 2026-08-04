@@ -64,6 +64,17 @@ diesel::table! {
 }
 
 diesel::table! {
+    course_preference (id) {
+        id -> Int8,
+        semester_id -> Int8,
+        professor_id -> Int8,
+        master_course_id -> Int8,
+        priority -> Int4,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     major (id) {
         id -> Int8,
         #[max_length = 100]
@@ -147,11 +158,15 @@ diesel::joinable!(course -> master_course (master_course_id));
 diesel::joinable!(course -> semester (semester_id));
 diesel::joinable!(course_pool -> master_course (master_course_id));
 diesel::joinable!(course_pool -> professor (professor_id));
+diesel::joinable!(course_preference -> master_course (master_course_id));
+diesel::joinable!(course_preference -> professor (professor_id));
+diesel::joinable!(course_preference -> semester (semester_id));
 diesel::joinable!(professor -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     course,
     course_pool,
+    course_preference,
     major,
     master_course,
     professor,
