@@ -5,7 +5,7 @@ use crate::{
         CreateMasterCourseRequest, MasterCourseResponse, UpdateMasterCourseRequest,
     },
     error::app_error::AppError,
-    models::master_course::{MasterCourse, NewMasterCourse, UpdateMasterCourse},
+    models::master_course::{NewMasterCourse, UpdateMasterCourse},
     repository::master_course_repository::MasterCourseRepository,
 };
 
