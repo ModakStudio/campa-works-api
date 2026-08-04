@@ -1,7 +1,4 @@
-use axum::{
-    Router,
-    routing::{delete, get, patch, post},
-};
+use axum::{Router, routing::*};
 
 use crate::{
     handler::user_handler::{create_user, delete_user, get_user, get_users, update_user},
