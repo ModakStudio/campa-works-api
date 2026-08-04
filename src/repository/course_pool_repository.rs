@@ -23,7 +23,9 @@ impl CoursePoolRepository {
             .get_result(conn)
     }
 
-    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<(CoursePool, Professor, User, MasterCourse)>> {
+    pub fn find_all(
+        conn: &mut PgConnection,
+    ) -> QueryResult<Vec<(CoursePool, Professor, User, MasterCourse)>> {
         course_pool::table
             .inner_join(professor::table)
             .inner_join(users::table.on(users::id.eq(professor::user_id)))
@@ -37,7 +39,10 @@ impl CoursePoolRepository {
             .load(conn)
     }
 
-    pub fn find_by_id(conn: &mut PgConnection, course_pool_id: i64) -> QueryResult<(CoursePool, Professor, User, MasterCourse)> {
+    pub fn find_by_id(
+        conn: &mut PgConnection,
+        course_pool_id: i64,
+    ) -> QueryResult<(CoursePool, Professor, User, MasterCourse)> {
         course_pool::table
             .inner_join(professor::table)
             .inner_join(users::table.on(users::id.eq(professor::user_id)))
@@ -70,5 +75,9 @@ impl CoursePoolRepository {
                 MasterCourse::as_select(),
             ))
             .first(conn)
+    }
+
+    pub fn delete(conn: &mut PgConnection, course_pool_id: i64) -> QueryResult<usize> {
+        diesel::delete(course_pool::table.filter(course_pool::id.eq(course_pool_id))).execute(conn)
     }
 }
