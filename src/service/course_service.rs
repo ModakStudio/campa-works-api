@@ -5,9 +5,8 @@ use crate::{
     error::app_error::AppError,
     models::{
         course::{NewCourse, UpdateCourse},
-        enums::{CourseCategory, Language},
     },
-    repository::{course_repository::CourseRepository, professor_repository::ProfessorRepository},
+    repository::{course_repository::CourseRepository},
 };
 
 pub struct CourseService;
