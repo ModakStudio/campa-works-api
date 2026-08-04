@@ -2,8 +2,16 @@
 
 pub mod sql_types {
     #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "course_category"))]
+    pub struct CourseCategory;
+
+    #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "course_type"))]
     pub struct CourseType;
+
+    #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "language"))]
+    pub struct Language;
 
     #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "professor_position"))]
@@ -24,6 +32,26 @@ pub mod sql_types {
     #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "user_role"))]
     pub struct UserRole;
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::CourseCategory;
+    use super::sql_types::Language;
+
+    course (id) {
+        id -> Int8,
+        master_course_id -> Int8,
+        semester_id -> Int8,
+        major_id -> Int8,
+        #[max_length = 500]
+        description -> Nullable<Varchar>,
+        course_category -> CourseCategory,
+        language -> Language,
+        section_number -> Int4,
+        grade -> Int4,
+        capacity -> Int4,
+    }
 }
 
 diesel::table! {
@@ -105,6 +133,16 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(course -> major (major_id));
+diesel::joinable!(course -> master_course (master_course_id));
+diesel::joinable!(course -> semester (semester_id));
 diesel::joinable!(professor -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(major, master_course, professor, semester, users,);
+diesel::allow_tables_to_appear_in_same_query!(
+    course,
+    major,
+    master_course,
+    professor,
+    semester,
+    users,
+);
