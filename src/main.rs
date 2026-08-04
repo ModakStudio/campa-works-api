@@ -1,8 +1,8 @@
+use std::sync::Arc;
+
 use axum::Router;
 
 use tokio::net::TcpListener;
-
-use std::sync::Arc;
 
 mod config;
 mod db;

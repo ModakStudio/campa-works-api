@@ -1,10 +1,10 @@
+use std::sync::Arc;
+
 use axum::{
     Json,
     extract::{Path, State},
     http::StatusCode,
 };
-
-use std::sync::Arc;
 
 use crate::{
     dto::professor::{CreateProfessorRequest, ProfessorResponse, UpdateProfessorRequest},
