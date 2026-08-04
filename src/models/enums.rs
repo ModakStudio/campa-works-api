@@ -103,3 +103,35 @@ pub enum CourseType {
     #[db_rename = "GRADUATE"]
     Graduate,
 }
+
+//
+// Course
+//
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::CourseCategory"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum CourseCategory {
+    #[db_rename = "MAJOR_REQUIRED"]
+    MajorRequired,
+
+    #[db_rename = "MAJOR_ELECTIVE"]
+    MajorElective,
+
+    #[db_rename = "GENERAL_REQUIRED"]
+    GeneralRequired,
+
+    #[db_rename = "GENERAL_ELECTIVE"]
+    GeneralElective,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::Language"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum Language {
+    #[db_rename = "KOREAN"]
+    Korean,
+
+    #[db_rename = "ENGLISH"]
+    English,
+}
