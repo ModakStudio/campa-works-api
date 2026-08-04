@@ -1,5 +1,6 @@
 pub mod course_handler;
 pub mod course_pool_handler;
+pub mod course_preference_handler;
 pub mod major_handler;
 pub mod master_course_handler;
 pub mod professor_handler;
