@@ -3,10 +3,8 @@ use diesel::PgConnection;
 use crate::{
     dto::course::{CourseResponse, CreateCourseRequest, UpdateCourseRequest},
     error::app_error::AppError,
-    models::{
-        course::{NewCourse, UpdateCourse},
-    },
-    repository::{course_repository::CourseRepository},
+    models::course::{NewCourse, UpdateCourse},
+    repository::course_repository::CourseRepository,
 };
 
 pub struct CourseService;
@@ -16,14 +14,16 @@ impl CourseService {
         conn: &mut PgConnection,
         request: CreateCourseRequest,
     ) -> Result<CourseResponse, AppError> {
-        CourseRepository::find_by_master_course_id_and_semester_id_and_major_id_and_section_number(
+        if CourseRepository::find_by_master_course_id_and_semester_id_and_major_id_and_section_number(
             conn,
             request.master_course_id,
             request.semester_id,
             request.major_id,
             request.section_number,
-        )
-        .map_err(|_| AppError::CourseAlreadyExists)?;
+        ).is_ok()
+        {
+            return Err(AppError::CourseAlreadyExists);
+        }
 
         let new_course = NewCourse {
             master_course_id: request.master_course_id,
