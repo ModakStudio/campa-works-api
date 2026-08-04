@@ -11,7 +11,7 @@ use crate::{
     },
 };
 
-struct CoursePoolService;
+pub struct CoursePoolService;
 
 impl CoursePoolService {
     pub fn create(
