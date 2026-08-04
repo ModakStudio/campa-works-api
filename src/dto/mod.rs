@@ -1,5 +1,6 @@
 pub mod response;
 
+pub mod course;
 pub mod major;
 pub mod master_course;
 pub mod professor;
