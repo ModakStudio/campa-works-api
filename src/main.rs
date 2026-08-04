@@ -21,9 +21,10 @@ use db::pool::create_pool;
 use state::app_state::AppState;
 
 use crate::router::{
-    course_pool_router::course_pool_router, course_router::course_router,
-    major_router::major_router, master_course_router::master_course_router,
-    professor_router::professor_router, semester_router::semester_router, user_router::user_router,
+    course_pool_router::course_pool_router, course_preference_router::course_preference_router,
+    course_router::course_router, major_router::major_router,
+    master_course_router::master_course_router, professor_router::professor_router,
+    semester_router::semester_router, user_router::user_router,
 };
 
 #[tokio::main]
@@ -41,6 +42,7 @@ async fn main() {
         .nest("/api/master-courses", master_course_router())
         .nest("/api/courses", course_router())
         .nest("/api/course-pools", course_pool_router())
+        .nest("/api/course-preferences", course_preference_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
