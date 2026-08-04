@@ -88,3 +88,18 @@ pub enum SemesterStatus {
     #[db_rename = "CLOSED"]
     Closed,
 }
+
+//
+// Master Course
+//
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::CourseType"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum CourseType {
+    #[db_rename = "UNDERGRADUATE"]
+    Undergraduate,
+
+    #[db_rename = "GRADUATE"]
+    Graduate,
+}
