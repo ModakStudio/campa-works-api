@@ -1,11 +1,14 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::{
-    course::Course,
-    enums::{CourseCategory, CourseType, Language, SemesterStatus, SemesterType},
-    major::Major,
-    master_course::MasterCourse,
-    semester::Semester,
+use crate::{
+    dto::{major::MajorResponse, master_course::MasterCourseResponse, semester::SemesterResponse},
+    models::{
+        course::Course,
+        enums::{CourseCategory, Language},
+        major::Major,
+        master_course::MasterCourse,
+        semester::Semester,
+    },
 };
 
 #[derive(Debug, Deserialize)]
@@ -39,44 +42,12 @@ pub struct UpdateCourseRequest {
 }
 
 #[derive(Debug, Serialize)]
-pub struct CourseMasterCourseResponse {
-    pub id: i64,
-
-    pub course_code: String,
-    pub name: String,
-
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
-
-    pub course_type: CourseType,
-
-    pub is_core: bool,
-}
-
-#[derive(Debug, Serialize)]
-pub struct CourseSemesterResponse {
-    pub id: i64,
-
-    pub year: i32,
-    pub semester_: SemesterType,
-
-    pub status: SemesterStatus,
-}
-
-#[derive(Debug, Serialize)]
-pub struct CourseMajorResponse {
-    pub id: i64,
-    pub name: String,
-}
-
-#[derive(Debug, Serialize)]
 pub struct CourseResponse {
     pub id: i64,
 
-    pub master_course: CourseMasterCourseResponse,
-    pub semester: CourseSemesterResponse,
-    pub major: CourseMajorResponse,
+    pub master_course: MasterCourseResponse,
+    pub semester: SemesterResponse,
+    pub major: MajorResponse,
 
     pub description: Option<String>,
 
@@ -96,34 +67,9 @@ impl From<(Course, MasterCourse, Semester, Major)> for CourseResponse {
         Self {
             id: course.id,
 
-            master_course: CourseMasterCourseResponse {
-                id: master_course.id,
-
-                course_code: master_course.course_code,
-                name: master_course.name,
-
-                credit: master_course.credit,
-                lecture: master_course.lecture,
-                practice: master_course.practice,
-
-                course_type: master_course.course_type,
-
-                is_core: master_course.is_core,
-            },
-
-            semester: CourseSemesterResponse {
-                id: semester.id,
-
-                year: semester.year,
-                semester_: semester.semester_,
-
-                status: semester.status,
-            },
-
-            major: CourseMajorResponse {
-                id: major.id,
-                name: major.name,
-            },
+            master_course: MasterCourseResponse::from(master_course),
+            semester: SemesterResponse::from(semester),
+            major: MajorResponse::from(major),
 
             description: course.description,
 
