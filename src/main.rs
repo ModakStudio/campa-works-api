@@ -22,6 +22,7 @@ use state::app_state::AppState;
 
 use crate::router::{
     course_assignment_router::course_assignment_router, course_pool_router::course_pool_router,
+    course_preference_bookmark_router::course_preference_bookmark_router,
     course_preference_router::course_preference_router, course_router::course_router,
     major_router::major_router, master_course_router::master_course_router,
     professor_credit_router::professor_credit_router, professor_router::professor_router,
@@ -46,6 +47,10 @@ async fn main() {
         .nest("/api/course-preferences", course_preference_router())
         .nest("/api/course-assignments", course_assignment_router())
         .nest("/api/professor-credits", professor_credit_router())
+        .nest(
+            "/api/course-preference-bookmarks",
+            course_preference_bookmark_router(),
+        )
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
