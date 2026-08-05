@@ -1,6 +1,7 @@
 pub mod enums;
 
 pub mod course;
+pub mod course_assignment;
 pub mod course_pool;
 pub mod course_preference;
 pub mod major;
