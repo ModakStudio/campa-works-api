@@ -16,7 +16,6 @@ pub struct ClassroomFacilityResponse {
     pub id: i64,
 
     pub classroom: ClassroomResponse,
-
     pub facility: FacilityResponse,
 }
 
@@ -26,7 +25,6 @@ impl From<(ClassroomFacility, Classroom, Facility)> for ClassroomFacilityRespons
             id: classroom_facility.id,
 
             classroom: ClassroomResponse::from(classroom),
-
             facility: FacilityResponse::from(facility),
         }
     }
