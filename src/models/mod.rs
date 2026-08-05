@@ -7,5 +7,6 @@ pub mod course_preference;
 pub mod major;
 pub mod master_course;
 pub mod professor;
+pub mod professor_credit;
 pub mod semester;
 pub mod user;
