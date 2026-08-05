@@ -57,6 +57,12 @@ pub enum AppError {
     #[error("Course preference not found")]
     CoursePreferenceNotFound,
 
+    #[error("Course assignment already exists")]
+    CourseAssignmentAlreadyExists,
+
+    #[error("Course assignment not found")]
+    CourseAssignmentNotFound,
+
     #[error("Database error")]
     DatabaseError,
 
@@ -104,6 +110,10 @@ impl IntoResponse for AppError {
             AppError::CoursePreferenceAlreadyExists => StatusCode::CONFLICT,
 
             AppError::CoursePreferenceNotFound => StatusCode::NOT_FOUND,
+
+            AppError::CourseAssignmentAlreadyExists => StatusCode::CONFLICT,
+
+            AppError::CourseAssignmentNotFound => StatusCode::NOT_FOUND,
 
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
 

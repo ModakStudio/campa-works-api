@@ -1,3 +1,4 @@
+pub mod course_assignment_service;
 pub mod course_pool_service;
 pub mod course_preference_service;
 pub mod course_service;
