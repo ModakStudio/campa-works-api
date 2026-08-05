@@ -3,6 +3,7 @@ pub mod course_pool_service;
 pub mod course_preference_bookmark_service;
 pub mod course_preference_service;
 pub mod course_service;
+pub mod facility_service;
 pub mod major_service;
 pub mod master_course_service;
 pub mod professor_credit_service;
