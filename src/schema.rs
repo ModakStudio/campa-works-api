@@ -129,6 +129,15 @@ diesel::table! {
 }
 
 diesel::table! {
+    professor_credit (id) {
+        id -> Int8,
+        professor_id -> Int8,
+        semester_id -> Int8,
+        target_credit -> Int4,
+    }
+}
+
+diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::SemesterType;
     use super::sql_types::SemesterStatus;
@@ -173,6 +182,8 @@ diesel::joinable!(course_preference -> master_course (master_course_id));
 diesel::joinable!(course_preference -> professor (professor_id));
 diesel::joinable!(course_preference -> semester (semester_id));
 diesel::joinable!(professor -> users (user_id));
+diesel::joinable!(professor_credit -> professor (professor_id));
+diesel::joinable!(professor_credit -> semester (semester_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     course,
@@ -182,6 +193,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     major,
     master_course,
     professor,
+    professor_credit,
     semester,
     users,
 );
