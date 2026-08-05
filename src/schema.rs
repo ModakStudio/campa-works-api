@@ -84,6 +84,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    course_preference_bookmark (id) {
+        id -> Int8,
+        professor_id -> Int8,
+        master_course_id -> Int8,
+    }
+}
+
+diesel::table! {
     major (id) {
         id -> Int8,
         #[max_length = 100]
@@ -181,6 +189,8 @@ diesel::joinable!(course_pool -> professor (professor_id));
 diesel::joinable!(course_preference -> master_course (master_course_id));
 diesel::joinable!(course_preference -> professor (professor_id));
 diesel::joinable!(course_preference -> semester (semester_id));
+diesel::joinable!(course_preference_bookmark -> master_course (master_course_id));
+diesel::joinable!(course_preference_bookmark -> professor (professor_id));
 diesel::joinable!(professor -> users (user_id));
 diesel::joinable!(professor_credit -> professor (professor_id));
 diesel::joinable!(professor_credit -> semester (semester_id));
@@ -190,6 +200,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     course_assignment,
     course_pool,
     course_preference,
+    course_preference_bookmark,
     major,
     master_course,
     professor,
