@@ -92,6 +92,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    facility (id) {
+        id -> Int8,
+        name -> Varchar,
+        description -> Nullable<Varchar>,
+    }
+}
+
+diesel::table! {
     major (id) {
         id -> Int8,
         #[max_length = 100]
@@ -201,6 +209,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     course_pool,
     course_preference,
     course_preference_bookmark,
+    facility,
     major,
     master_course,
     professor,
