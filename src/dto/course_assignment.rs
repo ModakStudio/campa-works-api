@@ -2,10 +2,7 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::{
-        course::CourseResponse, course_pool::CoursePoolProfessorResponse,
-        professor::ProfessorResponse,
-    },
+    dto::{course::CourseResponse, professor::ProfessorResponse},
     models::{
         course::Course, course_assignment::CourseAssignment, major::Major,
         master_course::MasterCourse, professor::Professor, semester::Semester, user::User,
