@@ -45,6 +45,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    classroom_facility (id) {
+        id -> Int8,
+        classroom_id -> Int8,
+        facility_id -> Int8,
+    }
+}
+
+diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::CourseCategory;
     use super::sql_types::Language;
@@ -205,6 +213,8 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(classroom_facility -> classroom (classroom_id));
+diesel::joinable!(classroom_facility -> facility (facility_id));
 diesel::joinable!(course -> major (major_id));
 diesel::joinable!(course -> master_course (master_course_id));
 diesel::joinable!(course -> semester (semester_id));
@@ -225,6 +235,7 @@ diesel::joinable!(professor_credit -> semester (semester_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     classroom,
+    classroom_facility,
     course,
     course_assignment,
     course_facility,
