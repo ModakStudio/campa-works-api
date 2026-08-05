@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::professor::ProfessorUserResponse,
+    dto::user::UserResponse,
     models::{
         course_preference::CoursePreference,
         enums::{CourseType, ProfessorPosition, ProfessorStatus, SemesterStatus, SemesterType},
@@ -41,7 +41,7 @@ pub struct CoursePreferenceSemesterResponse {
 pub struct CoursePreferenceProfessorResponse {
     pub id: i64,
 
-    pub user: ProfessorUserResponse,
+    pub user: UserResponse,
 
     pub position: ProfessorPosition,
 
@@ -106,12 +106,7 @@ impl From<(CoursePreference, Semester, Professor, User, MasterCourse)>
             professor: CoursePreferenceProfessorResponse {
                 id: professor.id,
 
-                user: ProfessorUserResponse {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                },
+                user: UserResponse::from(user),
 
                 position: professor.position,
 
