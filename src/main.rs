@@ -24,9 +24,9 @@ use crate::router::{
     course_assignment_router::course_assignment_router, course_pool_router::course_pool_router,
     course_preference_bookmark_router::course_preference_bookmark_router,
     course_preference_router::course_preference_router, course_router::course_router,
-    major_router::major_router, master_course_router::master_course_router,
-    professor_credit_router::professor_credit_router, professor_router::professor_router,
-    semester_router::semester_router, user_router::user_router,
+    facility_router::facility_router, major_router::major_router,
+    master_course_router::master_course_router, professor_credit_router::professor_credit_router,
+    professor_router::professor_router, semester_router::semester_router, user_router::user_router,
 };
 
 #[tokio::main]
@@ -51,6 +51,7 @@ async fn main() {
             "/api/course-preference-bookmarks",
             course_preference_bookmark_router(),
         )
+        .nest("/api/facilities", facility_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
