@@ -27,8 +27,7 @@ impl CoursePoolRepository {
         conn: &mut PgConnection,
     ) -> QueryResult<Vec<(CoursePool, Professor, User, MasterCourse)>> {
         course_pool::table
-            .inner_join(professor::table)
-            .inner_join(users::table.on(users::id.eq(professor::user_id)))
+            .inner_join(professor::table.inner_join(users::table))
             .inner_join(master_course::table)
             .select((
                 CoursePool::as_select(),
@@ -44,8 +43,7 @@ impl CoursePoolRepository {
         course_pool_id: i64,
     ) -> QueryResult<(CoursePool, Professor, User, MasterCourse)> {
         course_pool::table
-            .inner_join(professor::table)
-            .inner_join(users::table.on(users::id.eq(professor::user_id)))
+            .inner_join(professor::table.inner_join(users::table))
             .inner_join(master_course::table)
             .filter(course_pool::id.eq(course_pool_id))
             .select((
@@ -63,8 +61,7 @@ impl CoursePoolRepository {
         master_course_id: i64,
     ) -> QueryResult<(CoursePool, Professor, User, MasterCourse)> {
         course_pool::table
-            .inner_join(professor::table)
-            .inner_join(users::table.on(users::id.eq(professor::user_id)))
+            .inner_join(professor::table.inner_join(users::table))
             .inner_join(master_course::table)
             .filter(course_pool::professor_id.eq(professor_id))
             .filter(course_pool::master_course_id.eq(master_course_id))
