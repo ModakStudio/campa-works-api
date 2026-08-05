@@ -3,6 +3,7 @@ pub mod response;
 pub mod classroom;
 pub mod course;
 pub mod course_assignment;
+pub mod course_facility;
 pub mod course_pool;
 pub mod course_preference;
 pub mod course_preference_bookmark;

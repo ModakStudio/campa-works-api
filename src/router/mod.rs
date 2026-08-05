@@ -1,5 +1,6 @@
 pub mod classroom_router;
 pub mod course_assignment_router;
+pub mod course_facility_router;
 pub mod course_pool_router;
 pub mod course_preference_bookmark_router;
 pub mod course_preference_router;
