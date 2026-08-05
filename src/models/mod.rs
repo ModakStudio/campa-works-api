@@ -1,5 +1,6 @@
 pub mod enums;
 
+pub mod classroom;
 pub mod course;
 pub mod course_assignment;
 pub mod course_pool;
