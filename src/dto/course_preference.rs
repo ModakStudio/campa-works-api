@@ -2,14 +2,13 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::user::UserResponse,
+    dto::{
+        master_course::MasterCourseResponse, professor::ProfessorResponse,
+        semester::SemesterResponse,
+    },
     models::{
-        course_preference::CoursePreference,
-        enums::{CourseType, ProfessorPosition, ProfessorStatus, SemesterStatus, SemesterType},
-        master_course::MasterCourse,
-        professor::Professor,
-        semester::Semester,
-        user::User,
+        course_preference::CoursePreference, master_course::MasterCourse, professor::Professor,
+        semester::Semester, user::User,
     },
 };
 
@@ -28,53 +27,12 @@ pub struct UpdateCoursePreferenceRequest {
 }
 
 #[derive(Debug, Serialize)]
-pub struct CoursePreferenceSemesterResponse {
-    pub id: i64,
-
-    pub year: i32,
-    pub semester_: SemesterType,
-
-    pub status: SemesterStatus,
-}
-
-#[derive(Debug, Serialize)]
-pub struct CoursePreferenceProfessorResponse {
-    pub id: i64,
-
-    pub user: UserResponse,
-
-    pub position: ProfessorPosition,
-
-    pub office: Option<String>,
-    pub tel: Option<String>,
-    pub research_field: Option<String>,
-
-    pub status: ProfessorStatus,
-}
-
-#[derive(Debug, Serialize)]
-pub struct CoursePreferenceMasterCourseResponse {
-    pub id: i64,
-
-    pub course_code: String,
-    pub name: String,
-
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
-
-    pub course_type: CourseType,
-
-    pub is_core: bool,
-}
-
-#[derive(Debug, Serialize)]
 pub struct CoursePreferenceResponse {
     pub id: i64,
 
-    pub semester: CoursePreferenceSemesterResponse,
-    pub professor: CoursePreferenceProfessorResponse,
-    pub master_course: CoursePreferenceMasterCourseResponse,
+    pub semester: SemesterResponse,
+    pub professor: ProfessorResponse,
+    pub master_course: MasterCourseResponse,
 
     pub priority: i32,
 
@@ -96,41 +54,9 @@ impl From<(CoursePreference, Semester, Professor, User, MasterCourse)>
         Self {
             id: course_preference.id,
 
-            semester: CoursePreferenceSemesterResponse {
-                id: semester.id,
-                year: semester.year,
-                semester_: semester.semester_,
-                status: semester.status,
-            },
-
-            professor: CoursePreferenceProfessorResponse {
-                id: professor.id,
-
-                user: UserResponse::from(user),
-
-                position: professor.position,
-
-                office: professor.office,
-                tel: professor.tel,
-                research_field: professor.research_field,
-
-                status: professor.status,
-            },
-
-            master_course: CoursePreferenceMasterCourseResponse {
-                id: master_course.id,
-
-                course_code: master_course.course_code,
-                name: master_course.name,
-
-                credit: master_course.credit,
-                lecture: master_course.lecture,
-                practice: master_course.practice,
-
-                course_type: master_course.course_type,
-
-                is_core: master_course.is_core,
-            },
+            semester: SemesterResponse::from(semester),
+            professor: ProfessorResponse::from((professor, user)),
+            master_course: MasterCourseResponse::from(master_course),
 
             priority: course_preference.priority,
 
