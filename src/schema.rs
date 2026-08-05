@@ -74,6 +74,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    course_facility (id) {
+        id -> Int8,
+        master_course_id -> Int8,
+        facility_id -> Int8,
+    }
+}
+
+diesel::table! {
     course_pool (id) {
         id -> Int8,
         professor_id -> Int8,
@@ -202,6 +210,8 @@ diesel::joinable!(course -> master_course (master_course_id));
 diesel::joinable!(course -> semester (semester_id));
 diesel::joinable!(course_assignment -> course (course_id));
 diesel::joinable!(course_assignment -> professor (professor_id));
+diesel::joinable!(course_facility -> facility (facility_id));
+diesel::joinable!(course_facility -> master_course (master_course_id));
 diesel::joinable!(course_pool -> master_course (master_course_id));
 diesel::joinable!(course_pool -> professor (professor_id));
 diesel::joinable!(course_preference -> master_course (master_course_id));
@@ -217,6 +227,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     classroom,
     course,
     course_assignment,
+    course_facility,
     course_pool,
     course_preference,
     course_preference_bookmark,
