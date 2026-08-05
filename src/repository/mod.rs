@@ -1,3 +1,4 @@
+pub mod course_assignment_repository;
 pub mod course_pool_repository;
 pub mod course_preference_repository;
 pub mod course_repository;
