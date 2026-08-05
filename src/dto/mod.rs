@@ -1,6 +1,7 @@
 pub mod response;
 
 pub mod classroom;
+pub mod classroom_facility;
 pub mod course;
 pub mod course_assignment;
 pub mod course_facility;

@@ -1,4 +1,5 @@
 pub mod classroom_router;
+pub mod classroom_facility_router;
 pub mod course_assignment_router;
 pub mod course_facility_router;
 pub mod course_pool_router;

@@ -21,6 +21,7 @@ use db::pool::create_pool;
 use state::app_state::AppState;
 
 use crate::router::{
+    classroom_facility_router::classroom_facility_router,
     classroom_router::classroom_router, course_assignment_router::course_assignment_router,
     course_facility_router::course_facility_router, course_pool_router::course_pool_router,
     course_preference_bookmark_router::course_preference_bookmark_router,
@@ -55,6 +56,7 @@ async fn main() {
         .nest("/api/facilities", facility_router())
         .nest("/api/classrooms", classroom_router())
         .nest("/api/course-facilities", course_facility_router())
+        .nest("/api/classroom-facilities", classroom_facility_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
