@@ -35,6 +35,16 @@ pub mod sql_types {
 }
 
 diesel::table! {
+    classroom (id) {
+        id -> Int8,
+        building -> Varchar,
+        room -> Varchar,
+        capacity -> Int4,
+        is_available -> Bool,
+    }
+}
+
+diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::CourseCategory;
     use super::sql_types::Language;
@@ -204,6 +214,7 @@ diesel::joinable!(professor_credit -> professor (professor_id));
 diesel::joinable!(professor_credit -> semester (semester_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    classroom,
     course,
     course_assignment,
     course_pool,
