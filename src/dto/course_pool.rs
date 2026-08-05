@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::professor::ProfessorUserResponse,
+    dto::user::UserResponse,
     models::{
         course_pool::CoursePool,
         enums::{CourseType, ProfessorPosition, ProfessorStatus},
@@ -22,7 +22,7 @@ pub struct CreateCoursePoolRequest {
 pub struct CoursePoolProfessorResponse {
     pub id: i64,
 
-    pub user: ProfessorUserResponse,
+    pub user: UserResponse,
 
     pub position: ProfessorPosition,
 
@@ -70,12 +70,7 @@ impl From<(CoursePool, Professor, User, MasterCourse)> for CoursePoolResponse {
             professor: CoursePoolProfessorResponse {
                 id: professor.id,
 
-                user: ProfessorUserResponse {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                },
+                user: UserResponse::from(user),
 
                 position: professor.position,
 
