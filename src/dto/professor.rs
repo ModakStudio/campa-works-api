@@ -1,9 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::{
-    enums::{ProfessorPosition, ProfessorStatus, UserRole},
-    professor::Professor,
-    user::User,
+use crate::{
+    dto::user::UserResponse,
+    models::{
+        enums::{ProfessorPosition, ProfessorStatus},
+        professor::Professor,
+        user::User,
+    },
 };
 
 #[derive(Debug, Deserialize)]
@@ -29,18 +32,10 @@ pub struct UpdateProfessorRequest {
 }
 
 #[derive(Debug, Serialize)]
-pub struct ProfessorUserResponse {
-    pub id: i64,
-    pub email: String,
-    pub name: String,
-    pub role: UserRole,
-}
-
-#[derive(Debug, Serialize)]
 pub struct ProfessorResponse {
     pub id: i64,
 
-    pub user: ProfessorUserResponse,
+    pub user: UserResponse,
 
     pub position: ProfessorPosition,
 
@@ -56,12 +51,7 @@ impl From<(Professor, User)> for ProfessorResponse {
         Self {
             id: professor.id,
 
-            user: ProfessorUserResponse {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-            },
+            user: UserResponse::from(user),
 
             position: professor.position,
 
