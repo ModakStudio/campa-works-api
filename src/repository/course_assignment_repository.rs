@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::prelude::*;
 
 use crate::{
@@ -28,6 +30,7 @@ impl CourseAssignmentRepository {
 
     pub fn find_all(
         conn: &mut PgConnection,
+        params: &HashMap<String, String>,
     ) -> QueryResult<
         Vec<(
             CourseAssignment,
@@ -39,7 +42,7 @@ impl CourseAssignmentRepository {
             User,
         )>,
     > {
-        course_assignment::table
+        let mut query = course_assignment::table
             .inner_join(
                 course::table
                     .inner_join(master_course::table)
@@ -47,6 +50,27 @@ impl CourseAssignmentRepository {
                     .inner_join(major::table),
             )
             .inner_join(professor::table.inner_join(users::table))
+            .into_boxed();
+
+        if let Some(course_assignment_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+            query = query.filter(course_assignment::id.eq(course_assignment_id));
+        }
+
+        if let Some(course_id) = params
+            .get("course_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(course_assignment::course_id.eq(course_id));
+        }
+
+        if let Some(professor_id) = params
+            .get("professor_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(course_assignment::professor_id.eq(professor_id));
+        }
+
+        query
             .select((
                 CourseAssignment::as_select(),
                 Course::as_select(),
@@ -90,74 +114,6 @@ impl CourseAssignmentRepository {
                 User::as_select(),
             ))
             .first(conn)
-    }
-
-    pub fn find_by_course_id(
-        conn: &mut PgConnection,
-        course_id: i64,
-    ) -> QueryResult<(
-        CourseAssignment,
-        Course,
-        MasterCourse,
-        Semester,
-        Major,
-        Professor,
-        User,
-    )> {
-        course_assignment::table
-            .inner_join(
-                course::table
-                    .inner_join(master_course::table)
-                    .inner_join(semester::table)
-                    .inner_join(major::table),
-            )
-            .inner_join(professor::table.inner_join(users::table))
-            .filter(course_assignment::course_id.eq(course_id))
-            .select((
-                CourseAssignment::as_select(),
-                Course::as_select(),
-                MasterCourse::as_select(),
-                Semester::as_select(),
-                Major::as_select(),
-                Professor::as_select(),
-                User::as_select(),
-            ))
-            .first(conn)
-    }
-
-    pub fn find_by_professor_id(
-        conn: &mut PgConnection,
-        professor_id: i64,
-    ) -> QueryResult<
-        Vec<(
-            CourseAssignment,
-            Course,
-            MasterCourse,
-            Semester,
-            Major,
-            Professor,
-            User,
-        )>,
-    > {
-        course_assignment::table
-            .inner_join(
-                course::table
-                    .inner_join(master_course::table)
-                    .inner_join(semester::table)
-                    .inner_join(major::table),
-            )
-            .inner_join(professor::table.inner_join(users::table))
-            .filter(course_assignment::professor_id.eq(professor_id))
-            .select((
-                CourseAssignment::as_select(),
-                Course::as_select(),
-                MasterCourse::as_select(),
-                Semester::as_select(),
-                Major::as_select(),
-                Professor::as_select(),
-                User::as_select(),
-            ))
-            .load(conn)
     }
 
     pub fn delete(conn: &mut PgConnection, course_assignment_id: i64) -> QueryResult<usize> {
