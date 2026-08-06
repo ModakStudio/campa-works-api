@@ -2,7 +2,7 @@ use diesel::prelude::*;
 
 use crate::{models::enums::CourseType, schema::master_course};
 
-#[derive(Debug, Queryable, Selectable, Identifiable)]
+#[derive(Debug, Queryable, Selectable, Identifiable, Clone)]
 #[diesel(table_name = master_course)]
 pub struct MasterCourse {
     pub id: i64,

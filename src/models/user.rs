@@ -3,7 +3,7 @@ use diesel::prelude::*;
 
 use crate::{models::enums::UserRole, schema::users};
 
-#[derive(Debug, Queryable, Selectable, Identifiable)]
+#[derive(Debug, Queryable, Selectable, Identifiable, Clone)]
 #[diesel(table_name = users)]
 pub struct User {
     pub id: i64,

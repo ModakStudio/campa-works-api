@@ -5,7 +5,7 @@ use crate::{
     schema::professor,
 };
 
-#[derive(Debug, Queryable, Selectable, Identifiable)]
+#[derive(Debug, Queryable, Selectable, Identifiable, Clone)]
 #[diesel(table_name = professor)]
 pub struct Professor {
     pub id: i64,

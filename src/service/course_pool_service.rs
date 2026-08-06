@@ -1,4 +1,5 @@
 use diesel::prelude::*;
+use std::collections::HashMap;
 
 use crate::{
     dto::course_pool::{CoursePoolResponse, CreateCoursePoolRequest},
@@ -24,12 +25,17 @@ impl CoursePoolService {
         MasterCourseRepository::find_by_id(conn, request.master_course_id)
             .map_err(|_| AppError::MasterCourseNotFound)?;
 
-        if CoursePoolRepository::find_by_professor_id_and_master_course_id(
-            conn,
-            request.professor_id,
-            request.master_course_id,
-        )
-        .is_ok()
+        let query_params = HashMap::from([
+            ("professor_id".to_string(), request.professor_id.to_string()),
+            (
+                "master_course_id".to_string(),
+                request.master_course_id.to_string(),
+            ),
+        ]);
+
+        if !CoursePoolRepository::find_all(conn, &query_params)
+            .unwrap_or_else(|_| Vec::new())
+            .is_empty()
         {
             return Err(AppError::CoursePoolAlreadyExists);
         }
@@ -42,19 +48,19 @@ impl CoursePoolService {
         CoursePoolRepository::create(conn, &new_course_pool)
             .map_err(|_| AppError::DatabaseError)?;
 
-        let course_pool = CoursePoolRepository::find_by_professor_id_and_master_course_id(
-            conn,
-            request.professor_id,
-            request.master_course_id,
-        )
-        .map_err(|_| AppError::DatabaseError)?;
+        let course_pool = CoursePoolRepository::find_all(conn, &query_params)
+            .map_err(|_| AppError::DatabaseError)?[0]
+            .clone();
 
         Ok(course_pool.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection) -> Result<Vec<CoursePoolResponse>, AppError> {
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<CoursePoolResponse>, AppError> {
         let course_pools =
-            CoursePoolRepository::find_all(conn).map_err(|_| AppError::DatabaseError)?;
+            CoursePoolRepository::find_all(conn, params).map_err(|_| AppError::DatabaseError)?;
 
         Ok(course_pools.into_iter().map(Into::into).collect())
     }
