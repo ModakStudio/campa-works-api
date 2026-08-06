@@ -49,8 +49,10 @@ impl CoursePoolService {
             .map_err(|_| AppError::DatabaseError)?;
 
         let course_pool = CoursePoolRepository::find_all(conn, &query_params)
-            .map_err(|_| AppError::DatabaseError)?[0]
-            .clone();
+            .map_err(|_| AppError::DatabaseError)?
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| unreachable!());
 
         Ok(course_pool.into())
     }
