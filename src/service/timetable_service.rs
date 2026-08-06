@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::prelude::*;
 
 use crate::{
@@ -24,13 +26,15 @@ impl TimetableService {
         ClassroomRepository::find_by_id(conn, request.classroom_id)
             .map_err(|_| AppError::ClassroomNotFound)?;
 
-        if TimetableRepository::find_by_assignment_id_and_classroom_id_and_day_of_week(
-            conn,
-            request.assignment_id,
-            request.classroom_id,
-            request.day_of_week,
-        )
-        .is_ok()
+        let query_params = HashMap::from([
+            ("assignment_id".to_string(), request.assignment_id.to_string()),
+            ("classroom_id".to_string(), request.classroom_id.to_string()),
+            ("day_of_week".to_string(), request.day_of_week.to_string()),
+        ]);
+
+        if TimetableRepository::find_all(conn, &query_params)
+            .unwrap_or_else(|_| Vec::new())
+            .is_empty()
         {
             return Err(AppError::TimetableAlreadyExists);
         }
@@ -46,20 +50,18 @@ impl TimetableService {
         TimetableRepository::create(conn, &new_timetable).map_err(|_| AppError::DatabaseError)?;
 
         let timetable =
-            TimetableRepository::find_by_assignment_id_and_classroom_id_and_day_of_week(
-                conn,
-                request.assignment_id,
-                request.classroom_id,
-                request.day_of_week,
-            )
-            .map_err(|_| AppError::DatabaseError)?;
+            TimetableRepository::find_all(conn, &query_params)
+                .map_err(|_| AppError::DatabaseError)?
+                .into_iter()
+                .next()
+                .unwrap_or_else(|| unreachable!());
 
         Ok(timetable.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection) -> Result<Vec<TimetableResponse>, AppError> {
+    pub fn get_all(conn: &mut PgConnection, params: &HashMap<String, String>) -> Result<Vec<TimetableResponse>, AppError> {
         let timetables =
-            TimetableRepository::find_all(conn).map_err(|_| AppError::DatabaseError)?;
+            TimetableRepository::find_all(conn, params).map_err(|_| AppError::DatabaseError)?;
 
         Ok(timetables.into_iter().map(Into::into).collect())
     }
@@ -69,16 +71,6 @@ impl TimetableService {
             TimetableRepository::find_by_id(conn, id).map_err(|_| AppError::TimetableNotFound)?;
 
         Ok(timetable.into())
-    }
-
-    pub fn get_by_assignment_id(
-        conn: &mut PgConnection,
-        assignment_id: i64,
-    ) -> Result<Vec<TimetableResponse>, AppError> {
-        let timetables = TimetableRepository::find_by_assignment_id(conn, assignment_id)
-            .map_err(|_| AppError::DatabaseError)?;
-
-        Ok(timetables.into_iter().map(Into::into).collect())
     }
 
     pub fn update(

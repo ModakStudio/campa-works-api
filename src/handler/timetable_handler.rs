@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, State, Query},
     http::StatusCode,
 };
 
@@ -33,6 +33,7 @@ pub async fn create_timetable(
 
 pub async fn get_timetables(
     State(state): State<Arc<AppState>>,
+    Query(params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Json<Vec<TimetableResponse>>, AppError> {
     let conn = state
         .pool
@@ -41,7 +42,7 @@ pub async fn get_timetables(
         .map_err(|_| AppError::DatabaseError)?;
 
     let timetables = conn
-        .interact(move |conn| TimetableService::get_all(conn))
+        .interact(move |conn| TimetableService::get_all(conn, &params))
         .await
         .map_err(|_| AppError::DatabaseError)??;
 
