@@ -75,8 +75,6 @@ pub enum AppError {
     TimetableNotFound,
     #[error("Database error")]
     DatabaseError,
-    #[error("Internal server error")]
-    Internal,
 }
 
 #[derive(Serialize)]
@@ -121,7 +119,6 @@ impl IntoResponse for AppError {
             AppError::TimetableAlreadyExists => StatusCode::CONFLICT,
             AppError::TimetableNotFound => StatusCode::NOT_FOUND,
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
-            AppError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
         (
