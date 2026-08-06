@@ -69,6 +69,10 @@ pub enum AppError {
     FacilityAlreadyExists,
     #[error("Facility not found")]
     FacilityNotFound,
+    #[error("Timetable already exists")]
+    TimetableAlreadyExists,
+    #[error("Timetable not found")]
+    TimetableNotFound,
     #[error("Database error")]
     DatabaseError,
     #[error("Internal server error")]
@@ -114,6 +118,8 @@ impl IntoResponse for AppError {
             AppError::ClassroomNotFound => StatusCode::NOT_FOUND,
             AppError::FacilityAlreadyExists => StatusCode::CONFLICT,
             AppError::FacilityNotFound => StatusCode::NOT_FOUND,
+            AppError::TimetableAlreadyExists => StatusCode::CONFLICT,
+            AppError::TimetableNotFound => StatusCode::NOT_FOUND,
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
         };

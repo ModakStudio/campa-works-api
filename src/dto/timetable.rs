@@ -3,9 +3,9 @@ use serde::{Deserialize, Serialize};
 use crate::{
     dto::{classroom::ClassroomResponse, course_assignment::CourseAssignmentResponse},
     models::{
-        classroom::Classroom, course::Course, course_assignment::CourseAssignment,
-        major::Major, master_course::MasterCourse, professor::Professor,
-        semester::Semester, timetable::Timetable, user::User,
+        classroom::Classroom, course::Course, course_assignment::CourseAssignment, major::Major,
+        master_course::MasterCourse, professor::Professor, semester::Semester,
+        timetable::Timetable, user::User,
     },
 };
 
@@ -22,6 +22,9 @@ pub struct CreateTimetableRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct UpdateTimetableRequest {
+    pub assignment_id: Option<i64>,
+    pub classroom_id: Option<i64>,
+
     pub day_of_week: Option<i32>,
 
     pub start_period: Option<i32>,

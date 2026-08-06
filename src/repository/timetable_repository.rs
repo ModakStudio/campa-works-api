@@ -113,17 +113,19 @@ impl TimetableRepository {
     pub fn find_by_assignment_id(
         conn: &mut PgConnection,
         assignment_id: i64,
-    ) -> QueryResult<(
-        Timetable,
-        CourseAssignment,
-        Course,
-        MasterCourse,
-        Semester,
-        Major,
-        Professor,
-        User,
-        Classroom,
-    )> {
+    ) -> QueryResult<
+        Vec<(
+            Timetable,
+            CourseAssignment,
+            Course,
+            MasterCourse,
+            Semester,
+            Major,
+            Professor,
+            User,
+            Classroom,
+        )>,
+    > {
         timetable::table
             .inner_join(
                 course_assignment::table
@@ -148,7 +150,7 @@ impl TimetableRepository {
                 User::as_select(),
                 Classroom::as_select(),
             ))
-            .first(conn)
+            .load(conn)
     }
 
     pub fn find_by_classroom_id(

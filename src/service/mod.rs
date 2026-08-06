@@ -12,4 +12,5 @@ pub mod master_course_service;
 pub mod professor_credit_service;
 pub mod professor_service;
 pub mod semester_service;
+pub mod timetable_service;
 pub mod user_service;
