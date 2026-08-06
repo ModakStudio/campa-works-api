@@ -20,7 +20,9 @@ pub struct ClassroomFacilityResponse {
 }
 
 impl From<(ClassroomFacility, Classroom, Facility)> for ClassroomFacilityResponse {
-    fn from((classroom_facility, classroom, facility): (ClassroomFacility, Classroom, Facility)) -> Self {
+    fn from(
+        (classroom_facility, classroom, facility): (ClassroomFacility, Classroom, Facility),
+    ) -> Self {
         Self {
             id: classroom_facility.id,
 

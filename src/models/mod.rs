@@ -14,4 +14,5 @@ pub mod master_course;
 pub mod professor;
 pub mod professor_credit;
 pub mod semester;
+pub mod timetable;
 pub mod user;

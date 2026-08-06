@@ -6,8 +6,7 @@ use crate::{
     models::classroom_facility::NewClassroomFacility,
     repository::{
         classroom_facility_repository::ClassroomFacilityRepository,
-        classroom_repository::ClassroomRepository,
-        facility_repository::FacilityRepository,
+        classroom_repository::ClassroomRepository, facility_repository::FacilityRepository,
     },
 };
 
