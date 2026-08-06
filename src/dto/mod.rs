@@ -1,5 +1,3 @@
-pub mod response;
-
 pub mod classroom;
 pub mod classroom_facility;
 pub mod course;
