@@ -17,7 +17,7 @@ impl CourseAssignmentService {
         conn: &mut PgConnection,
         request: CreateCourseAssignmentRequest,
     ) -> Result<CourseAssignmentResponse, AppError> {
-        let (course, _, _, _) = CourseRepository::find_by_id(conn, request.course_id)
+        CourseRepository::find_by_id(conn, request.course_id)
             .map_err(|_| AppError::CourseNotFound)?;
 
         ProfessorRepository::find_by_id(conn, request.professor_id)

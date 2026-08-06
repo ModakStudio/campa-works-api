@@ -3,10 +3,7 @@ use diesel::prelude::*;
 use crate::{
     dto::timetable::{CreateTimetableRequest, TimetableResponse, UpdateTimetableRequest},
     error::app_error::AppError,
-    models::{
-        classroom::Classroom,
-        timetable::{NewTimetable, UpdateTimetable},
-    },
+    models::timetable::{NewTimetable, UpdateTimetable},
     repository::{
         classroom_repository::ClassroomRepository,
         course_assignment_repository::CourseAssignmentRepository,
@@ -20,7 +17,7 @@ impl TimetableService {
     pub fn create(
         conn: &mut PgConnection,
         request: CreateTimetableRequest,
-    ) -> Result<(TimetableResponse), AppError> {
+    ) -> Result<TimetableResponse, AppError> {
         CourseAssignmentRepository::find_by_id(conn, request.assignment_id)
             .map_err(|_| AppError::CourseAssignmentNotFound)?;
 
