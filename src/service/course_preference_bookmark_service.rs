@@ -29,7 +29,10 @@ impl CoursePreferenceBookmarkService {
 
         let query_params = HashMap::from([
             ("professor_id".to_string(), request.professor_id.to_string()),
-            ("master_course_id".to_string(), request.master_course_id.to_string()),
+            (
+                "master_course_id".to_string(),
+                request.master_course_id.to_string(),
+            ),
         ]);
 
         if !CoursePreferenceBookmarkRepository::find_all(conn, &query_params)
@@ -47,11 +50,12 @@ impl CoursePreferenceBookmarkService {
         CoursePreferenceBookmarkRepository::create(conn, &new_course_preference_bookmark)
             .map_err(|_| AppError::DatabaseError)?;
 
-        let course_preference_bookmark = CoursePreferenceBookmarkRepository::find_all(conn, &query_params)
-            .map_err(|_| AppError::DatabaseError)?
-            .into_iter()
-            .next()
-            .unwrap_or_else(|| unreachable!());
+        let course_preference_bookmark =
+            CoursePreferenceBookmarkRepository::find_all(conn, &query_params)
+                .map_err(|_| AppError::DatabaseError)?
+                .into_iter()
+                .next()
+                .unwrap_or_else(|| unreachable!());
 
         Ok(course_preference_bookmark.into())
     }
@@ -60,8 +64,9 @@ impl CoursePreferenceBookmarkService {
         conn: &mut PgConnection,
         params: &HashMap<String, String>,
     ) -> Result<Vec<CoursePreferenceBookmarkResponse>, AppError> {
-        let course_preference_bookmarks = CoursePreferenceBookmarkRepository::find_all(conn, params)
-            .map_err(|_| AppError::DatabaseError)?;
+        let course_preference_bookmarks =
+            CoursePreferenceBookmarkRepository::find_all(conn, params)
+                .map_err(|_| AppError::DatabaseError)?;
 
         Ok(course_preference_bookmarks
             .into_iter()

@@ -26,10 +26,7 @@ impl CourseAssignmentService {
 
         let query_params = HashMap::from([
             ("course_id".to_string(), request.course_id.to_string()),
-            (
-                "professor_id".to_string(),
-                request.professor_id.to_string(),
-            ),
+            ("professor_id".to_string(), request.professor_id.to_string()),
         ]);
 
         if !CourseAssignmentRepository::find_all(conn, &query_params)
@@ -47,19 +44,21 @@ impl CourseAssignmentService {
         CourseAssignmentRepository::create(conn, &new_course_assignment)
             .map_err(|_| AppError::DatabaseError)?;
 
-        let course_assignment =
-            CourseAssignmentRepository::find_all(conn, &query_params)
-                .map_err(|_| AppError::DatabaseError)?
-                .into_iter()
-                .next()
-                .unwrap_or_else(|| unreachable!());
+        let course_assignment = CourseAssignmentRepository::find_all(conn, &query_params)
+            .map_err(|_| AppError::DatabaseError)?
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| unreachable!());
 
         Ok(course_assignment.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection, params: &HashMap<String, String>) -> Result<Vec<CourseAssignmentResponse>, AppError> {
-        let course_assignments =
-            CourseAssignmentRepository::find_all(conn, params).map_err(|_| AppError::DatabaseError)?;
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<CourseAssignmentResponse>, AppError> {
+        let course_assignments = CourseAssignmentRepository::find_all(conn, params)
+            .map_err(|_| AppError::DatabaseError)?;
 
         Ok(course_assignments.into_iter().map(Into::into).collect())
     }

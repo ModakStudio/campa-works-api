@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::PgConnection;
 
 use crate::{
@@ -42,8 +44,11 @@ impl UserService {
         Ok(user.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection) -> Result<Vec<UserResponse>, AppError> {
-        let users = UserRepository::find_all(conn).map_err(|_| AppError::DatabaseError)?;
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<UserResponse>, AppError> {
+        let users = UserRepository::find_all(conn, params).map_err(|_| AppError::DatabaseError)?;
 
         Ok(users.into_iter().map(Into::into).collect())
     }

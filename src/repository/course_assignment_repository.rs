@@ -52,7 +52,9 @@ impl CourseAssignmentRepository {
             .inner_join(professor::table.inner_join(users::table))
             .into_boxed();
 
-        if let Some(course_assignment_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+        if let Some(course_assignment_id) =
+            params.get("id").and_then(|value| value.parse::<i64>().ok())
+        {
             query = query.filter(course_assignment::id.eq(course_assignment_id));
         }
 

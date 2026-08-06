@@ -33,7 +33,9 @@ impl CoursePreferenceBookmarkRepository {
             .inner_join(master_course::table)
             .into_boxed();
 
-        if let Some(course_preference_bookmark_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+        if let Some(course_preference_bookmark_id) =
+            params.get("id").and_then(|value| value.parse::<i64>().ok())
+        {
             query = query.filter(course_preference_bookmark::id.eq(course_preference_bookmark_id));
         }
 
@@ -51,7 +53,8 @@ impl CoursePreferenceBookmarkRepository {
             query = query.filter(course_preference_bookmark::master_course_id.eq(master_course_id));
         }
 
-        query.select((
+        query
+            .select((
                 CoursePreferenceBookmark::as_select(),
                 Professor::as_select(),
                 User::as_select(),
