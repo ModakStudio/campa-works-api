@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::prelude::*;
 
 use crate::{
@@ -24,10 +26,41 @@ impl ClassroomFacilityRepository {
 
     pub fn find_all(
         conn: &mut PgConnection,
+        params: &HashMap<String, String>,
     ) -> QueryResult<Vec<(ClassroomFacility, Classroom, Facility)>> {
-        classroom_facility::table
+        let mut query = classroom_facility::table
             .inner_join(classroom::table)
             .inner_join(facility::table)
+            .into_boxed();
+
+        if let Some(classroom_facility_id) =
+            params.get("id").and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(classroom_facility::id.eq(classroom_facility_id));
+        }
+
+        if let Some(classroom_id) = params
+            .get("classroom_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(classroom_facility::classroom_id.eq(classroom_id));
+        }
+
+        if let Some(facility_id) = params
+            .get("facility_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(classroom_facility::facility_id.eq(facility_id));
+        }
+
+        if let Some(facility_name) = params
+            .get("facility_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(facility::name.ilike(format!("%{}%", facility_name)));
+        }
+        query
             .select((
                 ClassroomFacility::as_select(),
                 Classroom::as_select(),

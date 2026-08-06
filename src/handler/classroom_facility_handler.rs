@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
 };
 
@@ -33,6 +33,7 @@ pub async fn create_classroom_facility(
 
 pub async fn get_classroom_facilities(
     State(state): State<Arc<AppState>>,
+    Query(params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Json<Vec<ClassroomFacilityResponse>>, AppError> {
     let conn = state
         .pool
@@ -41,7 +42,7 @@ pub async fn get_classroom_facilities(
         .map_err(|_| AppError::DatabaseError)?;
 
     let classroom_facilities = conn
-        .interact(move |conn| ClassroomFacilityService::get_all(conn))
+        .interact(move |conn| ClassroomFacilityService::get_all(conn, &params))
         .await
         .map_err(|_| AppError::DatabaseError)??;
 

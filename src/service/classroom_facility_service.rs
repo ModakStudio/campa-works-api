@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::PgConnection;
 
 use crate::{
@@ -51,9 +53,12 @@ impl ClassroomFacilityService {
         Ok(classroom_facility.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection) -> Result<Vec<ClassroomFacilityResponse>, AppError> {
-        let classroom_facilities =
-            ClassroomFacilityRepository::find_all(conn).map_err(|_| AppError::DatabaseError)?;
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<ClassroomFacilityResponse>, AppError> {
+        let classroom_facilities = ClassroomFacilityRepository::find_all(conn, params)
+            .map_err(|_| AppError::DatabaseError)?;
 
         Ok(classroom_facilities.into_iter().map(Into::into).collect())
     }
