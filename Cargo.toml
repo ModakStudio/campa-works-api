@@ -6,6 +6,7 @@ edition = "2024"
 description = "Backend API for Campa Works"
 homepage = "https://github.com/ModakStudio/campa-works-api"
 repository = "https://github.com/ModakStudio/campa-works-api"
+license = "Apache-2.0"
 
 [dependencies]
 axum = "0.8"
