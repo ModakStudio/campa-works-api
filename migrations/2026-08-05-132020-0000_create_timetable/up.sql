@@ -1,20 +1,10 @@
-CREATE TYPE day_of_week AS ENUM (
-    'MON',
-    'TUE',
-    'WED',
-    'THU',
-    'FRI',
-    'SAT',
-    'SUN'
-);
-
 CREATE TABLE timetable (
     id BIGSERIAL PRIMARY KEY,
 
     assignment_id BIGINT NOT NULL,
     classroom_id BIGINT NOT NULL,
 
-    day_of_week day_of_week NOT NULL,
+    day_of_week INT NOT NULL,
 
     start_period INT NOT NULL,
     end_period INT NOT NULL,
