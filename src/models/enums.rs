@@ -135,33 +135,3 @@ pub enum Language {
     #[db_rename = "ENGLISH"]
     English,
 }
-
-//
-// Timetable
-//
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
-#[ExistingTypePath = "crate::schema::sql_types::DayOfWeek"]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum DayOfWeek {
-    #[db_rename = "MON"]
-    Mon,
-
-    #[db_rename = "TUE"]
-    Tue,
-
-    #[db_rename = "WED"]
-    Wed,
-
-    #[db_rename = "THU"]
-    Thu,
-
-    #[db_rename = "FRI"]
-    Fri,
-
-    #[db_rename = "SAT"]
-    Sat,
-
-    #[db_rename = "SUN"]
-    Sun,
-}
