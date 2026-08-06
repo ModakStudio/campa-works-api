@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use axum::{
     Json,
-    extract::{Path, State, Query},
+    extract::{Path, Query, State},
     http::StatusCode,
 };
 
@@ -35,7 +35,7 @@ pub async fn create_course_preference(
 
 pub async fn get_course_preferences(
     State(state): State<Arc<AppState>>,
-    Query(params): Query<std::collections::HashMap<String, String>>
+    Query(params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Json<Vec<CoursePreferenceResponse>>, AppError> {
     let conn = state
         .pool

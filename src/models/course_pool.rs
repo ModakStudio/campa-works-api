@@ -2,7 +2,7 @@ use diesel::prelude::*;
 
 use crate::schema::course_pool;
 
-#[derive(Debug, Queryable, Selectable, Identifiable, Clone)]
+#[derive(Debug, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = course_pool)]
 pub struct CoursePool {
     pub id: i64,

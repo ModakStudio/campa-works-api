@@ -56,20 +56,21 @@ impl CoursePreferenceService {
         CoursePreferenceRepository::create(conn, &new_course_preference)
             .map_err(|_| AppError::DatabaseError)?;
 
-        let course_preference =
-            CoursePreferenceRepository::find_all(conn, &query_params)
-                .map_err(|_| AppError::DatabaseError)?
-                .into_iter()
-                .next()
-                .unwrap_or_else(|| unreachable!());
+        let course_preference = CoursePreferenceRepository::find_all(conn, &query_params)
+            .map_err(|_| AppError::DatabaseError)?
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| unreachable!());
 
         Ok(course_preference.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection,
-    params: &HashMap<String, String>) -> Result<Vec<CoursePreferenceResponse>, AppError> {
-        let course_preferences =
-            CoursePreferenceRepository::find_all(conn, params).map_err(|_| AppError::DatabaseError)?;
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<CoursePreferenceResponse>, AppError> {
+        let course_preferences = CoursePreferenceRepository::find_all(conn, params)
+            .map_err(|_| AppError::DatabaseError)?;
 
         Ok(course_preferences.into_iter().map(Into::into).collect())
     }

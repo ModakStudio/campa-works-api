@@ -35,7 +35,9 @@ impl CoursePreferenceRepository {
             .inner_join(master_course::table)
             .into_boxed();
 
-        if let Some(course_preference_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+        if let Some(course_preference_id) =
+            params.get("id").and_then(|value| value.parse::<i64>().ok())
+        {
             query = query.filter(course_preference::id.eq(course_preference_id));
         }
 
