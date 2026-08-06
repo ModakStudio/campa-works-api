@@ -7,7 +7,10 @@ use axum::{
 };
 
 use crate::{
-    dto::timetable::{CreateTimetableRequest, TimetableResponse, UpdateTimetableRequest}, error::app_error::AppError, service::timetable_service::TimetableService, state::app_state::AppState,
+    dto::timetable::{CreateTimetableRequest, TimetableResponse, UpdateTimetableRequest},
+    error::app_error::AppError,
+    service::timetable_service::TimetableService,
+    state::app_state::AppState,
 };
 
 pub async fn create_timetable(

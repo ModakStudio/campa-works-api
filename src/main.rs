@@ -28,7 +28,8 @@ use crate::router::{
     course_preference_router::course_preference_router, course_router::course_router,
     facility_router::facility_router, major_router::major_router,
     master_course_router::master_course_router, professor_credit_router::professor_credit_router,
-    professor_router::professor_router, semester_router::semester_router, user_router::user_router,
+    professor_router::professor_router, semester_router::semester_router,
+    timetable_router::timetable_router, user_router::user_router,
 };
 
 #[tokio::main]
@@ -57,6 +58,7 @@ async fn main() {
         .nest("/api/classrooms", classroom_router())
         .nest("/api/course-facilities", course_facility_router())
         .nest("/api/classroom-facilities", classroom_facility_router())
+        .nest("/api/timetables", timetable_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();

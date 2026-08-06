@@ -12,4 +12,5 @@ pub mod master_course_router;
 pub mod professor_credit_router;
 pub mod professor_router;
 pub mod semester_router;
+pub mod timetable_router;
 pub mod user_router;
