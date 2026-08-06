@@ -89,11 +89,15 @@ impl TimetableService {
         TimetableRepository::find_by_id(conn, timetable_id)
             .map_err(|_| AppError::TimetableNotFound)?;
 
-        CourseAssignmentRepository::find_by_id(conn, request.assignment_id.unwrap())
-            .map_err(|_| AppError::CourseAssignmentNotFound)?;
+        if let Some(assignment_id) = request.assignment_id {
+            CourseAssignmentRepository::find_by_id(conn, assignment_id)
+                .map_err(|_| AppError::CourseAssignmentNotFound)?;
+        }
 
-        ClassroomRepository::find_by_id(conn, request.classroom_id.unwrap())
-            .map_err(|_| AppError::ClassroomNotFound)?;
+        if let Some(classroom_id) = request.classroom_id {
+            ClassroomRepository::find_by_id(conn, classroom_id)
+                .map_err(|_| AppError::ClassroomNotFound)?;
+        }
 
         let updated_timetable = UpdateTimetable {
             assignment_id: request.assignment_id,
