@@ -4,7 +4,7 @@ use crate::{
     dto::{classroom::ClassroomResponse, course_assignment::CourseAssignmentResponse},
     models::{
         classroom::Classroom, course::Course, course_assignment::CourseAssignment,
-        enums::DayOfWeek, major::Major, master_course::MasterCourse, professor::Professor,
+        major::Major, master_course::MasterCourse, professor::Professor,
         semester::Semester, timetable::Timetable, user::User,
     },
 };
@@ -14,7 +14,7 @@ pub struct CreateTimetableRequest {
     pub assignment_id: i64,
     pub classroom_id: i64,
 
-    pub day_of_week: DayOfWeek,
+    pub day_of_week: i32,
 
     pub start_period: i32,
     pub end_period: i32,
@@ -22,7 +22,7 @@ pub struct CreateTimetableRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct UpdateTimetableRequest {
-    pub day_of_week: Option<DayOfWeek>,
+    pub day_of_week: Option<i32>,
 
     pub start_period: Option<i32>,
     pub end_period: Option<i32>,
@@ -35,7 +35,7 @@ pub struct TimetableResponse {
     pub assignment: CourseAssignmentResponse,
     pub classroom: ClassroomResponse,
 
-    pub day_of_week: DayOfWeek,
+    pub day_of_week: i32,
 
     pub start_period: i32,
     pub end_period: i32,
