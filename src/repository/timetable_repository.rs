@@ -194,6 +194,51 @@ impl TimetableRepository {
             .load(conn)
     }
 
+    pub fn find_by_assignment_id_and_classroom_id_and_day_of_week(
+        conn: &mut PgConnection,
+        assignment_id: i64,
+        classroom_id: i64,
+        day_of_week: i32,
+    ) -> QueryResult<(
+        Timetable,
+        CourseAssignment,
+        Course,
+        MasterCourse,
+        Semester,
+        Major,
+        Professor,
+        User,
+        Classroom,
+    )> {
+        timetable::table
+            .inner_join(
+                course_assignment::table
+                    .inner_join(
+                        course::table
+                            .inner_join(master_course::table)
+                            .inner_join(semester::table)
+                            .inner_join(major::table),
+                    )
+                    .inner_join(professor::table.inner_join(users::table)),
+            )
+            .inner_join(classroom::table)
+            .filter(timetable::assignment_id.eq(assignment_id))
+            .filter(timetable::classroom_id.eq(classroom_id))
+            .filter(timetable::day_of_week.eq(day_of_week))
+            .select((
+                Timetable::as_select(),
+                CourseAssignment::as_select(),
+                Course::as_select(),
+                MasterCourse::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+                Professor::as_select(),
+                User::as_select(),
+                Classroom::as_select(),
+            ))
+            .first(conn)
+    }
+
     pub fn update(
         conn: &mut PgConnection,
         timetable_id: i64,
