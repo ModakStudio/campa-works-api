@@ -10,10 +10,6 @@ pub mod sql_types {
     pub struct CourseType;
 
     #[derive(diesel::sql_types::SqlType)]
-    #[diesel(postgres_type(name = "day_of_week"))]
-    pub struct DayOfWeek;
-
-    #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "language"))]
     pub struct Language;
 
@@ -200,14 +196,11 @@ diesel::table! {
 }
 
 diesel::table! {
-    use diesel::sql_types::*;
-    use super::sql_types::DayOfWeek;
-
     timetable (id) {
         id -> Int8,
         assignment_id -> Int8,
         classroom_id -> Int8,
-        day_of_week -> DayOfWeek,
+        day_of_week -> Int4,
         start_period -> Int4,
         end_period -> Int4,
     }
