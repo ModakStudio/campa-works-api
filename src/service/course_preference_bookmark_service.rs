@@ -1,4 +1,5 @@
 use diesel::prelude::*;
+use std::collections::HashMap;
 
 use crate::{
     dto::course_preference_bookmark::{
@@ -26,12 +27,14 @@ impl CoursePreferenceBookmarkService {
         MasterCourseRepository::find_by_id(conn, request.master_course_id)
             .map_err(|_| AppError::MasterCourseNotFound)?;
 
-        if CoursePreferenceBookmarkRepository::find_by_professor_id_and_master_course_id(
-            conn,
-            request.professor_id,
-            request.master_course_id,
-        )
-        .is_ok()
+        let query_params = HashMap::from([
+            ("professor_id".to_string(), request.professor_id.to_string()),
+            ("master_course_id".to_string(), request.master_course_id.to_string()),
+        ]);
+
+        if !CoursePreferenceBookmarkRepository::find_all(conn, &query_params)
+            .unwrap_or_else(|_| Vec::new())
+            .is_empty()
         {
             return Err(AppError::CoursePreferenceBookmarkAlreadyExists);
         }
@@ -44,21 +47,20 @@ impl CoursePreferenceBookmarkService {
         CoursePreferenceBookmarkRepository::create(conn, &new_course_preference_bookmark)
             .map_err(|_| AppError::DatabaseError)?;
 
-        let course_preference_bookmark =
-            CoursePreferenceBookmarkRepository::find_by_professor_id_and_master_course_id(
-                conn,
-                request.professor_id,
-                request.master_course_id,
-            )
-            .map_err(|_| AppError::DatabaseError)?;
+        let course_preference_bookmark = CoursePreferenceBookmarkRepository::find_all(conn, &query_params)
+            .map_err(|_| AppError::DatabaseError)?
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| unreachable!());
 
         Ok(course_preference_bookmark.into())
     }
 
     pub fn get_all(
         conn: &mut PgConnection,
+        params: &HashMap<String, String>,
     ) -> Result<Vec<CoursePreferenceBookmarkResponse>, AppError> {
-        let course_preference_bookmarks = CoursePreferenceBookmarkRepository::find_all(conn)
+        let course_preference_bookmarks = CoursePreferenceBookmarkRepository::find_all(conn, params)
             .map_err(|_| AppError::DatabaseError)?;
 
         Ok(course_preference_bookmarks

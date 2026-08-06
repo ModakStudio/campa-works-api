@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, State, Query},
     http::StatusCode,
 };
 
@@ -35,6 +35,7 @@ pub async fn create_course_preference_bookmark(
 
 pub async fn get_course_preference_bookmarks(
     State(state): State<Arc<AppState>>,
+    Query(params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Json<Vec<CoursePreferenceBookmarkResponse>>, AppError> {
     let conn = state
         .pool
@@ -43,7 +44,7 @@ pub async fn get_course_preference_bookmarks(
         .map_err(|_| AppError::DatabaseError)?;
 
     let bookmarks = conn
-        .interact(move |conn| CoursePreferenceBookmarkService::get_all(conn))
+        .interact(move |conn| CoursePreferenceBookmarkService::get_all(conn, &params))
         .await
         .map_err(|_| AppError::DatabaseError)??;
 
