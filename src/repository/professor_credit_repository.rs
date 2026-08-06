@@ -1,4 +1,5 @@
 use diesel::prelude::*;
+use std::collections::HashMap;
 
 use crate::{
     models::{
@@ -25,10 +26,34 @@ impl ProfessorCreditRepository {
 
     pub fn find_all(
         conn: &mut PgConnection,
+        params: &HashMap<String, String>,
     ) -> QueryResult<Vec<(ProfessorCredit, Professor, User, Semester)>> {
-        professor_credit::table
+        let mut query = professor_credit::table
             .inner_join(professor::table.inner_join(users::table))
             .inner_join(semester::table)
+            .into_boxed();
+
+        if let Some(professor_credit_id) =
+            params.get("id").and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(professor_credit::id.eq(professor_credit_id));
+        }
+
+        if let Some(professor_id) = params
+            .get("professor_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(professor_credit::professor_id.eq(professor_id));
+        }
+
+        if let Some(semester_id) = params
+            .get("semester_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(professor_credit::semester_id.eq(semester_id));
+        }
+
+        query
             .select((
                 ProfessorCredit::as_select(),
                 Professor::as_select(),
@@ -53,59 +78,6 @@ impl ProfessorCreditRepository {
                 Semester::as_select(),
             ))
             .first(conn)
-    }
-
-    pub fn find_by_professor_id_and_semester_id(
-        conn: &mut PgConnection,
-        professor_id: i64,
-        semester_id: i64,
-    ) -> QueryResult<(ProfessorCredit, Professor, User, Semester)> {
-        professor_credit::table
-            .inner_join(professor::table.inner_join(users::table))
-            .inner_join(semester::table)
-            .filter(professor_credit::professor_id.eq(professor_id))
-            .filter(professor_credit::semester_id.eq(semester_id))
-            .select((
-                ProfessorCredit::as_select(),
-                Professor::as_select(),
-                User::as_select(),
-                Semester::as_select(),
-            ))
-            .first(conn)
-    }
-
-    pub fn find_by_professor_id(
-        conn: &mut PgConnection,
-        professor_id: i64,
-    ) -> QueryResult<Vec<(ProfessorCredit, Professor, User, Semester)>> {
-        professor_credit::table
-            .inner_join(professor::table.inner_join(users::table))
-            .inner_join(semester::table)
-            .filter(professor_credit::professor_id.eq(professor_id))
-            .select((
-                ProfessorCredit::as_select(),
-                Professor::as_select(),
-                User::as_select(),
-                Semester::as_select(),
-            ))
-            .load(conn)
-    }
-
-    pub fn find_by_semester_id(
-        conn: &mut PgConnection,
-        semester_id: i64,
-    ) -> QueryResult<Vec<(ProfessorCredit, Professor, User, Semester)>> {
-        professor_credit::table
-            .inner_join(professor::table.inner_join(users::table))
-            .inner_join(semester::table)
-            .filter(professor_credit::semester_id.eq(semester_id))
-            .select((
-                ProfessorCredit::as_select(),
-                Professor::as_select(),
-                User::as_select(),
-                Semester::as_select(),
-            ))
-            .load(conn)
     }
 
     pub fn update(

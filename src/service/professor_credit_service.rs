@@ -1,4 +1,5 @@
 use diesel::prelude::*;
+use std::collections::HashMap;
 
 use crate::{
     dto::professor_credit::{
@@ -25,12 +26,14 @@ impl ProfessorCreditService {
         ProfessorRepository::find_by_id(conn, request.professor_id)
             .map_err(|_| AppError::ProfessorNotFound)?;
 
-        if ProfessorCreditRepository::find_by_professor_id_and_semester_id(
-            conn,
-            request.professor_id,
-            request.semester_id,
-        )
-        .is_ok()
+        let query_params = HashMap::from([
+            ("professor_id".to_string(), request.professor_id.to_string()),
+            ("semester_id".to_string(), request.semester_id.to_string()),
+        ]);
+
+        if !ProfessorCreditRepository::find_all(conn, &query_params)
+            .unwrap_or_else(|_| Vec::new())
+            .is_empty()
         {
             return Err(AppError::ProfessorCreditAlreadyExists);
         }
@@ -44,19 +47,21 @@ impl ProfessorCreditService {
         ProfessorCreditRepository::create(conn, &new_professor_credit)
             .map_err(|_| AppError::DatabaseError)?;
 
-        let professor_credit = ProfessorCreditRepository::find_by_professor_id_and_semester_id(
-            conn,
-            request.professor_id,
-            request.semester_id,
-        )
-        .map_err(|_| AppError::DatabaseError)?;
+        let professor_credit = ProfessorCreditRepository::find_all(conn, &query_params)
+            .map_err(|_| AppError::DatabaseError)?
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| unreachable!());
 
         Ok(professor_credit.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection) -> Result<Vec<ProfessorCreditResponse>, AppError> {
-        let professor_credits =
-            ProfessorCreditRepository::find_all(conn).map_err(|_| AppError::DatabaseError)?;
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<ProfessorCreditResponse>, AppError> {
+        let professor_credits = ProfessorCreditRepository::find_all(conn, params)
+            .map_err(|_| AppError::DatabaseError)?;
 
         Ok(professor_credits.into_iter().map(Into::into).collect())
     }
