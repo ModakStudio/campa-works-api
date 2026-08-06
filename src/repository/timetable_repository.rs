@@ -46,8 +46,7 @@ impl TimetableRepository {
             Classroom,
         )>,
     > {
-        let mut query =
-        timetable::table
+        let mut query = timetable::table
             .inner_join(
                 course_assignment::table
                     .inner_join(
