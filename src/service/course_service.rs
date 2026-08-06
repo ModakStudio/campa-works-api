@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::PgConnection;
 
 use crate::{
@@ -14,13 +16,22 @@ impl CourseService {
         conn: &mut PgConnection,
         request: CreateCourseRequest,
     ) -> Result<CourseResponse, AppError> {
-        if CourseRepository::find_by_master_course_id_and_semester_id_and_major_id_and_section_number(
-            conn,
-            request.master_course_id,
-            request.semester_id,
-            request.major_id,
-            request.section_number,
-        ).is_ok()
+        let query_params = HashMap::from([
+            (
+                "master_course_id".to_string(),
+                request.master_course_id.to_string(),
+            ),
+            ("semester_id".to_string(), request.semester_id.to_string()),
+            ("major_id".to_string(), request.major_id.to_string()),
+            (
+                "section_number".to_string(),
+                request.section_number.to_string(),
+            ),
+        ]);
+
+        if !CourseRepository::find_all(conn, &query_params)
+            .unwrap_or_else(|_| Vec::new())
+            .is_empty()
         {
             return Err(AppError::CourseAlreadyExists);
         }
@@ -43,14 +54,11 @@ impl CourseService {
 
         CourseRepository::create(conn, &new_course).map_err(|_| AppError::DatabaseError)?;
 
-        let course = CourseRepository::find_by_master_course_id_and_semester_id_and_major_id_and_section_number(
-            conn,
-            request.master_course_id,
-            request.semester_id,
-            request.major_id,
-            request.section_number,
-        )
-        .map_err(|_| AppError::DatabaseError)?;
+        let course = CourseRepository::find_all(conn, &query_params)
+            .map_err(|_| AppError::DatabaseError)?
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| unreachable!());
 
         Ok(course.into())
     }
@@ -62,8 +70,12 @@ impl CourseService {
         Ok(course.into())
     }
 
-    pub fn get_all(conn: &mut PgConnection) -> Result<Vec<CourseResponse>, AppError> {
-        let courses = CourseRepository::find_all(conn).map_err(|_| AppError::DatabaseError)?;
+    pub fn get_all(
+        conn: &mut PgConnection,
+        params: &HashMap<String, String>,
+    ) -> Result<Vec<CourseResponse>, AppError> {
+        let courses =
+            CourseRepository::find_all(conn, params).map_err(|_| AppError::DatabaseError)?;
 
         Ok(courses.into_iter().map(Into::into).collect())
     }

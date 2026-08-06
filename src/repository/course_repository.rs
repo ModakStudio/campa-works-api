@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use diesel::prelude::*;
 
 use crate::{
@@ -22,11 +24,48 @@ impl CourseRepository {
 
     pub fn find_all(
         conn: &mut PgConnection,
+        params: &HashMap<String, String>,
     ) -> QueryResult<Vec<(Course, MasterCourse, Semester, Major)>> {
-        course::table
+        let mut query = course::table
             .inner_join(master_course::table)
             .inner_join(semester::table)
             .inner_join(major::table)
+            .into_boxed();
+
+        if let Some(course_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+            query = query.filter(course::id.eq(course_id));
+        }
+
+        if let Some(master_course_id) = params
+            .get("master_course_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(course::master_course_id.eq(master_course_id));
+        }
+
+        if let Some(semester_id) = params
+            .get("semester_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(course::semester_id.eq(semester_id));
+        }
+
+        if let Some(major_id) = params
+            .get("major_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(course::major_id.eq(major_id));
+        }
+
+        if let Some(course_name) = params
+            .get("course_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(master_course::name.ilike(format!("%{}%", course_name)));
+        }
+
+        query
             .select((
                 Course::as_select(),
                 MasterCourse::as_select(),
@@ -45,30 +84,6 @@ impl CourseRepository {
             .inner_join(semester::table)
             .inner_join(major::table)
             .filter(course::id.eq(course_id))
-            .select((
-                Course::as_select(),
-                MasterCourse::as_select(),
-                Semester::as_select(),
-                Major::as_select(),
-            ))
-            .first(conn)
-    }
-
-    pub fn find_by_master_course_id_and_semester_id_and_major_id_and_section_number(
-        conn: &mut PgConnection,
-        master_course_id: i64,
-        semester_id: i64,
-        major_id: i64,
-        section_number: i32,
-    ) -> QueryResult<(Course, MasterCourse, Semester, Major)> {
-        course::table
-            .inner_join(master_course::table)
-            .inner_join(semester::table)
-            .inner_join(major::table)
-            .filter(course::master_course_id.eq(master_course_id))
-            .filter(course::semester_id.eq(semester_id))
-            .filter(course::major_id.eq(major_id))
-            .filter(course::section_number.eq(section_number))
             .select((
                 Course::as_select(),
                 MasterCourse::as_select(),
