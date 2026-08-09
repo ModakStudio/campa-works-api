@@ -26,7 +26,6 @@ impl ClassroomRepository {
         if let Some(classroom_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
             query = query.filter(classroom::id.eq(classroom_id));
         }
-
         if let Some(building) = params
             .get("building")
             .map(|value| value.trim())
@@ -34,7 +33,6 @@ impl ClassroomRepository {
         {
             query = query.filter(classroom::building.ilike(format!("%{}%", building)));
         }
-
         if let Some(room) = params
             .get("room")
             .map(|value| value.trim())
@@ -42,14 +40,12 @@ impl ClassroomRepository {
         {
             query = query.filter(classroom::room.ilike(format!("%{}%", room)));
         }
-
         if let Some(capacity) = params
             .get("capacity")
             .and_then(|value| value.parse::<i32>().ok())
         {
             query = query.filter(classroom::capacity.eq(capacity));
         }
-
         if let Some(is_available) = params
             .get("is_available")
             .and_then(|value| value.parse::<bool>().ok())
