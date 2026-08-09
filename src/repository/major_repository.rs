@@ -23,12 +23,15 @@ impl MajorRepository {
     ) -> QueryResult<Vec<Major>> {
         let mut query = major::table.select(Major::as_select()).into_boxed();
 
-        if let Some(name_) = params
+        if let Some(id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+            query = query.filter(major::id.eq(id));
+        }
+        if let Some(name) = params
             .get("name")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(major::name.ilike(format!("%{}%", name_)));
+            query = query.filter(major::name.ilike(format!("%{}%", name)));
         }
 
         query.load(conn)
