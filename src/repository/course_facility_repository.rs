@@ -5,6 +5,7 @@ use diesel::prelude::*;
 use crate::{
     models::{
         course_facility::{CourseFacility, NewCourseFacility},
+        enums::CourseType,
         facility::Facility,
         master_course::MasterCourse,
     },
@@ -45,6 +46,54 @@ impl CourseFacilityRepository {
         {
             query = query.filter(course_facility::master_course_id.eq(master_course_id));
         }
+        if let Some(master_course_course_code) = params
+            .get("master_course_course_code")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(
+                master_course::course_code.ilike(format!("%{}%", master_course_course_code)),
+            );
+        }
+        if let Some(master_course_name) = params
+            .get("master_course_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(master_course::name.ilike(format!("%{}%", master_course_name)));
+        }
+        if let Some(master_course_credit) = params
+            .get("master_course_credit")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::credit.eq(master_course_credit));
+        }
+        if let Some(master_course_lecture) = params
+            .get("master_course_lecture")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::lecture.eq(master_course_lecture));
+        }
+        if let Some(master_course_practice) = params
+            .get("master_course_practice")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::practice.eq(master_course_practice));
+        }
+        if let Some(master_course_course_type) = params
+            .get("master_course_course_type")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query
+                .filter(master_course::course_type.eq(CourseType::from(master_course_course_type)));
+        }
+        if let Some(master_course_is_core) = params
+            .get("master_course_is_core")
+            .and_then(|value| value.parse::<bool>().ok())
+        {
+            query = query.filter(master_course::is_core.eq(master_course_is_core));
+        }
 
         if let Some(facility_id) = params
             .get("facility_id")
@@ -52,13 +101,20 @@ impl CourseFacilityRepository {
         {
             query = query.filter(course_facility::facility_id.eq(facility_id));
         }
-
         if let Some(facility_name) = params
             .get("facility_name")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
             query = query.filter(facility::name.ilike(format!("%{}%", facility_name)));
+        }
+        if let Some(facility_description) = params
+            .get("facility_description")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query =
+                query.filter(facility::description.ilike(format!("%{}%", facility_description)));
         }
 
         query
