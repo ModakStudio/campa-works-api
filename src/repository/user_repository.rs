@@ -29,17 +29,15 @@ impl UserRepository {
             .select(User::as_select())
             .order(users::id.asc())
             .into_boxed();
-
         if let Some(user_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
             query = query.filter(users::id.eq(user_id));
         }
-
-        if let Some(user_email) = params
+        if let Some(email) = params
             .get("email")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(users::email.eq(user_email));
+            query = query.filter(users::email.eq(email));
         }
         if let Some(name) = params
             .get("name")
@@ -48,12 +46,12 @@ impl UserRepository {
         {
             query = query.filter(users::name.ilike(format!("%{}%", name)));
         }
-        if let Some(user_role) = params
+        if let Some(role) = params
             .get("role")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(users::role.eq(UserRole::from(user_role)));
+            query = query.filter(users::role.eq(UserRole::from(role)));
         }
 
         query.load(conn)
