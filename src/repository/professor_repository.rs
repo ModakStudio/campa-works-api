@@ -69,6 +69,12 @@ impl ProfessorRepository {
             query = query.filter(professor::status.eq(ProfessorStatus::from(status)));
         }
 
+        if let Some(user_id) = params
+            .get("user_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(professor::user_id.eq(user_id));
+        }
         if let Some(user_email) = params
             .get("user_email")
             .map(|value| value.trim())

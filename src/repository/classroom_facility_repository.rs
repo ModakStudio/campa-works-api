@@ -90,7 +90,8 @@ impl ClassroomFacilityRepository {
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(facility::description.ilike(format!("%{}%", facility_description)));
+            query =
+                query.filter(facility::description.ilike(format!("%{}%", facility_description)));
         }
 
         query
