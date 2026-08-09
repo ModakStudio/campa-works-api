@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 use crate::{
     models::{
+        enums::{ProfessorPosition, ProfessorStatus, SemesterStatus, SemesterType},
         professor::Professor,
         professor_credit::{NewProfessorCredit, ProfessorCredit, UpdateProfessorCredit},
         semester::Semester,
@@ -45,12 +46,97 @@ impl ProfessorCreditRepository {
         {
             query = query.filter(professor_credit::professor_id.eq(professor_id));
         }
+        if let Some(professor_position) = params
+            .get("professor_position")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query =
+                query.filter(professor::position.eq(ProfessorPosition::from(professor_position)));
+        }
+        if let Some(professor_office) = params
+            .get("professor_office")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(professor::office.ilike(format!("%{}%", professor_office)));
+        }
+        if let Some(professor_tel) = params
+            .get("professor_tel")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(professor::tel.ilike(format!("%{}%", professor_tel)));
+        }
+        if let Some(professor_research_field) = params
+            .get("professor_research_field")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query
+                .filter(professor::research_field.ilike(format!("%{}%", professor_research_field)));
+        }
+        if let Some(professor_status) = params
+            .get("professor_status")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(professor::status.eq(ProfessorStatus::from(professor_status)));
+        }
+
+        if let Some(user_id) = params
+            .get("user_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(professor::user_id.eq(user_id));
+        }
+        if let Some(user_email) = params
+            .get("user_email")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(users::email.eq(user_email));
+        }
+        if let Some(user_name) = params
+            .get("user_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(users::name.ilike(format!("%{}%", user_name)));
+        }
 
         if let Some(semester_id) = params
             .get("semester_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(professor_credit::semester_id.eq(semester_id));
+        }
+        if let Some(semester_year) = params
+            .get("semester_year")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(semester::year.eq(semester_year));
+        }
+        if let Some(semester_semester_) = params
+            .get("semester_semester_")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(semester::semester_.eq(SemesterType::from(semester_semester_)));
+        }
+        if let Some(semester_status) = params
+            .get("semester_status")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(semester::status.eq(SemesterStatus::from(semester_status)));
+        }
+
+        if let Some(target_credit) = params
+            .get("target_credit")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(professor_credit::target_credit.eq(target_credit));
         }
 
         query
