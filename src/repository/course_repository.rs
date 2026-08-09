@@ -5,6 +5,7 @@ use diesel::prelude::*;
 use crate::{
     models::{
         course::{Course, NewCourse, UpdateCourse},
+        enums::{CourseCategory, CourseType, Language, SemesterStatus, SemesterType},
         major::Major,
         master_course::MasterCourse,
         semester::Semester,
@@ -35,12 +36,99 @@ impl CourseRepository {
         if let Some(course_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
             query = query.filter(course::id.eq(course_id));
         }
+        if let Some(description) = params
+            .get("description")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(course::description.ilike(format!("%{}%", description)));
+        }
+        if let Some(course_category) = params
+            .get("course_category")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(course::course_category.eq(CourseCategory::from(course_category)));
+        }
+        if let Some(language) = params
+            .get("language")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(course::language.eq(Language::from(language)));
+        }
+        if let Some(section_number) = params
+            .get("section_number")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(course::section_number.eq(section_number));
+        }
+        if let Some(grade) = params
+            .get("grade")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(course::grade.eq(grade));
+        }
+        if let Some(capacity) = params
+            .get("capacity")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(course::capacity.eq(capacity));
+        }
 
         if let Some(master_course_id) = params
             .get("master_course_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(course::master_course_id.eq(master_course_id));
+        }
+        if let Some(master_course_course_code) = params
+            .get("master_course_course_code")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(
+                master_course::course_code.ilike(format!("%{}%", master_course_course_code)),
+            );
+        }
+        if let Some(master_course_name) = params
+            .get("master_course_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(master_course::name.ilike(format!("%{}%", master_course_name)));
+        }
+        if let Some(master_course_credit) = params
+            .get("master_course_credit")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::credit.eq(master_course_credit));
+        }
+        if let Some(master_course_lecture) = params
+            .get("master_course_lecture")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::lecture.eq(master_course_lecture));
+        }
+        if let Some(master_course_practice) = params
+            .get("master_course_practice")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::practice.eq(master_course_practice));
+        }
+        if let Some(master_course_course_type) = params
+            .get("master_course_course_type")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query
+                .filter(master_course::course_type.eq(CourseType::from(master_course_course_type)));
+        }
+        if let Some(master_course_is_core) = params
+            .get("master_course_is_core")
+            .and_then(|value| value.parse::<bool>().ok())
+        {
+            query = query.filter(master_course::is_core.eq(master_course_is_core));
         }
 
         if let Some(semester_id) = params
@@ -49,6 +137,26 @@ impl CourseRepository {
         {
             query = query.filter(course::semester_id.eq(semester_id));
         }
+        if let Some(semester_year) = params
+            .get("semester_year")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(semester::year.eq(semester_year));
+        }
+        if let Some(semester_semester_) = params
+            .get("semester_semester_")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(semester::semester_.eq(SemesterType::from(semester_semester_)));
+        }
+        if let Some(semester_status) = params
+            .get("semester_status")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(semester::status.eq(SemesterStatus::from(semester_status)));
+        }
 
         if let Some(major_id) = params
             .get("major_id")
@@ -56,13 +164,12 @@ impl CourseRepository {
         {
             query = query.filter(course::major_id.eq(major_id));
         }
-
-        if let Some(course_name) = params
-            .get("course_name")
+        if let Some(major_name) = params
+            .get("major_name")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(master_course::name.ilike(format!("%{}%", course_name)));
+            query = query.filter(major::name.ilike(format!("%{}%", major_name)));
         }
 
         query

@@ -83,3 +83,25 @@ impl From<(Course, MasterCourse, Semester, Major)> for CourseResponse {
         }
     }
 }
+
+impl From<&str> for CourseCategory {
+    fn from(value: &str) -> Self {
+        match value {
+            "MAJOR_REQUIRED" => CourseCategory::MajorRequired,
+            "MAJOR_ELECTIVE" => CourseCategory::MajorElective,
+            "GENERAL_REQUIRED" => CourseCategory::GeneralRequired,
+            "GENERAL_ELECTIVE" => CourseCategory::GeneralElective,
+            _ => panic!("Invalid course category"),
+        }
+    }
+}
+
+impl From<&str> for Language {
+    fn from(value: &str) -> Self {
+        match value {
+            "KOREAN" => Language::Korean,
+            "ENGLISH" => Language::English,
+            _ => panic!("Invalid language"),
+        }
+    }
+}
