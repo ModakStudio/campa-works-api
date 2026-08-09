@@ -29,6 +29,7 @@ impl UserRepository {
             .select(User::as_select())
             .order(users::id.asc())
             .into_boxed();
+
         if let Some(user_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
             query = query.filter(users::id.eq(user_id));
         }

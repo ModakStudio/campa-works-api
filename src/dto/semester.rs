@@ -67,3 +67,13 @@ impl Display for SemesterType {
         write!(f, "{}", s)
     }
 }
+
+impl From<&str> for SemesterStatus {
+    fn from(s: &str) -> Self {
+        match s {
+            "OPEN" => SemesterStatus::Open,
+            "CLOSED" => SemesterStatus::Closed,
+            _ => panic!("Invalid semester status"),
+        }
+    }
+}

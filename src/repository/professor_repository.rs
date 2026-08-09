@@ -33,7 +33,6 @@ impl ProfessorRepository {
         if let Some(id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
             query = query.filter(professor::id.eq(id));
         }
-
         if let Some(position) = params
             .get("position")
             .map(|value| value.trim())
