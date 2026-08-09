@@ -31,6 +31,9 @@ impl MasterCourseRepository {
             .select(MasterCourse::as_select())
             .into_boxed();
 
+        if let Some(id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
+            query = query.filter(master_course::id.eq(id));
+        }
         if let Some(course_code) = params.get("course_code") {
             query = query.filter(master_course::course_code.eq(course_code));
         }
@@ -65,6 +68,12 @@ impl MasterCourseRepository {
             .filter(|value| !value.is_empty())
         {
             query = query.filter(master_course::course_type.eq(CourseType::from(course_type)));
+        }
+        if let Some(is_core) = params
+            .get("is_core")
+            .and_then(|value| value.parse::<bool>().ok())
+        {
+            query = query.filter(master_course::is_core.eq(is_core));
         }
 
         query.load(conn)
