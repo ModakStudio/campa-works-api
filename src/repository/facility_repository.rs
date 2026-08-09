@@ -26,13 +26,19 @@ impl FacilityRepository {
         if let Some(facility_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
             query = query.filter(facility::id.eq(facility_id));
         }
-
         if let Some(name) = params
             .get("name")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
             query = query.filter(facility::name.ilike(format!("%{}%", name)));
+        }
+        if let Some(description) = params
+            .get("description")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(facility::description.ilike(format!("%{}%", description)));
         }
 
         query.load(conn)
