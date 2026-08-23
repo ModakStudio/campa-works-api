@@ -6,12 +6,24 @@ pub mod sql_types {
     pub struct CourseCategory;
 
     #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "course_status"))]
+    pub struct CourseStatus;
+
+    #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "course_type"))]
     pub struct CourseType;
 
     #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "day_of_week"))]
+    pub struct DayOfWeek;
+
+    #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "language"))]
     pub struct Language;
+
+    #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "major_status"))]
+    pub struct MajorStatus;
 
     #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "professor_position"))]
@@ -20,6 +32,10 @@ pub mod sql_types {
     #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "professor_status"))]
     pub struct ProfessorStatus;
+
+    #[derive(diesel::sql_types::SqlType)]
+    #[diesel(postgres_type(name = "quota_type"))]
+    pub struct QuotaType;
 
     #[derive(diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "semester_status"))]
@@ -60,15 +76,16 @@ diesel::table! {
     course (id) {
         id -> Int8,
         master_course_id -> Int8,
-        semester_id -> Int8,
-        major_id -> Int8,
-        #[max_length = 500]
-        description -> Nullable<Varchar>,
+        course_description -> Nullable<Varchar>,
+        grade -> Int4,
+        credit -> Int4,
+        lecture -> Int4,
+        practice -> Int4,
         course_category -> CourseCategory,
         language -> Language,
         section_number -> Int4,
-        grade -> Int4,
         capacity -> Int4,
+        participant -> Int4,
     }
 }
 
@@ -77,7 +94,15 @@ diesel::table! {
         id -> Int8,
         course_id -> Int8,
         professor_id -> Int8,
-        created_at -> Timestamp,
+        assigned_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    course_curriculum (id) {
+        id -> Int8,
+        master_course_id -> Int8,
+        curriculum_id -> Int8,
     }
 }
 
@@ -101,7 +126,6 @@ diesel::table! {
 diesel::table! {
     course_preference (id) {
         id -> Int8,
-        semester_id -> Int8,
         professor_id -> Int8,
         master_course_id -> Int8,
         priority -> Int4,
@@ -118,36 +142,46 @@ diesel::table! {
 }
 
 diesel::table! {
-    facility (id) {
+    curriculum (id) {
         id -> Int8,
-        name -> Varchar,
-        description -> Nullable<Varchar>,
+        semester_id -> Int8,
+        major_id -> Int8,
     }
 }
 
 diesel::table! {
+    facility (id) {
+        id -> Int8,
+        facility_name -> Varchar,
+        facility_description -> Nullable<Varchar>,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::MajorStatus;
+
     major (id) {
         id -> Int8,
-        #[max_length = 100]
-        name -> Varchar,
+        major_name -> Varchar,
+        major_code -> Varchar,
+        major_status -> MajorStatus,
     }
 }
 
 diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::CourseType;
+    use super::sql_types::CourseStatus;
 
     master_course (id) {
         id -> Int8,
-        #[max_length = 50]
         course_code -> Varchar,
-        #[max_length = 255]
-        name -> Varchar,
-        credit -> Int4,
-        lecture -> Int4,
-        practice -> Int4,
+        course_name -> Varchar,
+        course_en_name -> Nullable<Varchar>,
         course_type -> CourseType,
         is_core -> Bool,
+        course_status -> CourseStatus,
     }
 }
 
@@ -160,22 +194,24 @@ diesel::table! {
         id -> Int8,
         user_id -> Int8,
         position -> ProfessorPosition,
-        #[max_length = 255]
         office -> Nullable<Varchar>,
-        #[max_length = 50]
         tel -> Nullable<Varchar>,
-        #[max_length = 255]
         research_field -> Nullable<Varchar>,
-        status -> ProfessorStatus,
+        appointed_at -> Int8,
+        professor_status -> ProfessorStatus,
     }
 }
 
 diesel::table! {
-    professor_credit (id) {
+    use diesel::sql_types::*;
+    use super::sql_types::QuotaType;
+
+    professor_quota (id) {
         id -> Int8,
         professor_id -> Int8,
         semester_id -> Int8,
-        target_credit -> Int4,
+        quota_type -> QuotaType,
+        quota_value -> Int4,
     }
 }
 
@@ -187,20 +223,20 @@ diesel::table! {
     semester (id) {
         id -> Int8,
         year -> Int4,
-        #[sql_name = "semester"]
         semester_ -> SemesterType,
-        status -> SemesterStatus,
-        created_at -> Timestamp,
-        updated_at -> Timestamp,
+        semester_status -> SemesterStatus,
     }
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::DayOfWeek;
+
     timetable (id) {
         id -> Int8,
         assignment_id -> Int8,
         classroom_id -> Int8,
-        day_of_week -> Int4,
+        day_of_week -> DayOfWeek,
         start_period -> Int4,
         end_period -> Int4,
     }
@@ -212,13 +248,11 @@ diesel::table! {
 
     users (id) {
         id -> Int8,
-        #[max_length = 255]
         email -> Varchar,
-        #[max_length = 255]
         password -> Varchar,
-        #[max_length = 100]
-        name -> Varchar,
+        username -> Varchar,
         role -> UserRole,
+        is_super -> Bool,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }
@@ -226,23 +260,25 @@ diesel::table! {
 
 diesel::joinable!(classroom_facility -> classroom (classroom_id));
 diesel::joinable!(classroom_facility -> facility (facility_id));
-diesel::joinable!(course -> major (major_id));
 diesel::joinable!(course -> master_course (master_course_id));
-diesel::joinable!(course -> semester (semester_id));
 diesel::joinable!(course_assignment -> course (course_id));
 diesel::joinable!(course_assignment -> professor (professor_id));
+diesel::joinable!(course_curriculum -> curriculum (curriculum_id));
+diesel::joinable!(course_curriculum -> master_course (master_course_id));
 diesel::joinable!(course_facility -> facility (facility_id));
 diesel::joinable!(course_facility -> master_course (master_course_id));
 diesel::joinable!(course_pool -> master_course (master_course_id));
 diesel::joinable!(course_pool -> professor (professor_id));
 diesel::joinable!(course_preference -> master_course (master_course_id));
 diesel::joinable!(course_preference -> professor (professor_id));
-diesel::joinable!(course_preference -> semester (semester_id));
 diesel::joinable!(course_preference_bookmark -> master_course (master_course_id));
 diesel::joinable!(course_preference_bookmark -> professor (professor_id));
+diesel::joinable!(curriculum -> major (major_id));
+diesel::joinable!(curriculum -> semester (semester_id));
+diesel::joinable!(professor -> semester (appointed_at));
 diesel::joinable!(professor -> users (user_id));
-diesel::joinable!(professor_credit -> professor (professor_id));
-diesel::joinable!(professor_credit -> semester (semester_id));
+diesel::joinable!(professor_quota -> professor (professor_id));
+diesel::joinable!(professor_quota -> semester (semester_id));
 diesel::joinable!(timetable -> classroom (classroom_id));
 diesel::joinable!(timetable -> course_assignment (assignment_id));
 
@@ -251,15 +287,17 @@ diesel::allow_tables_to_appear_in_same_query!(
     classroom_facility,
     course,
     course_assignment,
+    course_curriculum,
     course_facility,
     course_pool,
     course_preference,
     course_preference_bookmark,
+    curriculum,
     facility,
     major,
     master_course,
     professor,
-    professor_credit,
+    professor_quota,
     semester,
     timetable,
     users,

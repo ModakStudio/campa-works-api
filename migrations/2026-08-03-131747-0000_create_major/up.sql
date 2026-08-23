@@ -1,5 +1,0 @@
-CREATE TABLE major (
-    id BIGSERIAL PRIMARY KEY,
-
-    name VARCHAR(100) NOT NULL UNIQUE
-);
