@@ -26,8 +26,9 @@ impl UserService {
         let new_user = NewUser {
             email: request.email,
             password: hashed_password,
-            name: request.name,
+            username: request.username,
             role: request.role,
+            is_super: request.is_super,
         };
 
         let user = UserRepository::create(conn, &new_user).map_err(|e| {
@@ -60,13 +61,14 @@ impl UserService {
     ) -> Result<UserResponse, AppError> {
         let update_user = UpdateUser {
             email: request.email,
-            name: request.name,
+            username: request.username,
             password: if let Some(password) = request.password {
                 Some(hash_password(&password))
             } else {
                 None
             },
             role: request.role,
+            is_super: request.is_super,
         };
 
         let user = UserRepository::update(conn, user_id, &update_user).map_err(|e| match e {

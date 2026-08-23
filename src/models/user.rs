@@ -10,9 +10,11 @@ pub struct User {
 
     pub email: String,
     pub password: String,
-    pub name: String,
+    pub username: String,
 
     pub role: UserRole,
+
+    pub is_super: bool,
 
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
@@ -23,9 +25,11 @@ pub struct User {
 pub struct NewUser {
     pub email: String,
     pub password: String,
-    pub name: String,
+    pub username: String,
 
     pub role: UserRole,
+
+    pub is_super: bool,
 }
 
 #[derive(Debug, AsChangeset)]
@@ -33,7 +37,9 @@ pub struct NewUser {
 pub struct UpdateUser {
     pub email: Option<String>,
     pub password: Option<String>,
-    pub name: Option<String>,
+    pub username: Option<String>,
 
     pub role: Option<UserRole>,
+
+    pub is_super: Option<bool>,
 }

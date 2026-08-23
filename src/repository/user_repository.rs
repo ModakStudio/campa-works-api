@@ -40,12 +40,12 @@ impl UserRepository {
         {
             query = query.filter(users::email.eq(email));
         }
-        if let Some(name) = params
-            .get("name")
+        if let Some(username) = params
+            .get("username")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(users::name.ilike(format!("%{}%", name)));
+            query = query.filter(users::username.ilike(format!("%{}%", username)));
         }
         if let Some(role) = params
             .get("role")
@@ -53,6 +53,12 @@ impl UserRepository {
             .filter(|value| !value.is_empty())
         {
             query = query.filter(users::role.eq(UserRole::from(role)));
+        }
+        if let Some(is_super) = params
+            .get("is_super")
+            .and_then(|value| value.parse::<bool>().ok())
+        {
+            query = query.filter(users::is_super.eq(is_super));
         }
 
         query.load(conn)

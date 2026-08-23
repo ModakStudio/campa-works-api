@@ -6,18 +6,22 @@ use crate::models::{enums::UserRole, user::User};
 pub struct CreateUserRequest {
     pub email: String,
     pub password: String,
-    pub name: String,
+    pub username: String,
 
     pub role: UserRole,
+
+    pub is_super: bool,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct UpdateUserRequest {
     pub email: Option<String>,
-    pub name: Option<String>,
+    pub username: Option<String>,
     pub password: Option<String>,
 
     pub role: Option<UserRole>,
+
+    pub is_super: Option<bool>,
 }
 
 #[derive(Debug, Serialize)]
@@ -25,9 +29,11 @@ pub struct UserResponse {
     pub id: i64,
 
     pub email: String,
-    pub name: String,
+    pub username: String,
 
     pub role: UserRole,
+
+    pub is_super: bool,
 }
 
 impl From<User> for UserResponse {
@@ -36,9 +42,11 @@ impl From<User> for UserResponse {
             id: user.id,
 
             email: user.email,
-            name: user.name,
+            username: user.username,
 
             role: user.role,
+
+            is_super: user.is_super,
         }
     }
 }
