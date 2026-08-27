@@ -34,7 +34,9 @@ impl ProfessorService {
             tel: request.tel,
             research_field: request.research_field,
 
-            status: ProfessorStatus::Active,
+            appointed_at: request.appointed_at,
+
+            professor_status: ProfessorStatus::Active,
         };
 
         ProfessorRepository::create(conn, &new_professor).map_err(|_| AppError::DatabaseError)?;
@@ -80,7 +82,9 @@ impl ProfessorService {
             tel: request.tel,
             research_field: request.research_field,
 
-            status: request.status,
+            appointed_at: request.appointed_at,
+
+            professor_status: request.professor_status,
         };
 
         ProfessorRepository::update(conn, professor_id, &update_professor)

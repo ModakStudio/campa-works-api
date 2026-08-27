@@ -11,6 +11,7 @@ use crate::{
     schema::users,
 };
 
+#[macro_export]
 macro_rules! apply_user_query_filters {
     ($query:expr, $params:expr) => {{
         let mut query = $query;
@@ -52,6 +53,7 @@ macro_rules! apply_user_query_filters {
         query
     }};
 }
+pub use apply_user_query_filters;
 
 pub struct UserRepository;
 

@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::user::UserResponse,
+    dto::{semester::SemesterResponse, user::UserResponse},
     models::{
         enums::{ProfessorPosition, ProfessorStatus},
         professor::Professor,
+        semester::Semester,
         user::User,
     },
 };
@@ -18,6 +19,8 @@ pub struct CreateProfessorRequest {
     pub office: Option<String>,
     pub tel: Option<String>,
     pub research_field: Option<String>,
+
+    pub appointed_at: i64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -28,7 +31,9 @@ pub struct UpdateProfessorRequest {
     pub tel: Option<String>,
     pub research_field: Option<String>,
 
-    pub status: Option<ProfessorStatus>,
+    pub appointed_at: Option<i64>,
+
+    pub professor_status: Option<ProfessorStatus>,
 }
 
 #[derive(Debug, Serialize)]
@@ -43,11 +48,13 @@ pub struct ProfessorResponse {
     pub tel: Option<String>,
     pub research_field: Option<String>,
 
-    pub status: ProfessorStatus,
+    pub appointed_at: SemesterResponse,
+
+    pub professor_status: ProfessorStatus,
 }
 
-impl From<(Professor, User)> for ProfessorResponse {
-    fn from((professor, user): (Professor, User)) -> Self {
+impl From<(Professor, User, Semester)> for ProfessorResponse {
+    fn from((professor, user, semester): (Professor, User, Semester)) -> Self {
         Self {
             id: professor.id,
 
@@ -59,7 +66,9 @@ impl From<(Professor, User)> for ProfessorResponse {
             tel: professor.tel,
             research_field: professor.research_field,
 
-            status: professor.status,
+            appointed_at: SemesterResponse::from(semester),
+
+            professor_status: professor.professor_status,
         }
     }
 }
