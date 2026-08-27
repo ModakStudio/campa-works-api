@@ -34,7 +34,7 @@ impl SemesterService {
         let new_semester = NewSemester {
             year: request.year,
             semester_: request.semester_,
-            status: SemesterStatus::Open,
+            semester_status: SemesterStatus::Open,
         };
 
         let semester =
@@ -71,7 +71,7 @@ impl SemesterService {
         let update = UpdateSemester {
             year: request.year,
             semester_: request.semester_,
-            status: request.status,
+            semester_status: request.semester_status,
         };
 
         let semester =

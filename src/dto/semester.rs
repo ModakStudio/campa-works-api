@@ -18,7 +18,7 @@ pub struct UpdateSemesterRequest {
     pub year: Option<i32>,
     pub semester_: Option<SemesterType>,
 
-    pub status: Option<SemesterStatus>,
+    pub semester_status: Option<SemesterStatus>,
 }
 
 #[derive(Debug, Serialize)]
@@ -28,7 +28,7 @@ pub struct SemesterResponse {
     pub year: i32,
     pub semester_: SemesterType,
 
-    pub status: SemesterStatus,
+    pub semester_status: SemesterStatus,
 }
 
 impl From<Semester> for SemesterResponse {
@@ -39,7 +39,7 @@ impl From<Semester> for SemesterResponse {
             year: semester.year,
             semester_: semester.semester_,
 
-            status: semester.status,
+            semester_status: semester.semester_status,
         }
     }
 }

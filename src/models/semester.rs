@@ -1,4 +1,3 @@
-use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
 use crate::{
@@ -14,10 +13,7 @@ pub struct Semester {
     pub year: i32,
     pub semester_: SemesterType,
 
-    pub status: SemesterStatus,
-
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
+    pub semester_status: SemesterStatus,
 }
 
 #[derive(Debug, Insertable)]
@@ -26,7 +22,7 @@ pub struct NewSemester {
     pub year: i32,
     pub semester_: SemesterType,
 
-    pub status: SemesterStatus,
+    pub semester_status: SemesterStatus,
 }
 
 #[derive(Debug, AsChangeset)]
@@ -35,5 +31,5 @@ pub struct UpdateSemester {
     pub year: Option<i32>,
     pub semester_: Option<SemesterType>,
 
-    pub status: Option<SemesterStatus>,
+    pub semester_status: Option<SemesterStatus>,
 }
