@@ -2,10 +2,12 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::user_repository::apply_user_query_filters;
+use super::{
+    semester_repository::apply_semester_query_filters, user_repository::apply_user_query_filters,
+};
 use crate::{
     models::{
-        enums::{ProfessorPosition, ProfessorStatus, UserRole},
+        enums::{ProfessorPosition, ProfessorStatus, SemesterStatus, SemesterType, UserRole},
         professor::{NewProfessor, Professor, UpdateProfessor},
         semester::Semester,
         user::User,
@@ -55,7 +57,7 @@ macro_rules! apply_professor_query_filters {
             query = query.filter(professor::research_field.ilike(format!("%{}%", research_field)));
         }
 
-        // ToDo: Implement filtering by appointed_at (semester)
+        query = apply_semester_query_filters!(query, $params);
 
         if let Some(professor_status) = $params
             .get("professor_status")
