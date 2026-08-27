@@ -16,12 +16,18 @@ impl MajorService {
         conn: &mut PgConnection,
         request: CreateMajorRequest,
     ) -> Result<MajorResponse, AppError> {
-        let query_params = HashMap::from([("name".into(), request.name.clone())]);
+        let query_params = HashMap::from([
+            ("major_name".into(), request.major_name.clone()),
+            ("major_code".into(), request.major_code.clone()),
+        ]);
         if MajorRepository::find_all(conn, &query_params).is_ok() {
             return Err(AppError::MajorAlreadyExists);
         }
 
-        let new_major = NewMajor { name: request.name };
+        let new_major = NewMajor {
+            major_name: request.major_name,
+            major_code: request.major_code,
+        };
 
         let major =
             MajorRepository::create(conn, &new_major).map_err(|_| AppError::DatabaseError)?;
@@ -51,16 +57,11 @@ impl MajorService {
         major_id: i64,
         request: UpdateMajorRequest,
     ) -> Result<MajorResponse, AppError> {
-        if let Some(ref name) = request.name {
-            let query_params = HashMap::from([("name".into(), name.clone())]);
-            if let Ok(existing) = MajorRepository::find_all(conn, &query_params) {
-                if existing[0].id != major_id {
-                    return Err(AppError::MajorAlreadyExists);
-                }
-            }
-        }
-
-        let update_major = UpdateMajor { name: request.name };
+        let update_major = UpdateMajor {
+            major_name: request.major_name,
+            major_code: request.major_code,
+            major_status: request.major_status,
+        };
 
         let major =
             MajorRepository::update(conn, major_id, &update_major).map_err(|e| match e {

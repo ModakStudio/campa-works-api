@@ -90,6 +90,21 @@ pub enum SemesterStatus {
 }
 
 //
+// Major
+//
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::MajorStatus"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum MajorStatus {
+    #[db_rename = "ACTIVE"]
+    Active,
+
+    #[db_rename = "INACTIVE"]
+    Inactive,
+}
+
+//
 // Master Course
 //
 

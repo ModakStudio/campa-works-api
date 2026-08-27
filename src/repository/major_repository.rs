@@ -3,9 +3,49 @@ use std::collections::HashMap;
 use diesel::prelude::*;
 
 use crate::{
-    models::major::{Major, NewMajor, UpdateMajor},
+    models::{
+        enums::MajorStatus,
+        major::{Major, NewMajor, UpdateMajor},
+    },
     schema::major,
 };
+
+#[macro_export]
+macro_rules! apply_major_query_filters {
+    ($query:expr, $params:expr) => {{
+        let mut query = $query;
+
+        if let Some(major_id) = $params
+            .get("id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(major::id.eq(major_id));
+        }
+        if let Some(major_name) = $params
+            .get("major_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(major::major_name.ilike(format!("%{}%", major_name)));
+        }
+        if let Some(major_code) = $params
+            .get("major_code")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(major::major_code.ilike(format!("%{}%", major_code)));
+        }
+        if let Some(major_status) = $params
+            .get("major_status")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(major::major_status.eq(MajorStatus::from(major_status)));
+        }
+
+        query
+    }};
+}
 
 pub struct MajorRepository;
 
@@ -23,16 +63,7 @@ impl MajorRepository {
     ) -> QueryResult<Vec<Major>> {
         let mut query = major::table.select(Major::as_select()).into_boxed();
 
-        if let Some(id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
-            query = query.filter(major::id.eq(id));
-        }
-        if let Some(name) = params
-            .get("name")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(major::name.ilike(format!("%{}%", name)));
-        }
+        query = apply_major_query_filters!(query, params);
 
         query.load(conn)
     }
