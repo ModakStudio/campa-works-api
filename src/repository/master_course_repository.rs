@@ -4,11 +4,70 @@ use diesel::prelude::*;
 
 use crate::{
     models::{
-        enums::CourseType,
+        enums::{CourseStatus, CourseType},
         master_course::{MasterCourse, NewMasterCourse, UpdateMasterCourse},
     },
     schema::master_course,
 };
+
+#[macro_export]
+macro_rules! apply_master_course_query_filters {
+    ($query:expr, $params:expr) => {{
+        let mut query = $query;
+
+        if let Some(master_course_id) = $params
+            .get("id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(master_course::id.eq(master_course_id));
+        }
+        if let Some(course_code) = $params
+            .get("course_code")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(master_course::course_code.eq(course_code));
+        }
+        if let Some(course_name) = $params
+            .get("course_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(master_course::course_name.ilike(format!("%{}%", course_name)));
+        }
+        if let Some(course_en_name) = $params
+            .get("course_en_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query =
+                query.filter(master_course::course_en_name.ilike(format!("%{}%", course_en_name)));
+        }
+        if let Some(course_type) = $params
+            .get("course_type")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(master_course::course_type.eq(CourseType::from(course_type)));
+        }
+        if let Some(is_core) = $params
+            .get("is_core")
+            .and_then(|value| value.parse::<bool>().ok())
+        {
+            query = query.filter(master_course::is_core.eq(is_core));
+        }
+        if let Some(course_status) = $params
+            .get("course_status")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query =
+                query.filter(master_course::course_status.eq(CourseStatus::from(course_status)));
+        }
+
+        query
+    }};
+}
 
 pub struct MasterCourseRepository;
 
@@ -31,50 +90,7 @@ impl MasterCourseRepository {
             .select(MasterCourse::as_select())
             .into_boxed();
 
-        if let Some(id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
-            query = query.filter(master_course::id.eq(id));
-        }
-        if let Some(course_code) = params.get("course_code") {
-            query = query.filter(master_course::course_code.eq(course_code));
-        }
-        if let Some(name) = params
-            .get("name")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(master_course::name.ilike(format!("%{}%", name)));
-        }
-        if let Some(credit) = params
-            .get("credit")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(master_course::credit.eq(credit));
-        }
-        if let Some(lecture) = params
-            .get("lecture")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(master_course::lecture.eq(lecture));
-        }
-        if let Some(practice) = params
-            .get("practice")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(master_course::practice.eq(practice));
-        }
-        if let Some(course_type) = params
-            .get("course_type")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(master_course::course_type.eq(CourseType::from(course_type)));
-        }
-        if let Some(is_core) = params
-            .get("is_core")
-            .and_then(|value| value.parse::<bool>().ok())
-        {
-            query = query.filter(master_course::is_core.eq(is_core));
-        }
+        query = apply_master_course_query_filters!(query, params);
 
         query.load(conn)
     }

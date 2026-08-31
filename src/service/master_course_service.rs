@@ -29,12 +29,11 @@ impl MasterCourseService {
 
         let new_course = NewMasterCourse {
             course_code: request.course_code,
-            name: request.name,
-            credit: request.credit,
-            lecture: request.lecture,
-            practice: request.practice,
+            course_name: request.course_name,
+            course_en_name: request.course_en_name,
             course_type: request.course_type,
             is_core: request.is_core,
+            course_status: request.course_status,
         };
 
         let course = MasterCourseRepository::create(conn, &new_course)
@@ -83,12 +82,11 @@ impl MasterCourseService {
 
         let update_course = UpdateMasterCourse {
             course_code: request.course_code,
-            name: request.name,
-            credit: request.credit,
-            lecture: request.lecture,
-            practice: request.practice,
+            course_name: request.course_name,
+            course_en_name: request.course_en_name,
             course_type: request.course_type,
             is_core: request.is_core,
+            course_status: request.course_status,
         };
 
         let updated = MasterCourseRepository::update(conn, course_id, &update_course)

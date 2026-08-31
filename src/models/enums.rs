@@ -119,6 +119,17 @@ pub enum CourseType {
     Graduate,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::CourseStatus"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum CourseStatus {
+    #[db_rename = "ACTIVE"]
+    Active,
+
+    #[db_rename = "INACTIVE"]
+    Inactive,
+}
+
 //
 // Course
 //

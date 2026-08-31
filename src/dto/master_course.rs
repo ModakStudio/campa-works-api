@@ -1,33 +1,34 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::{enums::CourseType, master_course::MasterCourse};
+use crate::models::{
+    enums::{CourseStatus, CourseType},
+    master_course::MasterCourse,
+};
 
 #[derive(Debug, Deserialize)]
 pub struct CreateMasterCourseRequest {
     pub course_code: String,
-    pub name: String,
-
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
+    pub course_name: String,
+    pub course_en_name: String,
 
     pub course_type: CourseType,
 
     pub is_core: bool,
+
+    pub course_status: CourseStatus,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct UpdateMasterCourseRequest {
     pub course_code: Option<String>,
-    pub name: Option<String>,
-
-    pub credit: Option<i32>,
-    pub lecture: Option<i32>,
-    pub practice: Option<i32>,
+    pub course_name: Option<String>,
+    pub course_en_name: Option<String>,
 
     pub course_type: Option<CourseType>,
 
     pub is_core: Option<bool>,
+
+    pub course_status: Option<CourseStatus>,
 }
 
 #[derive(Debug, Serialize)]
@@ -35,15 +36,14 @@ pub struct MasterCourseResponse {
     pub id: i64,
 
     pub course_code: String,
-    pub name: String,
-
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
+    pub course_name: String,
+    pub course_en_name: String,
 
     pub course_type: CourseType,
 
     pub is_core: bool,
+
+    pub course_status: CourseStatus,
 }
 
 impl From<MasterCourse> for MasterCourseResponse {
@@ -52,15 +52,14 @@ impl From<MasterCourse> for MasterCourseResponse {
             id: course.id,
 
             course_code: course.course_code,
-            name: course.name,
-
-            credit: course.credit,
-            lecture: course.lecture,
-            practice: course.practice,
+            course_name: course.course_name,
+            course_en_name: course.course_en_name,
 
             course_type: course.course_type,
 
             is_core: course.is_core,
+
+            course_status: course.course_status,
         }
     }
 }
@@ -71,6 +70,16 @@ impl From<&str> for CourseType {
             "UNDERGRADUATE" => CourseType::Undergraduate,
             "GRADUATE" => CourseType::Graduate,
             _ => panic!("Invalid CourseType string: {}", s),
+        }
+    }
+}
+
+impl From<&str> for CourseStatus {
+    fn from(s: &str) -> Self {
+        match s {
+            "ACTIVE" => CourseStatus::Active,
+            "INACTIVE" => CourseStatus::Inactive,
+            _ => panic!("Invalid CourseStatus string: {}", s),
         }
     }
 }
