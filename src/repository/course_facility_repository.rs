@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use crate::{
     models::{
         course_facility::{CourseFacility, NewCourseFacility},
-        enums::CourseType,
+        enums::*,
         facility::Facility,
         master_course::MasterCourse,
     },

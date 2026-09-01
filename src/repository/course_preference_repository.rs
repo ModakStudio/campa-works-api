@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use crate::{
     models::{
         course_preference::{CoursePreference, NewCoursePreference, UpdateCoursePreference},
-        enums::{CourseType, ProfessorPosition, ProfessorStatus, SemesterStatus, SemesterType},
+        enums::*,
         master_course::MasterCourse,
         professor::Professor,
         semester::Semester,

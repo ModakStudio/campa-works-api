@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use crate::{
     models::{
         course::{Course, NewCourse, UpdateCourse},
-        enums::{CourseCategory, CourseType, Language, SemesterStatus, SemesterType},
+        enums::*,
         major::Major,
         master_course::MasterCourse,
         semester::Semester,

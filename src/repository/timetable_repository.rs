@@ -7,10 +7,7 @@ use crate::{
         classroom::Classroom,
         course::Course,
         course_assignment::CourseAssignment,
-        enums::{
-            CourseCategory, CourseType, Language, ProfessorPosition, ProfessorStatus,
-            SemesterStatus, SemesterType,
-        },
+        enums::*,
         major::Major,
         master_course::MasterCourse,
         professor::Professor,

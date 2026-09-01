@@ -4,7 +4,7 @@ use diesel::prelude::*;
 
 use crate::{
     models::{
-        enums::MajorStatus,
+        enums::*,
         major::{Major, NewMajor, UpdateMajor},
     },
     schema::major,

@@ -5,7 +5,7 @@ use diesel::result::QueryResult;
 
 use crate::{
     models::{
-        enums::UserRole,
+        enums::*,
         user::{NewUser, UpdateUser, User},
     },
     schema::users,
@@ -53,7 +53,6 @@ macro_rules! apply_user_query_filters {
         query
     }};
 }
-pub use apply_user_query_filters;
 
 pub struct UserRepository;
 

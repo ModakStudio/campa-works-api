@@ -2,12 +2,9 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    semester_repository::apply_semester_query_filters, user_repository::apply_user_query_filters,
-};
 use crate::{
     models::{
-        enums::{ProfessorPosition, ProfessorStatus, SemesterStatus, SemesterType, UserRole},
+        enums::*,
         professor::{NewProfessor, Professor, UpdateProfessor},
         semester::Semester,
         user::User,
@@ -15,6 +12,7 @@ use crate::{
     schema::{professor, semester, users},
 };
 
+#[macro_export]
 macro_rules! apply_professor_query_filters {
     ($query:expr, $params:expr) => {{
         let mut query = $query;
@@ -26,7 +24,7 @@ macro_rules! apply_professor_query_filters {
             query = query.filter(professor::id.eq(professor_id));
         }
 
-        query = apply_user_query_filters!(query, $params);
+        query = crate::apply_user_query_filters!(query, $params);
 
         if let Some(position) = $params
             .get("position")
@@ -57,7 +55,7 @@ macro_rules! apply_professor_query_filters {
             query = query.filter(professor::research_field.ilike(format!("%{}%", research_field)));
         }
 
-        query = apply_semester_query_filters!(query, $params);
+        query = crate::apply_semester_query_filters!(query, $params);
 
         if let Some(professor_status) = $params
             .get("professor_status")

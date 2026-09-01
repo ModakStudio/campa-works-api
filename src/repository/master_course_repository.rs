@@ -4,7 +4,7 @@ use diesel::prelude::*;
 
 use crate::{
     models::{
-        enums::{CourseStatus, CourseType},
+        enums::*,
         master_course::{MasterCourse, NewMasterCourse, UpdateMasterCourse},
     },
     schema::master_course,

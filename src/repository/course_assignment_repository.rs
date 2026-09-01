@@ -6,10 +6,7 @@ use crate::{
     models::{
         course::Course,
         course_assignment::{CourseAssignment, NewCourseAssignment},
-        enums::{
-            CourseCategory, CourseType, Language, ProfessorPosition, ProfessorStatus,
-            SemesterStatus, SemesterType,
-        },
+        enums::*,
         major::Major,
         master_course::MasterCourse,
         professor::Professor,

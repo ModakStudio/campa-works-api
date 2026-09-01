@@ -5,7 +5,7 @@ use diesel::result::QueryResult;
 
 use crate::{
     models::{
-        enums::{SemesterStatus, SemesterType},
+        enums::*,
         semester::{NewSemester, Semester, UpdateSemester},
     },
     schema::semester,
