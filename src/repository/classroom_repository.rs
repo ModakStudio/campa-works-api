@@ -7,6 +7,48 @@ use crate::{
     schema::classroom,
 };
 
+#[macro_export]
+macro_rules! apply_classroom_query_filters {
+    ($query:expr, $params:expr) => {{
+        let mut query = $query;
+
+        if let Some(classroom_id) = $params
+            .get("id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(classroom::id.eq(classroom_id));
+        }
+        if let Some(building) = $params
+            .get("building")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(classroom::building.ilike(format!("%{}%", building)));
+        }
+        if let Some(room) = $params
+            .get("room")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(classroom::room.ilike(format!("%{}%", room)));
+        }
+        if let Some(capacity) = $params
+            .get("capacity")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(classroom::capacity.eq(capacity));
+        }
+        if let Some(is_available) = $params
+            .get("is_available")
+            .and_then(|value| value.parse::<bool>().ok())
+        {
+            query = query.filter(classroom::is_available.eq(is_available));
+        }
+
+        query
+    }};
+}
+
 pub struct ClassroomRepository;
 
 impl ClassroomRepository {
@@ -23,35 +65,7 @@ impl ClassroomRepository {
     ) -> QueryResult<Vec<Classroom>> {
         let mut query = classroom::table.select(Classroom::as_select()).into_boxed();
 
-        if let Some(classroom_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
-            query = query.filter(classroom::id.eq(classroom_id));
-        }
-        if let Some(building) = params
-            .get("building")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(classroom::building.ilike(format!("%{}%", building)));
-        }
-        if let Some(room) = params
-            .get("room")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(classroom::room.ilike(format!("%{}%", room)));
-        }
-        if let Some(capacity) = params
-            .get("capacity")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(classroom::capacity.eq(capacity));
-        }
-        if let Some(is_available) = params
-            .get("is_available")
-            .and_then(|value| value.parse::<bool>().ok())
-        {
-            query = query.filter(classroom::is_available.eq(is_available));
-        }
+        query = apply_classroom_query_filters!(query, params);
 
         query.load(conn)
     }
