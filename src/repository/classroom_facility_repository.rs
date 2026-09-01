@@ -2,6 +2,10 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
+use super::{
+    classroom_repository::apply_classroom_query_filters,
+    facility_repository::apply_facility_query_filters,
+};
 use crate::{
     models::{
         classroom::Classroom,
@@ -33,66 +37,8 @@ impl ClassroomFacilityRepository {
             .inner_join(facility::table)
             .into_boxed();
 
-        if let Some(classroom_facility_id) =
-            params.get("id").and_then(|value| value.parse::<i64>().ok())
-        {
-            query = query.filter(classroom_facility::id.eq(classroom_facility_id));
-        }
-
-        if let Some(classroom_id) = params
-            .get("classroom_id")
-            .and_then(|value| value.parse::<i64>().ok())
-        {
-            query = query.filter(classroom_facility::classroom_id.eq(classroom_id));
-        }
-        if let Some(classroom_building) = params
-            .get("classroom_building")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(classroom::building.ilike(format!("%{}%", classroom_building)));
-        }
-        if let Some(classroom_room) = params
-            .get("classroom_room")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(classroom::room.ilike(format!("%{}%", classroom_room)));
-        }
-        if let Some(classroom_capacity) = params
-            .get("classroom_capacity")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(classroom::capacity.eq(classroom_capacity));
-        }
-        if let Some(classroom_is_available) = params
-            .get("classroom_is_available")
-            .and_then(|value| value.parse::<bool>().ok())
-        {
-            query = query.filter(classroom::is_available.eq(classroom_is_available));
-        }
-
-        if let Some(facility_id) = params
-            .get("facility_id")
-            .and_then(|value| value.parse::<i64>().ok())
-        {
-            query = query.filter(classroom_facility::facility_id.eq(facility_id));
-        }
-        if let Some(facility_name) = params
-            .get("facility_name")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(facility::name.ilike(format!("%{}%", facility_name)));
-        }
-        if let Some(facility_description) = params
-            .get("facility_description")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query =
-                query.filter(facility::description.ilike(format!("%{}%", facility_description)));
-        }
+        query = apply_classroom_query_filters!(query, params);
+        query = apply_facility_query_filters!(query, params);
 
         query
             .select((
