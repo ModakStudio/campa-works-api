@@ -10,7 +10,7 @@ pub mod facility;
 pub mod major;
 pub mod master_course;
 pub mod professor;
-pub mod professor_credit;
+pub mod professor_quota;
 pub mod semester;
 pub mod timetable;
 pub mod user;

@@ -9,7 +9,7 @@ pub mod course_repository;
 pub mod facility_repository;
 pub mod major_repository;
 pub mod master_course_repository;
-pub mod professor_credit_repository;
+pub mod professor_quota_repository;
 pub mod professor_repository;
 pub mod semester_repository;
 pub mod timetable_repository;

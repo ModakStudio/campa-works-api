@@ -46,6 +46,21 @@ pub enum ProfessorPosition {
     Emeritus,
 }
 
+//
+// Professor Quota
+//
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::QuotaType"]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum QuotaType {
+    #[db_rename = "CREDIT"]
+    Credit,
+
+    #[db_rename = "HOUR"]
+    Hour,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
 #[ExistingTypePath = "crate::schema::sql_types::ProfessorStatus"]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]

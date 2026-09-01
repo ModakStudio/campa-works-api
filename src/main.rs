@@ -27,7 +27,7 @@ use crate::router::{
     course_preference_bookmark_router::course_preference_bookmark_router,
     course_preference_router::course_preference_router, course_router::course_router,
     facility_router::facility_router, major_router::major_router,
-    master_course_router::master_course_router, professor_credit_router::professor_credit_router,
+    master_course_router::master_course_router, professor_quota_router::professor_quota_router,
     professor_router::professor_router, semester_router::semester_router,
     timetable_router::timetable_router, user_router::user_router,
 };
@@ -49,7 +49,7 @@ async fn main() {
         .nest("/api/course-pools", course_pool_router())
         .nest("/api/course-preferences", course_preference_router())
         .nest("/api/course-assignments", course_assignment_router())
-        .nest("/api/professor-credits", professor_credit_router())
+        .nest("/api/professor-quotas", professor_quota_router())
         .nest(
             "/api/course-preference-bookmarks",
             course_preference_bookmark_router(),

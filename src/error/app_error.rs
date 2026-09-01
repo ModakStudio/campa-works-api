@@ -45,10 +45,10 @@ pub enum AppError {
     CourseAssignmentAlreadyExists,
     #[error("Course assignment not found")]
     CourseAssignmentNotFound,
-    #[error("Professor credit already exists")]
-    ProfessorCreditAlreadyExists,
-    #[error("Professor credit not found")]
-    ProfessorCreditNotFound,
+    #[error("Professor quota already exists")]
+    ProfessorQuotaAlreadyExists,
+    #[error("Professor quota not found")]
+    ProfessorQuotaNotFound,
     #[error("Course preference bookmark already exists")]
     CoursePreferenceBookmarkAlreadyExists,
     #[error("Course preference bookmark not found")]
@@ -104,8 +104,8 @@ impl IntoResponse for AppError {
             AppError::CoursePreferenceNotFound => StatusCode::NOT_FOUND,
             AppError::CourseAssignmentAlreadyExists => StatusCode::CONFLICT,
             AppError::CourseAssignmentNotFound => StatusCode::NOT_FOUND,
-            AppError::ProfessorCreditAlreadyExists => StatusCode::CONFLICT,
-            AppError::ProfessorCreditNotFound => StatusCode::NOT_FOUND,
+            AppError::ProfessorQuotaAlreadyExists => StatusCode::CONFLICT,
+            AppError::ProfessorQuotaNotFound => StatusCode::NOT_FOUND,
             AppError::CoursePreferenceBookmarkAlreadyExists => StatusCode::CONFLICT,
             AppError::CoursePreferenceBookmarkNotFound => StatusCode::NOT_FOUND,
             AppError::CourseFacilityAlreadyExists => StatusCode::CONFLICT,

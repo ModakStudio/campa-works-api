@@ -53,6 +53,21 @@ pub struct ProfessorResponse {
     pub professor_status: ProfessorStatus,
 }
 
+#[derive(Debug, Serialize)]
+pub struct ProfessorBriefResponse {
+    pub id: i64,
+
+    pub user: UserResponse,
+
+    pub position: ProfessorPosition,
+
+    pub office: Option<String>,
+    pub tel: Option<String>,
+    pub research_field: Option<String>,
+
+    pub professor_status: ProfessorStatus,
+}
+
 impl From<(Professor, User, Semester)> for ProfessorResponse {
     fn from((professor, user, semester): (Professor, User, Semester)) -> Self {
         Self {
@@ -67,6 +82,24 @@ impl From<(Professor, User, Semester)> for ProfessorResponse {
             research_field: professor.research_field,
 
             appointed_at: SemesterResponse::from(semester),
+
+            professor_status: professor.professor_status,
+        }
+    }
+}
+
+impl From<(Professor, User)> for ProfessorBriefResponse {
+    fn from((professor, user): (Professor, User)) -> Self {
+        Self {
+            id: professor.id,
+
+            user: UserResponse::from(user),
+
+            position: professor.position,
+
+            office: professor.office,
+            tel: professor.tel,
+            research_field: professor.research_field,
 
             professor_status: professor.professor_status,
         }
