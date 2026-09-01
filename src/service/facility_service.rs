@@ -16,13 +16,13 @@ impl FacilityService {
         conn: &mut PgConnection,
         request: CreateFacilityRequest,
     ) -> Result<FacilityResponse, AppError> {
-        if FacilityRepository::find_by_name(conn, &request.name).is_ok() {
+        if FacilityRepository::find_by_name(conn, &request.facility_name).is_ok() {
             return Err(AppError::FacilityAlreadyExists);
         }
 
         let new_facility = NewFacility {
-            name: request.name,
-            description: request.description,
+            facility_name: request.facility_name,
+            facility_description: request.facility_description,
         };
 
         let facility =
@@ -56,8 +56,8 @@ impl FacilityService {
         facility_id: i64,
         request: UpdateFacilityRequest,
     ) -> Result<FacilityResponse, AppError> {
-        if let Some(ref name) = request.name {
-            if let Ok(existing) = FacilityRepository::find_by_name(conn, name) {
+        if let Some(ref facility_name) = request.facility_name {
+            if let Ok(existing) = FacilityRepository::find_by_name(conn, facility_name) {
                 if existing.id != facility_id {
                     return Err(AppError::FacilityAlreadyExists);
                 }
@@ -65,8 +65,8 @@ impl FacilityService {
         }
 
         let update_facility = UpdateFacility {
-            name: request.name,
-            description: request.description,
+            facility_name: request.facility_name,
+            facility_description: request.facility_description,
         };
 
         let facility = FacilityRepository::update(conn, facility_id, &update_facility).map_err(

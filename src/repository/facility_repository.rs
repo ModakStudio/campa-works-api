@@ -7,6 +7,36 @@ use crate::{
     schema::facility,
 };
 
+#[macro_export]
+macro_rules! apply_facility_query_filters {
+    ($query:expr, $params:expr) => {{
+        let mut query = $query;
+
+        if let Some(facility_id) = $params
+            .get("id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(facility::id.eq(facility_id));
+        }
+        if let Some(facility_name) = $params
+            .get("facility_name")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(facility::facility_name.ilike(format!("%{}%", facility_name)));
+        }
+        if let Some(facility_description) = $params
+            .get("facility_description")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(facility::facility_description.ilike(format!("%{}%", facility_description)));
+        }
+
+        query
+    }};
+}
+
 pub struct FacilityRepository;
 
 impl FacilityRepository {
@@ -23,23 +53,7 @@ impl FacilityRepository {
     ) -> QueryResult<Vec<Facility>> {
         let mut query = facility::table.select(Facility::as_select()).into_boxed();
 
-        if let Some(facility_id) = params.get("id").and_then(|value| value.parse::<i64>().ok()) {
-            query = query.filter(facility::id.eq(facility_id));
-        }
-        if let Some(name) = params
-            .get("name")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(facility::name.ilike(format!("%{}%", name)));
-        }
-        if let Some(description) = params
-            .get("description")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(facility::description.ilike(format!("%{}%", description)));
-        }
+        query = apply_facility_query_filters!(query, params);
 
         query.load(conn)
     }
@@ -51,9 +65,9 @@ impl FacilityRepository {
             .first(conn)
     }
 
-    pub fn find_by_name(conn: &mut PgConnection, name: &str) -> QueryResult<Facility> {
+    pub fn find_by_name(conn: &mut PgConnection, facility_name: &str) -> QueryResult<Facility> {
         facility::table
-            .filter(facility::name.eq(name))
+            .filter(facility::facility_name.eq(facility_name))
             .select(Facility::as_select())
             .first(conn)
     }
