@@ -10,7 +10,7 @@ use crate::{
     repository::{
         course_preference_repository::CoursePreferenceRepository,
         master_course_repository::MasterCourseRepository,
-        professor_repository::ProfessorRepository, semester_repository::SemesterRepository,
+        professor_repository::ProfessorRepository,
     },
 };
 
@@ -21,9 +21,6 @@ impl CoursePreferenceService {
         conn: &mut PgConnection,
         request: CreateCoursePreferenceRequest,
     ) -> Result<CoursePreferenceResponse, AppError> {
-        SemesterRepository::find_by_id(conn, request.semester_id)
-            .map_err(|_| AppError::SemesterNotFound)?;
-
         ProfessorRepository::find_by_id(conn, request.professor_id)
             .map_err(|_| AppError::ProfessorNotFound)?;
 
@@ -31,7 +28,6 @@ impl CoursePreferenceService {
             .map_err(|_| AppError::MasterCourseNotFound)?;
 
         let query_params = HashMap::from([
-            ("semester_id".to_string(), request.semester_id.to_string()),
             ("professor_id".to_string(), request.professor_id.to_string()),
             (
                 "master_course_id".to_string(),
@@ -47,7 +43,6 @@ impl CoursePreferenceService {
         }
 
         let new_course_preference = NewCoursePreference {
-            semester_id: request.semester_id,
             professor_id: request.professor_id,
             master_course_id: request.master_course_id,
             priority: request.priority,

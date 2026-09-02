@@ -128,7 +128,6 @@ diesel::table! {
         professor_id -> Int8,
         master_course_id -> Int8,
         priority -> Int4,
-        created_at -> Timestamp,
     }
 }
 

@@ -1,11 +1,7 @@
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::{
-        master_course::MasterCourseResponse, professor::ProfessorResponse,
-        semester::SemesterResponse,
-    },
+    dto::{master_course::MasterCourseResponse, professor::ProfessorResponse},
     models::{
         course_preference::CoursePreference, master_course::MasterCourse, professor::Professor,
         semester::Semester, user::User,
@@ -14,7 +10,6 @@ use crate::{
 
 #[derive(Debug, Deserialize)]
 pub struct CreateCoursePreferenceRequest {
-    pub semester_id: i64,
     pub professor_id: i64,
     pub master_course_id: i64,
 
@@ -30,37 +25,31 @@ pub struct UpdateCoursePreferenceRequest {
 pub struct CoursePreferenceResponse {
     pub id: i64,
 
-    pub semester: SemesterResponse,
     pub professor: ProfessorResponse,
     pub master_course: MasterCourseResponse,
 
     pub priority: i32,
-
-    pub created_at: NaiveDateTime,
 }
 
-impl From<(CoursePreference, Semester, Professor, User, MasterCourse)>
+impl From<(CoursePreference, Professor, User, Semester, MasterCourse)>
     for CoursePreferenceResponse
 {
     fn from(
-        (course_preference, semester, professor, user, master_course): (
+        (course_preference, professor, user, semester, master_course): (
             CoursePreference,
-            Semester,
             Professor,
             User,
+            Semester,
             MasterCourse,
         ),
     ) -> Self {
         Self {
             id: course_preference.id,
 
-            semester: SemesterResponse::from(semester),
-            professor: ProfessorResponse::from((professor, user)),
+            professor: ProfessorResponse::from((professor, user, semester)),
             master_course: MasterCourseResponse::from(master_course),
 
             priority: course_preference.priority,
-
-            created_at: course_preference.created_at,
         }
     }
 }

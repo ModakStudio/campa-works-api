@@ -321,8 +321,6 @@ CREATE TABLE course_preference (
 
     priority INTEGER NOT NULL,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT course_preference_professor_priority_unique
         UNIQUE (professor_id, priority),
 

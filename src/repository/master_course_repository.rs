@@ -68,6 +68,7 @@ macro_rules! apply_master_course_query_filters {
         query
     }};
 }
+pub use apply_master_course_query_filters;
 
 pub struct MasterCourseRepository;
 
