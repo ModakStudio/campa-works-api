@@ -75,7 +75,6 @@ impl CoursePreferenceRepository {
                 Semester::as_select(),
                 MasterCourse::as_select(),
             ))
-            .order((course_preference::id.asc()))
             .into_boxed();
 
         query = apply_course_preference_query_filters!(query, params);
