@@ -370,8 +370,6 @@ CREATE TABLE course_assignment (
     course_id BIGINT NOT NULL,
     professor_id BIGINT NOT NULL,
 
-    assigned_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT course_assignment_course_professor_unique
         UNIQUE (course_id, professor_id),
 

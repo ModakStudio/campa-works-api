@@ -94,7 +94,6 @@ diesel::table! {
         id -> Int8,
         course_id -> Int8,
         professor_id -> Int8,
-        assigned_at -> Timestamp,
     }
 }
 

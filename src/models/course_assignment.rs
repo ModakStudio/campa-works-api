@@ -9,8 +9,6 @@ pub struct CourseAssignment {
 
     pub course_id: i64,
     pub professor_id: i64,
-
-    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Debug, Insertable)]

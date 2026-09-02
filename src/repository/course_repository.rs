@@ -94,6 +94,7 @@ macro_rules! apply_course_query_filters {
         query
     }};
 }
+pub use apply_course_query_filters;
 
 pub struct CourseRepository;
 

@@ -1,11 +1,10 @@
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
     dto::{course::CourseResponse, professor::ProfessorResponse},
     models::{
-        course::Course, course_assignment::CourseAssignment, major::Major,
-        master_course::MasterCourse, professor::Professor, semester::Semester, user::User,
+        course::Course, course_assignment::CourseAssignment, master_course::MasterCourse,
+        professor::Professor, semester::Semester, user::User,
     },
 };
 
@@ -21,8 +20,6 @@ pub struct CourseAssignmentResponse {
 
     pub course: CourseResponse,
     pub professor: ProfessorResponse,
-
-    pub created_at: NaiveDateTime,
 }
 
 impl
@@ -30,30 +27,26 @@ impl
         CourseAssignment,
         Course,
         MasterCourse,
-        Semester,
-        Major,
         Professor,
         User,
+        Semester,
     )> for CourseAssignmentResponse
 {
     fn from(
-        (course_assignment, course, master_course, semester, major, professor, user): (
+        (course_assignment, course, master_course, professor, user, semester): (
             CourseAssignment,
             Course,
             MasterCourse,
-            Semester,
-            Major,
             Professor,
             User,
+            Semester,
         ),
     ) -> Self {
         Self {
             id: course_assignment.id,
 
-            course: CourseResponse::from((course, master_course, semester, major)),
-            professor: ProfessorResponse::from((professor, user)),
-
-            created_at: course_assignment.created_at,
+            course: CourseResponse::from((course, master_course)),
+            professor: ProfessorResponse::from((professor, user, semester)),
         }
     }
 }
