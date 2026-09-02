@@ -176,7 +176,7 @@ diesel::table! {
         id -> Int8,
         course_code -> Varchar,
         course_name -> Varchar,
-        course_en_name -> Nullable<Varchar>,
+        course_en_name -> Varchar,
         course_type -> CourseType,
         is_core -> Bool,
         course_status -> CourseStatus,

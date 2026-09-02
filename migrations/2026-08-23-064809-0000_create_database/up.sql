@@ -219,7 +219,7 @@ CREATE TABLE master_course (
 
     course_code VARCHAR NOT NULL,
     course_name VARCHAR NOT NULL,
-    course_en_name VARCHAR,
+    course_en_name VARCHAR NOT NULL,
 
     course_type course_type NOT NULL,
 
