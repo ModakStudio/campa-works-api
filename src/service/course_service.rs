@@ -21,8 +21,6 @@ impl CourseService {
                 "master_course_id".to_string(),
                 request.master_course_id.to_string(),
             ),
-            ("semester_id".to_string(), request.semester_id.to_string()),
-            ("major_id".to_string(), request.major_id.to_string()),
             (
                 "section_number".to_string(),
                 request.section_number.to_string(),
@@ -38,18 +36,21 @@ impl CourseService {
 
         let new_course = NewCourse {
             master_course_id: request.master_course_id,
-            semester_id: request.semester_id,
-            major_id: request.major_id,
 
-            description: request.description,
+            course_description: request.course_description,
+
+            grade: request.grade,
+            credit: request.credit,
+            lecture: request.lecture,
+            practice: request.practice,
 
             course_category: request.course_category,
 
             language: request.language,
 
             section_number: request.section_number,
-            grade: request.grade,
             capacity: request.capacity,
+            participant: request.participant,
         };
 
         CourseRepository::create(conn, &new_course).map_err(|_| AppError::DatabaseError)?;
@@ -88,15 +89,20 @@ impl CourseService {
         CourseRepository::find_by_id(conn, course_id).map_err(|_| AppError::CourseNotFound)?;
 
         let update_course = UpdateCourse {
-            description: request.description,
+            course_description: request.course_description,
+
+            grade: request.grade,
+            credit: request.credit,
+            lecture: request.lecture,
+            practice: request.practice,
 
             course_category: request.course_category,
 
             language: request.language,
 
             section_number: request.section_number,
-            grade: request.grade,
             capacity: request.capacity,
+            participant: request.participant,
         };
 
         CourseRepository::update(conn, course_id, &update_course)
