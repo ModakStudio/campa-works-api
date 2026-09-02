@@ -4,7 +4,7 @@ use crate::{
     dto::{master_course::MasterCourseResponse, professor::ProfessorResponse},
     models::{
         course_preference_bookmark::CoursePreferenceBookmark, master_course::MasterCourse,
-        professor::Professor, user::User,
+        professor::Professor, semester::Semester, user::User,
     },
 };
 
@@ -22,21 +22,28 @@ pub struct CoursePreferenceBookmarkResponse {
     pub master_course: MasterCourseResponse,
 }
 
-impl From<(CoursePreferenceBookmark, Professor, User, MasterCourse)>
-    for CoursePreferenceBookmarkResponse
+impl
+    From<(
+        CoursePreferenceBookmark,
+        Professor,
+        User,
+        Semester,
+        MasterCourse,
+    )> for CoursePreferenceBookmarkResponse
 {
     fn from(
-        (bookmark, professor, user, master_course): (
+        (bookmark, professor, user, semester, master_course): (
             CoursePreferenceBookmark,
             Professor,
             User,
+            Semester,
             MasterCourse,
         ),
     ) -> Self {
         Self {
             id: bookmark.id,
 
-            professor: ProfessorResponse::from((professor, user)),
+            professor: ProfessorResponse::from((professor, user, semester)),
             master_course: MasterCourseResponse::from(master_course),
         }
     }
