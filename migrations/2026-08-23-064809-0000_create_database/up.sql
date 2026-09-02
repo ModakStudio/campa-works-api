@@ -296,8 +296,6 @@ CREATE TABLE course_pool (
     professor_id BIGINT NOT NULL,
     master_course_id BIGINT NOT NULL,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT course_pool_professor_master_course_unique
         UNIQUE (professor_id, master_course_id),
 

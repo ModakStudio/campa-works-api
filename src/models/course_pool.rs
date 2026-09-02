@@ -9,8 +9,6 @@ pub struct CoursePool {
 
     pub professor_id: i64,
     pub master_course_id: i64,
-
-    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Debug, Insertable)]
