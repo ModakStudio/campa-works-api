@@ -38,6 +38,7 @@ macro_rules! apply_course_assignment_query_filters {
         query
     }};
 }
+pub use apply_course_assignment_query_filters;
 
 pub struct CourseAssignmentRepository;
 

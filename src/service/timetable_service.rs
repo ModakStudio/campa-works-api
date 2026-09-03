@@ -33,6 +33,7 @@ impl TimetableService {
             ),
             ("classroom_id".to_string(), request.classroom_id.to_string()),
             ("day_of_week".to_string(), request.day_of_week.to_string()),
+            // ToDo: Check for overlapping timetables based on start_period and end_period
         ]);
 
         if TimetableRepository::find_all(conn, &query_params)

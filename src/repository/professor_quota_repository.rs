@@ -1,6 +1,10 @@
 use diesel::prelude::*;
 use std::collections::HashMap;
 
+use super::{
+    professor_repository::apply_professor_query_filters,
+    semester_repository::apply_semester_query_filters,
+};
 use crate::{
     models::{
         enums::*,
@@ -24,9 +28,9 @@ macro_rules! apply_professor_quota_query_filters {
             query = query.filter(professor_quota::id.eq(professor_quota_id));
         }
 
-        query = crate::apply_professor_query_filters!(query, $params);
+        query = apply_professor_query_filters!(query, $params);
 
-        query = crate::apply_semester_query_filters!(query, $params);
+        query = apply_semester_query_filters!(query, $params);
 
         if let Some(quota_type) = $params
             .get("quota_type")
