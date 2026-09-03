@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::{master_course::MasterCourseResponse, professor::ProfessorBriefResponse},
+    dto::{master_course::MasterCourseResponse, professor::ProfessorResponse},
     models::{
-        course_pool::CoursePool, master_course::MasterCourse, professor::Professor, user::User,
+        course_pool::CoursePool, master_course::MasterCourse, professor::Professor,
+        semester::Semester, user::User,
     },
 };
 
@@ -17,18 +18,24 @@ pub struct CreateCoursePoolRequest {
 pub struct CoursePoolResponse {
     pub id: i64,
 
-    pub professor: ProfessorBriefResponse,
+    pub professor: ProfessorResponse,
     pub master_course: MasterCourseResponse,
 }
 
-impl From<(CoursePool, Professor, User, MasterCourse)> for CoursePoolResponse {
+impl From<(CoursePool, Professor, User, Semester, MasterCourse)> for CoursePoolResponse {
     fn from(
-        (course_pool, professor, user, master_course): (CoursePool, Professor, User, MasterCourse),
+        (course_pool, professor, user, semester, master_course): (
+            CoursePool,
+            Professor,
+            User,
+            Semester,
+            MasterCourse,
+        ),
     ) -> Self {
         Self {
             id: course_pool.id,
 
-            professor: ProfessorBriefResponse::from((professor, user)),
+            professor: ProfessorResponse::from((professor, user, semester)),
             master_course: MasterCourseResponse::from(master_course),
         }
     }

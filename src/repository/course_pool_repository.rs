@@ -7,9 +7,10 @@ use crate::{
         enums::*,
         master_course::MasterCourse,
         professor::Professor,
+        semester::Semester,
         user::User,
     },
-    schema::{course_pool, master_course, professor, users},
+    schema::{course_pool, master_course, professor, semester, users},
 };
 
 #[macro_export]
@@ -48,36 +49,45 @@ impl CoursePoolRepository {
     pub fn find_all(
         conn: &mut PgConnection,
         params: &HashMap<String, String>,
-    ) -> QueryResult<Vec<(CoursePool, Professor, User, MasterCourse)>> {
+    ) -> QueryResult<Vec<(CoursePool, Professor, User, Semester, MasterCourse)>> {
         let mut query = course_pool::table
-            .inner_join(professor::table.inner_join(users::table))
+            .inner_join(
+                professor::table
+                    .inner_join(users::table)
+                    .inner_join(semester::table),
+            )
             .inner_join(master_course::table)
-            .into_boxed();
-
-        query = apply_course_pool_query_filters!(query, params);
-
-        query
             .select((
                 CoursePool::as_select(),
                 Professor::as_select(),
                 User::as_select(),
+                Semester::as_select(),
                 MasterCourse::as_select(),
             ))
-            .load(conn)
+            .into_boxed();
+
+        query = apply_course_pool_query_filters!(query, params);
+
+        query.load(conn)
     }
 
     pub fn find_by_id(
         conn: &mut PgConnection,
         course_pool_id: i64,
-    ) -> QueryResult<(CoursePool, Professor, User, MasterCourse)> {
+    ) -> QueryResult<(CoursePool, Professor, User, Semester, MasterCourse)> {
         course_pool::table
-            .inner_join(professor::table.inner_join(users::table))
+            .inner_join(
+                professor::table
+                    .inner_join(users::table)
+                    .inner_join(semester::table),
+            )
             .inner_join(master_course::table)
             .filter(course_pool::id.eq(course_pool_id))
             .select((
                 CoursePool::as_select(),
                 Professor::as_select(),
                 User::as_select(),
+                Semester::as_select(),
                 MasterCourse::as_select(),
             ))
             .first(conn)
