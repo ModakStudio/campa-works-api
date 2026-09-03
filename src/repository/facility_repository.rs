@@ -38,7 +38,6 @@ macro_rules! apply_facility_query_filters {
         query
     }};
 }
-pub use apply_facility_query_filters;
 
 pub struct FacilityRepository;
 

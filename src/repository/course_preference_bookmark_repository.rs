@@ -1,10 +1,6 @@
 use diesel::prelude::*;
 use std::collections::HashMap;
 
-use super::{
-    master_course_repository::apply_master_course_query_filters,
-    professor_repository::apply_professor_query_filters,
-};
 use crate::{
     models::{
         course_preference_bookmark::{CoursePreferenceBookmark, NewCoursePreferenceBookmark},
@@ -29,9 +25,9 @@ macro_rules! apply_course_preference_bookmark_query_filters {
             query = query.filter(course_preference_bookmark::id.eq(bookmark_id));
         }
 
-        query = apply_professor_query_filters!(query, $params);
+        query = crate::apply_professor_query_filters!(query, $params);
 
-        query = apply_master_course_query_filters!(query, $params);
+        query = crate::apply_master_course_query_filters!(query, $params);
 
         query
     }};

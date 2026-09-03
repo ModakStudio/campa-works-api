@@ -2,10 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    classroom_repository::apply_classroom_query_filters,
-    facility_repository::apply_facility_query_filters,
-};
 use crate::{
     models::{
         classroom::Classroom,
@@ -37,8 +33,8 @@ impl ClassroomFacilityRepository {
             .inner_join(facility::table)
             .into_boxed();
 
-        query = apply_classroom_query_filters!(query, params);
-        query = apply_facility_query_filters!(query, params);
+        query = crate::apply_classroom_query_filters!(query, params);
+        query = crate::apply_facility_query_filters!(query, params);
 
         query
             .select((

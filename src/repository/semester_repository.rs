@@ -47,7 +47,6 @@ macro_rules! apply_semester_query_filters {
         query
     }};
 }
-pub use apply_semester_query_filters;
 
 pub struct SemesterRepository;
 

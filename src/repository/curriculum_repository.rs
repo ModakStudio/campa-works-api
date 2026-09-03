@@ -2,9 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    major_repository::apply_major_query_filters, semester_repository::apply_semester_query_filters,
-};
 use crate::{
     models::{
         curriculum::{Curriculum, NewCurriculum},
@@ -27,14 +24,13 @@ macro_rules! apply_curriculum_query_filters {
             query = query.filter(curriculum::id.eq(curriculum_id));
         }
 
-        query = apply_semester_query_filters!(query, $params);
+        query = crate::apply_semester_query_filters!(query, $params);
 
-        query = apply_major_query_filters!(query, $params);
+        query = crate::apply_major_query_filters!(query, $params);
 
         query
     }};
 }
-pub use apply_curriculum_query_filters;
 
 pub struct CurriculumRepository;
 

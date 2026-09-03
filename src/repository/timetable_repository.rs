@@ -2,10 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    classroom_repository::apply_classroom_query_filters,
-    course_assignment_repository::apply_course_assignment_query_filters,
-};
 use crate::{
     models::{
         classroom::Classroom,
@@ -35,9 +31,9 @@ macro_rules! apply_timetable_query_filters {
             query = query.filter(timetable::id.eq(timetable_id));
         }
 
-        query = apply_course_assignment_query_filters!(query, $params);
+        query = crate::apply_course_assignment_query_filters!(query, $params);
 
-        query = apply_classroom_query_filters!(query, $params);
+        query = crate::apply_classroom_query_filters!(query, $params);
 
         if let Some(day_of_week) = $params
             .get("day_of_week")

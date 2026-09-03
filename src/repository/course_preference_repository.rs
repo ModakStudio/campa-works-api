@@ -1,10 +1,6 @@
 use diesel::prelude::*;
 use std::collections::HashMap;
 
-use super::{
-    master_course_repository::apply_master_course_query_filters,
-    professor_repository::apply_professor_query_filters,
-};
 use crate::{
     models::{
         course_preference::{CoursePreference, NewCoursePreference, UpdateCoursePreference},
@@ -29,9 +25,9 @@ macro_rules! apply_course_preference_query_filters {
             query = query.filter(course_preference::id.eq(course_preference_id));
         }
 
-        query = apply_master_course_query_filters!(query, $params);
+        query = crate::apply_master_course_query_filters!(query, $params);
 
-        query = apply_professor_query_filters!(query, $params);
+        query = crate::apply_professor_query_filters!(query, $params);
 
         if let Some(priority) = $params
             .get("priority")

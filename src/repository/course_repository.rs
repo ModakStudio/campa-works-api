@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::master_course_repository::apply_master_course_query_filters;
 use crate::{
     models::{
         course::{Course, NewCourse, UpdateCourse},
@@ -24,7 +23,7 @@ macro_rules! apply_course_query_filters {
             query = query.filter(course::id.eq(course_id));
         }
 
-        query = apply_master_course_query_filters!(query, $params);
+        query = crate::apply_master_course_query_filters!(query, $params);
 
         if let Some(course_description) = $params
             .get("course_description")
@@ -94,7 +93,6 @@ macro_rules! apply_course_query_filters {
         query
     }};
 }
-pub use apply_course_query_filters;
 
 pub struct CourseRepository;
 

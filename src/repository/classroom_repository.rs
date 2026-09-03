@@ -48,7 +48,6 @@ macro_rules! apply_classroom_query_filters {
         query
     }};
 }
-pub use apply_classroom_query_filters;
 
 pub struct ClassroomRepository;
 

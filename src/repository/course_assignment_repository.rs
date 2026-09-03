@@ -2,10 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    course_repository::apply_course_query_filters,
-    professor_repository::apply_professor_query_filters,
-};
 use crate::{
     models::{
         course::Course,
@@ -31,14 +27,13 @@ macro_rules! apply_course_assignment_query_filters {
             query = query.filter(course_assignment::id.eq(course_assignment_id));
         }
 
-        query = apply_course_query_filters!(query, $params);
+        query = crate::apply_course_query_filters!(query, $params);
 
-        query = apply_professor_query_filters!(query, $params);
+        query = crate::apply_professor_query_filters!(query, $params);
 
         query
     }};
 }
-pub use apply_course_assignment_query_filters;
 
 pub struct CourseAssignmentRepository;
 

@@ -69,7 +69,6 @@ macro_rules! apply_professor_query_filters {
         query
     }};
 }
-pub use apply_professor_query_filters;
 
 pub struct ProfessorRepository;
 

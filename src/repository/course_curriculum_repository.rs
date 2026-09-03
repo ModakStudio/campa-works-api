@@ -2,10 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    curriculum_repository::apply_curriculum_query_filters,
-    master_course_repository::apply_master_course_query_filters,
-};
 use crate::{
     models::{
         course_curriculum::{CourseCurriculum, NewCourseCurriculum},
@@ -30,9 +26,9 @@ macro_rules! apply_course_curriculum_query_filters {
             query = query.filter(course_curriculum::id.eq(course_curriculum_id));
         }
 
-        query = apply_master_course_query_filters!(query, $params);
+        query = crate::apply_master_course_query_filters!(query, $params);
 
-        query = apply_curriculum_query_filters!(query, $params);
+        query = crate::apply_curriculum_query_filters!(query, $params);
 
         query
     }};

@@ -2,10 +2,6 @@ use std::collections::HashMap;
 
 use diesel::prelude::*;
 
-use super::{
-    facility_repository::apply_facility_query_filters,
-    master_course_repository::apply_master_course_query_filters,
-};
 use crate::{
     models::{
         course_facility::{CourseFacility, NewCourseFacility},
@@ -28,9 +24,9 @@ macro_rules! apply_course_facility_query_filters {
             query = query.filter(course_facility::id.eq(course_facility_id));
         }
 
-        query = apply_master_course_query_filters!(query, $params);
+        query = crate::apply_master_course_query_filters!(query, $params);
 
-        query = apply_facility_query_filters!(query, $params);
+        query = crate::apply_facility_query_filters!(query, $params);
 
         query
     }};
