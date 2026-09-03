@@ -6,6 +6,7 @@ pub mod course_facility;
 pub mod course_pool;
 pub mod course_preference;
 pub mod course_preference_bookmark;
+pub mod curriculum;
 pub mod facility;
 pub mod major;
 pub mod master_course;

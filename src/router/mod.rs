@@ -6,6 +6,7 @@ pub mod course_pool_router;
 pub mod course_preference_bookmark_router;
 pub mod course_preference_router;
 pub mod course_router;
+pub mod curriculum_router;
 pub mod facility_router;
 pub mod major_router;
 pub mod master_course_router;

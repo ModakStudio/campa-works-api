@@ -46,6 +46,7 @@ macro_rules! apply_major_query_filters {
         query
     }};
 }
+pub use apply_major_query_filters;
 
 pub struct MajorRepository;
 

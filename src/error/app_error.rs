@@ -25,6 +25,10 @@ pub enum AppError {
     MajorNotFound,
     #[error("Major already exists")]
     MajorAlreadyExists,
+    #[error("Curriculum not found")]
+    CurriculumNotFound,
+    #[error("Curriculum already exists")]
+    CurriculumAlreadyExists,
     #[error("Master course not found")]
     MasterCourseNotFound,
     #[error("Master course already exists")]
@@ -94,6 +98,8 @@ impl IntoResponse for AppError {
             AppError::SemesterAlreadyExists => StatusCode::CONFLICT,
             AppError::MajorNotFound => StatusCode::NOT_FOUND,
             AppError::MajorAlreadyExists => StatusCode::CONFLICT,
+            AppError::CurriculumNotFound => StatusCode::NOT_FOUND,
+            AppError::CurriculumAlreadyExists => StatusCode::CONFLICT,
             AppError::MasterCourseNotFound => StatusCode::NOT_FOUND,
             AppError::MasterCourseAlreadyExists => StatusCode::CONFLICT,
             AppError::CourseNotFound => StatusCode::NOT_FOUND,
