@@ -4,6 +4,7 @@ pub mod classroom;
 pub mod classroom_facility;
 pub mod course;
 pub mod course_assignment;
+pub mod course_curriculum;
 pub mod course_facility;
 pub mod course_pool;
 pub mod course_preference;

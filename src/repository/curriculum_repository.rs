@@ -34,6 +34,7 @@ macro_rules! apply_curriculum_query_filters {
         query
     }};
 }
+pub use apply_curriculum_query_filters;
 
 pub struct CurriculumRepository;
 

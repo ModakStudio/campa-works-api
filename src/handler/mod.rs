@@ -1,6 +1,7 @@
 pub mod classroom_facility_handler;
 pub mod classroom_handler;
 pub mod course_assignment_handler;
+pub mod course_curriculum_handler;
 pub mod course_facility_handler;
 pub mod course_handler;
 pub mod course_pool_handler;

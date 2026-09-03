@@ -23,6 +23,7 @@ use state::app_state::AppState;
 use crate::router::{
     classroom_facility_router::classroom_facility_router, classroom_router::classroom_router,
     course_assignment_router::course_assignment_router,
+    course_curriculum_router::course_curriculum_router,
     course_facility_router::course_facility_router, course_pool_router::course_pool_router,
     course_preference_bookmark_router::course_preference_bookmark_router,
     course_preference_router::course_preference_router, course_router::course_router,
@@ -44,11 +45,13 @@ async fn main() {
         .nest("/api/professors", professor_router())
         .nest("/api/semesters", semester_router())
         .nest("/api/majors", major_router())
+        .nest("/api/curriculums", curriculum_router())
         .nest("/api/master-courses", master_course_router())
         .nest("/api/courses", course_router())
         .nest("/api/course-pools", course_pool_router())
         .nest("/api/course-preferences", course_preference_router())
         .nest("/api/course-assignments", course_assignment_router())
+        .nest("/api/course-curriculums", course_curriculum_router())
         .nest("/api/professor-quotas", professor_quota_router())
         .nest(
             "/api/course-preference-bookmarks",
@@ -59,7 +62,6 @@ async fn main() {
         .nest("/api/course-facilities", course_facility_router())
         .nest("/api/classroom-facilities", classroom_facility_router())
         .nest("/api/timetables", timetable_router())
-        .nest("/api/curriculums", curriculum_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();

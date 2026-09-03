@@ -1,6 +1,7 @@
 pub mod classroom_facility_repository;
 pub mod classroom_repository;
 pub mod course_assignment_repository;
+pub mod course_curriculum_repository;
 pub mod course_facility_repository;
 pub mod course_pool_repository;
 pub mod course_preference_bookmark_repository;

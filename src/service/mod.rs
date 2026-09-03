@@ -1,6 +1,7 @@
 pub mod classroom_facility_service;
 pub mod classroom_service;
 pub mod course_assignment_service;
+pub mod course_curriculum_service;
 pub mod course_facility_service;
 pub mod course_pool_service;
 pub mod course_preference_bookmark_service;
