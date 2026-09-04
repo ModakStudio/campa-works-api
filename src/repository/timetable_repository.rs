@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use chrono::NaiveTime;
 use diesel::prelude::*;
 
 use crate::{
@@ -42,17 +43,17 @@ macro_rules! apply_timetable_query_filters {
         {
             query = query.filter(timetable::day_of_week.eq(DayOfWeek::from(day_of_week)));
         }
-        if let Some(start_period) = $params
-            .get("start_period")
-            .and_then(|value| value.parse::<i32>().ok())
+        if let Some(start_time) = $params
+            .get("start_time")
+            .and_then(|value| value.parse::<NaiveTime>().ok())
         {
-            query = query.filter(timetable::start_period.eq(start_period));
+            query = query.filter(timetable::start_time.eq(start_time));
         }
-        if let Some(end_period) = $params
-            .get("end_period")
-            .and_then(|value| value.parse::<i32>().ok())
+        if let Some(end_time) = $params
+            .get("end_time")
+            .and_then(|value| value.parse::<NaiveTime>().ok())
         {
-            query = query.filter(timetable::end_period.eq(end_period));
+            query = query.filter(timetable::end_time.eq(end_time));
         }
 
         query
