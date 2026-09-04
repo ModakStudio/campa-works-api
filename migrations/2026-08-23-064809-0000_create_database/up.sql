@@ -473,11 +473,11 @@ CREATE TABLE timetable (
 
     day_of_week day_of_week NOT NULL,
 
-    start_period TIME NOT NULL,
-    end_period TIME NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
 
     CONSTRAINT timetable_start_end_period_check
-        CHECK (start_period <= end_period),
+        CHECK (start_time <= end_time),
 
     CONSTRAINT timetable_assignment_id_fkey
         FOREIGN KEY (assignment_id)

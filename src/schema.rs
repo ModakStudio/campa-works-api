@@ -234,8 +234,8 @@ diesel::table! {
         assignment_id -> Int8,
         classroom_id -> Int8,
         day_of_week -> DayOfWeek,
-        start_period -> Time,
-        end_period -> Time,
+        start_time -> Time,
+        end_time -> Time,
     }
 }
 
