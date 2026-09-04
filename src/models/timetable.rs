@@ -1,3 +1,4 @@
+use chrono::NaiveTime;
 use diesel::prelude::*;
 
 use crate::{models::enums::DayOfWeek, schema::timetable};
@@ -12,8 +13,8 @@ pub struct Timetable {
 
     pub day_of_week: DayOfWeek,
 
-    pub start_period: i32,
-    pub end_period: i32,
+    pub start_time: NaiveTime,
+    pub end_time: NaiveTime,
 }
 
 #[derive(Debug, Insertable)]
@@ -24,8 +25,8 @@ pub struct NewTimetable {
 
     pub day_of_week: DayOfWeek,
 
-    pub start_period: i32,
-    pub end_period: i32,
+    pub start_time: NaiveTime,
+    pub end_time: NaiveTime,
 }
 
 #[derive(Debug, AsChangeset)]
@@ -36,6 +37,6 @@ pub struct UpdateTimetable {
 
     pub day_of_week: Option<DayOfWeek>,
 
-    pub start_period: Option<i32>,
-    pub end_period: Option<i32>,
+    pub start_time: Option<NaiveTime>,
+    pub end_time: Option<NaiveTime>,
 }

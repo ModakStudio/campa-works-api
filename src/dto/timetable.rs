@@ -1,3 +1,4 @@
+use chrono::NaiveTime;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -16,8 +17,8 @@ pub struct CreateTimetableRequest {
 
     pub day_of_week: DayOfWeek,
 
-    pub start_period: i32,
-    pub end_period: i32,
+    pub start_time: NaiveTime,
+    pub end_time: NaiveTime,
 }
 
 #[derive(Debug, Deserialize)]
@@ -27,8 +28,8 @@ pub struct UpdateTimetableRequest {
 
     pub day_of_week: Option<DayOfWeek>,
 
-    pub start_period: Option<i32>,
-    pub end_period: Option<i32>,
+    pub start_time: Option<NaiveTime>,
+    pub end_time: Option<NaiveTime>,
 }
 
 #[derive(Debug, Serialize)]
@@ -40,8 +41,8 @@ pub struct TimetableResponse {
 
     pub day_of_week: DayOfWeek,
 
-    pub start_period: i32,
-    pub end_period: i32,
+    pub start_time: NaiveTime,
+    pub end_time: NaiveTime,
 }
 
 impl
@@ -83,8 +84,8 @@ impl
 
             day_of_week: timetable.day_of_week,
 
-            start_period: timetable.start_period,
-            end_period: timetable.end_period,
+            start_time: timetable.start_time,
+            end_time: timetable.end_time,
         }
     }
 }
