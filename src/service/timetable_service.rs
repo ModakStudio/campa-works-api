@@ -47,8 +47,8 @@ impl TimetableService {
             assignment_id: request.assignment_id,
             classroom_id: request.classroom_id,
             day_of_week: request.day_of_week,
-            start_period: request.start_period,
-            end_period: request.end_period,
+            start_time: request.start_time,
+            end_time: request.end_time,
         };
 
         TimetableRepository::create(conn, &new_timetable).map_err(|_| AppError::DatabaseError)?;
@@ -103,8 +103,8 @@ impl TimetableService {
 
             day_of_week: request.day_of_week,
 
-            start_period: request.start_period,
-            end_period: request.end_period,
+            start_time: request.start_time,
+            end_time: request.end_time,
         };
 
         TimetableRepository::update(conn, timetable_id, &updated_timetable)
