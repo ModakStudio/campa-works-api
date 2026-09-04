@@ -473,8 +473,8 @@ CREATE TABLE timetable (
 
     day_of_week day_of_week NOT NULL,
 
-    start_period INTEGER NOT NULL,
-    end_period INTEGER NOT NULL,
+    start_period TIME NOT NULL,
+    end_period TIME NOT NULL,
 
     CONSTRAINT timetable_start_end_period_check
         CHECK (start_period <= end_period),
