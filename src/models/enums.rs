@@ -97,11 +97,11 @@ pub enum SemesterType {
 #[ExistingTypePath = "crate::schema::sql_types::SemesterStatus"]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum SemesterStatus {
-    #[db_rename = "OPEN"]
-    Open,
+    #[db_rename = "ACTIVE"]
+    Active,
 
-    #[db_rename = "CLOSED"]
-    Closed,
+    #[db_rename = "INACTIVE"]
+    Inactive,
 }
 
 //
