@@ -5,10 +5,7 @@ use diesel::PgConnection;
 use crate::{
     dto::semester::{CreateSemesterRequest, SemesterResponse, UpdateSemesterRequest},
     error::app_error::AppError,
-    models::{
-        enums::SemesterStatus,
-        semester::{NewSemester, UpdateSemester},
-    },
+    models::semester::{NewSemester, UpdateSemester},
     repository::semester_repository::SemesterRepository,
 };
 
@@ -34,7 +31,7 @@ impl SemesterService {
         let new_semester = NewSemester {
             year: request.year,
             semester_: request.semester_,
-            semester_status: SemesterStatus::Open,
+            semester_status: request.semester_status,
         };
 
         let semester =

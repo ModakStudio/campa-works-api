@@ -11,6 +11,8 @@ use crate::models::{
 pub struct CreateSemesterRequest {
     pub year: i32,
     pub semester_: SemesterType,
+
+    pub semester_status: SemesterStatus,
 }
 
 #[derive(Debug, Deserialize)]
