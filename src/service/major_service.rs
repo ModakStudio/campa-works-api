@@ -30,6 +30,8 @@ impl MajorService {
         let new_major = NewMajor {
             major_name: request.major_name,
             major_code: request.major_code,
+
+            major_status: request.major_status
         };
 
         let major =

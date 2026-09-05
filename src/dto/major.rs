@@ -6,6 +6,8 @@ use crate::models::{enums::MajorStatus, major::Major};
 pub struct CreateMajorRequest {
     pub major_name: String,
     pub major_code: String,
+
+    pub major_status: MajorStatus,
 }
 
 #[derive(Debug, Deserialize)]

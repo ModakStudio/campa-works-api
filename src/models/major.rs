@@ -18,6 +18,8 @@ pub struct Major {
 pub struct NewMajor {
     pub major_name: String,
     pub major_code: String,
+
+    pub major_status: MajorStatus,
 }
 
 #[derive(Debug, AsChangeset)]
