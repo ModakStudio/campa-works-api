@@ -16,11 +16,11 @@ macro_rules! apply_semester_query_filters {
     ($query:expr, $params:expr) => {{
         let mut query = $query;
 
-        if let Some(id) = $params
-            .get("id")
+        if let Some(semester_id) = $params
+            .get("semester_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
-            query = query.filter(semester::id.eq(id));
+            query = query.filter(semester::id.eq(semester_id));
         }
         if let Some(year) = $params
             .get("year")
