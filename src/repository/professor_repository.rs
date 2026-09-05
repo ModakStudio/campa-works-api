@@ -55,7 +55,12 @@ macro_rules! apply_professor_query_filters {
             query = query.filter(professor::research_field.ilike(format!("%{}%", research_field)));
         }
 
-        query = crate::apply_semester_query_filters!(query, $params);
+        if let Some(appointed_at) = $params
+            .get("id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(semester::id.eq(appointed_at));
+        }
 
         if let Some(professor_status) = $params
             .get("professor_status")
