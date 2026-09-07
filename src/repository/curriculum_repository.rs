@@ -18,7 +18,7 @@ macro_rules! apply_curriculum_query_filters {
         let mut query = $query;
 
         if let Some(curriculum_id) = $params
-            .get("id")
+            .get("curriculum_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(curriculum::id.eq(curriculum_id));

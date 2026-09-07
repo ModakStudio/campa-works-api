@@ -18,7 +18,7 @@ macro_rules! apply_professor_query_filters {
         let mut query = $query;
 
         if let Some(professor_id) = $params
-            .get("id")
+            .get("professor_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(professor::id.eq(professor_id));

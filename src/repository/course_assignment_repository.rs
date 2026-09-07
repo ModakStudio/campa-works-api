@@ -21,7 +21,7 @@ macro_rules! apply_course_assignment_query_filters {
         let mut query = $query;
 
         if let Some(course_assignment_id) = $params
-            .get("id")
+            .get("course_assignment_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(course_assignment::id.eq(course_assignment_id));

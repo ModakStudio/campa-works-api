@@ -26,7 +26,7 @@ macro_rules! apply_timetable_query_filters {
         let mut query = $query;
 
         if let Some(timetable_id) = $params
-            .get("id")
+            .get("timetable_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(timetable::id.eq(timetable_id));

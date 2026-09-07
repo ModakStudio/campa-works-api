@@ -16,7 +16,7 @@ macro_rules! apply_major_query_filters {
         let mut query = $query;
 
         if let Some(major_id) = $params
-            .get("id")
+            .get("major_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(major::id.eq(major_id));

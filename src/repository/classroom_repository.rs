@@ -13,7 +13,7 @@ macro_rules! apply_classroom_query_filters {
         let mut query = $query;
 
         if let Some(classroom_id) = $params
-            .get("id")
+            .get("classroom_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(classroom::id.eq(classroom_id));
