@@ -19,7 +19,7 @@ macro_rules! apply_course_pool_query_filters {
         let mut query = $query;
 
         if let Some(course_pool_id) = $params
-            .get("id")
+            .get("course_pool_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(course_pool::id.eq(course_pool_id));

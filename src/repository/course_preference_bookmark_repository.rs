@@ -19,7 +19,7 @@ macro_rules! apply_course_preference_bookmark_query_filters {
         let mut query = $query;
 
         if let Some(bookmark_id) = $params
-            .get("id")
+            .get("course_preference_bookmark_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(course_preference_bookmark::id.eq(bookmark_id));

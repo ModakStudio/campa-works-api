@@ -17,7 +17,7 @@ macro_rules! apply_user_query_filters {
         let mut query = $query;
 
         if let Some(user_id) = $params
-            .get("id")
+            .get("user_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(users::id.eq(user_id));

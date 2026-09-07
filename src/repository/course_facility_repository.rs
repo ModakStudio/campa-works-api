@@ -18,7 +18,7 @@ macro_rules! apply_course_facility_query_filters {
         let mut query = $query;
 
         if let Some(course_facility_id) = $params
-            .get("id")
+            .get("course_facility_id")
             .and_then(|value| value.parse::<i64>().ok())
         {
             query = query.filter(course_facility::id.eq(course_facility_id));

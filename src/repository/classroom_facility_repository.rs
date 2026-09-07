@@ -11,6 +11,25 @@ use crate::{
     schema::{classroom, classroom_facility, facility},
 };
 
+macro_rules! apply_classroom_facility_query_filters {
+    ($query:expr, $params:expr) => {{
+        let mut query = $query;
+
+        if let Some(classroom_facility_id) = $params
+            .get("classroom_facility_id")
+            .and_then(|value| value.parse::<i64>().ok())
+        {
+            query = query.filter(classroom_facility::id.eq(classroom_facility_id));
+        }
+
+        query = crate::apply_classroom_query_filters!(query, $params);
+
+        query = crate::apply_facility_query_filters!(query, $params);
+
+        query
+    }};
+}
+
 pub struct ClassroomFacilityRepository;
 
 impl ClassroomFacilityRepository {
@@ -33,8 +52,7 @@ impl ClassroomFacilityRepository {
             .inner_join(facility::table)
             .into_boxed();
 
-        query = crate::apply_classroom_query_filters!(query, params);
-        query = crate::apply_facility_query_filters!(query, params);
+        query = apply_classroom_facility_query_filters!(query, params);
 
         query
             .select((
