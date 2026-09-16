@@ -18,8 +18,8 @@ impl CourseService {
     ) -> Result<CourseResponse, AppError> {
         let query_params = HashMap::from([
             (
-                "master_course_id".to_string(),
-                request.master_course_id.to_string(),
+                "course_curriculum_id".to_string(),
+                request.course_curriculum_id.to_string(),
             ),
             (
                 "section_number".to_string(),
@@ -35,7 +35,7 @@ impl CourseService {
         }
 
         let new_course = NewCourse {
-            master_course_id: request.master_course_id,
+            course_curriculum_id: request.course_curriculum_id,
 
             course_description: request.course_description,
 

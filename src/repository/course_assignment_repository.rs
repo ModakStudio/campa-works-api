@@ -6,13 +6,19 @@ use crate::{
     models::{
         course::Course,
         course_assignment::{CourseAssignment, NewCourseAssignment},
+        course_curriculum::CourseCurriculum,
+        curriculum::Curriculum,
         enums::*,
+        major::Major,
         master_course::MasterCourse,
         professor::Professor,
         semester::Semester,
         user::User,
     },
-    schema::{course, course_assignment, master_course, professor, semester, users},
+    schema::{
+        course, course_assignment, course_curriculum, curriculum, major, master_course, professor,
+        semester, users,
+    },
 };
 
 #[macro_export]
@@ -55,26 +61,38 @@ impl CourseAssignmentRepository {
         Vec<(
             CourseAssignment,
             Course,
+            CourseCurriculum,
             MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
             Professor,
             User,
-            Semester,
         )>,
     > {
         let mut query = course_assignment::table
-            .inner_join(course::table.inner_join(master_course::table))
             .inner_join(
-                professor::table
-                    .inner_join(users::table)
-                    .inner_join(semester::table),
+                course::table.inner_join(
+                    course_curriculum::table
+                        .inner_join(master_course::table)
+                        .inner_join(
+                            curriculum::table
+                                .inner_join(semester::table)
+                                .inner_join(major::table),
+                        ),
+                ),
             )
+            .inner_join(professor::table.inner_join(users::table))
             .select((
                 CourseAssignment::as_select(),
                 Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
             ))
             .into_boxed();
 
@@ -89,26 +107,38 @@ impl CourseAssignmentRepository {
     ) -> QueryResult<(
         CourseAssignment,
         Course,
+        CourseCurriculum,
         MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
         Professor,
         User,
-        Semester,
     )> {
         course_assignment::table
-            .inner_join(course::table.inner_join(master_course::table))
             .inner_join(
-                professor::table
-                    .inner_join(users::table)
-                    .inner_join(semester::table),
+                course::table.inner_join(
+                    course_curriculum::table
+                        .inner_join(master_course::table)
+                        .inner_join(
+                            curriculum::table
+                                .inner_join(semester::table)
+                                .inner_join(major::table),
+                        ),
+                ),
             )
+            .inner_join(professor::table.inner_join(users::table))
             .filter(course_assignment::id.eq(course_assignment_id))
             .select((
                 CourseAssignment::as_select(),
                 Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
             ))
             .first(conn)
     }

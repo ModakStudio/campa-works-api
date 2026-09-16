@@ -5,10 +5,14 @@ use diesel::prelude::*;
 use crate::{
     models::{
         course::{Course, NewCourse, UpdateCourse},
+        course_curriculum::CourseCurriculum,
+        curriculum::Curriculum,
         enums::*,
+        major::Major,
         master_course::MasterCourse,
+        semester::Semester,
     },
-    schema::{course, master_course},
+    schema::{course, course_curriculum, curriculum, major, master_course, semester},
 };
 
 #[macro_export]
@@ -23,7 +27,7 @@ macro_rules! apply_course_query_filters {
             query = query.filter(course::id.eq(course_id));
         }
 
-        query = crate::apply_master_course_query_filters!(query, $params);
+        query = crate::apply_course_curriculum_query_filters!(query, $params);
 
         if let Some(course_description) = $params
             .get("course_description")
@@ -107,10 +111,34 @@ impl CourseRepository {
     pub fn find_all(
         conn: &mut PgConnection,
         params: &HashMap<String, String>,
-    ) -> QueryResult<Vec<(Course, MasterCourse)>> {
+    ) -> QueryResult<
+        Vec<(
+            Course,
+            CourseCurriculum,
+            MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
+        )>,
+    > {
         let mut query = course::table
-            .inner_join(master_course::table)
-            .select((Course::as_select(), MasterCourse::as_select()))
+            .inner_join(
+                course_curriculum::table
+                    .inner_join(master_course::table)
+                    .inner_join(
+                        curriculum::table
+                            .inner_join(semester::table)
+                            .inner_join(major::table),
+                    ),
+            )
+            .select((
+                Course::as_select(),
+                CourseCurriculum::as_select(),
+                MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+            ))
             .into_boxed();
 
         query = apply_course_query_filters!(query, params);
@@ -121,11 +149,33 @@ impl CourseRepository {
     pub fn find_by_id(
         conn: &mut PgConnection,
         course_id: i64,
-    ) -> QueryResult<(Course, MasterCourse)> {
+    ) -> QueryResult<(
+        Course,
+        CourseCurriculum,
+        MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
+    )> {
         course::table
-            .inner_join(master_course::table)
+            .inner_join(
+                course_curriculum::table
+                    .inner_join(master_course::table)
+                    .inner_join(
+                        curriculum::table
+                            .inner_join(semester::table)
+                            .inner_join(major::table),
+                    ),
+            )
             .filter(course::id.eq(course_id))
-            .select((Course::as_select(), MasterCourse::as_select()))
+            .select((
+                Course::as_select(),
+                CourseCurriculum::as_select(),
+                MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+            ))
             .first(conn)
     }
 

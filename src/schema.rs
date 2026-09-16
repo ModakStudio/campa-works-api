@@ -75,7 +75,7 @@ diesel::table! {
 
     course (id) {
         id -> Int8,
-        master_course_id -> Int8,
+        course_curriculum_id -> Int8,
         course_description -> Nullable<Varchar>,
         grade -> Int4,
         credit -> Int4,
@@ -258,7 +258,7 @@ diesel::table! {
 
 diesel::joinable!(classroom_facility -> classroom (classroom_id));
 diesel::joinable!(classroom_facility -> facility (facility_id));
-diesel::joinable!(course -> master_course (master_course_id));
+diesel::joinable!(course -> course_curriculum (course_curriculum_id));
 diesel::joinable!(course_assignment -> course (course_id));
 diesel::joinable!(course_assignment -> professor (professor_id));
 diesel::joinable!(course_curriculum -> curriculum (curriculum_id));

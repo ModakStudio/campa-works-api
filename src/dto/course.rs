@@ -1,17 +1,21 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::master_course::MasterCourseResponse,
+    dto::course_curriculum::CourseCurriculumResponse,
     models::{
         course::Course,
+        course_curriculum::CourseCurriculum,
+        curriculum::Curriculum,
         enums::{CourseCategory, Language},
+        major::Major,
         master_course::MasterCourse,
+        semester::Semester,
     },
 };
 
 #[derive(Debug, Deserialize)]
 pub struct CreateCourseRequest {
-    pub master_course_id: i64,
+    pub course_curriculum_id: i64,
 
     pub course_description: Option<String>,
 
@@ -51,7 +55,7 @@ pub struct UpdateCourseRequest {
 pub struct CourseResponse {
     pub id: i64,
 
-    pub master_course: MasterCourseResponse,
+    pub course_curriculum: CourseCurriculumResponse,
 
     pub course_description: Option<String>,
 
@@ -69,12 +73,36 @@ pub struct CourseResponse {
     pub participant: i32,
 }
 
-impl From<(Course, MasterCourse)> for CourseResponse {
-    fn from((course, master_course): (Course, MasterCourse)) -> Self {
+impl
+    From<(
+        Course,
+        CourseCurriculum,
+        MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
+    )> for CourseResponse
+{
+    fn from(
+        (course, course_curriculum, master_course, curriculum, semester, major): (
+            Course,
+            CourseCurriculum,
+            MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
+        ),
+    ) -> Self {
         Self {
             id: course.id,
 
-            master_course: MasterCourseResponse::from(master_course),
+            course_curriculum: CourseCurriculumResponse::from((
+                course_curriculum,
+                master_course,
+                curriculum,
+                semester,
+                major,
+            )),
 
             course_description: course.course_description,
 

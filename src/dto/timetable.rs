@@ -5,7 +5,8 @@ use crate::{
     dto::{classroom::ClassroomResponse, course_assignment::CourseAssignmentResponse},
     models::{
         classroom::Classroom, course::Course, course_assignment::CourseAssignment,
-        enums::DayOfWeek, master_course::MasterCourse, professor::Professor, semester::Semester,
+        course_curriculum::CourseCurriculum, curriculum::Curriculum, enums::DayOfWeek,
+        major::Major, master_course::MasterCourse, professor::Professor, semester::Semester,
         timetable::Timetable, user::User,
     },
 };
@@ -50,22 +51,40 @@ impl
         Timetable,
         CourseAssignment,
         Course,
+        CourseCurriculum,
         MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
         Professor,
         User,
-        Semester,
         Classroom,
     )> for TimetableResponse
 {
     fn from(
-        (timetable, assignment, course, master_course, professor, user, semester, classroom): (
+        (
+            timetable,
+            course_assignment,
+            course,
+            course_curriculum,
+            master_course,
+            curriculum,
+            semester,
+            major,
+            professor,
+            user,
+            classroom,
+        ): (
             Timetable,
             CourseAssignment,
             Course,
+            CourseCurriculum,
             MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
             Professor,
             User,
-            Semester,
             Classroom,
         ),
     ) -> Self {
@@ -73,12 +92,15 @@ impl
             id: timetable.id,
 
             assignment: CourseAssignmentResponse::from((
-                assignment,
+                course_assignment,
                 course,
+                course_curriculum,
                 master_course,
+                curriculum,
+                semester,
+                major,
                 professor,
                 user,
-                semester,
             )),
             classroom: ClassroomResponse::from(classroom),
 
