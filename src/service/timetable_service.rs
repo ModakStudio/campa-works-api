@@ -11,6 +11,7 @@ use crate::{
         course_assignment_repository::CourseAssignmentRepository,
         timetable_repository::TimetableRepository,
     },
+    service::course_service::CourseService,
 };
 
 pub struct TimetableService;
@@ -55,6 +56,20 @@ impl TimetableService {
             .map_err(|_| AppError::DatabaseError)?;
 
         Ok(timetable.into())
+    }
+
+    pub fn create_all_in_new_semester(
+        conn: &mut PgConnection,
+        new_semester_id: i64,
+    ) -> Result<(), AppError> {
+        // Create all courses in the new semester
+        CourseService::create_all_in_new_semester(conn, new_semester_id)?;
+
+        // ToDo: Assign professors to courses in the new semester
+
+        // ToDo: Create timetables for the new semester based on the courses and professors
+
+        Ok(())
     }
 
     pub fn get_all(
