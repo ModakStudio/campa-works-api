@@ -3,10 +3,7 @@ use std::collections::HashMap;
 use diesel::PgConnection;
 
 use crate::{
-    dto::{
-        course_curriculum::{self, CourseCurriculumResponse, CreateCourseCurriculumRequest},
-        curriculum, semester,
-    },
+    dto::course_curriculum::{CourseCurriculumResponse, CreateCourseCurriculumRequest},
     error::app_error::AppError,
     models::course_curriculum::NewCourseCurriculum,
     repository::{

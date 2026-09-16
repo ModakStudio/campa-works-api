@@ -87,6 +87,24 @@ impl CurriculumRepository {
             .first(conn)
     }
 
+    pub fn find_by_semester_id_and_major_id(
+        conn: &mut PgConnection,
+        semester_id: i64,
+        major_id: i64,
+    ) -> QueryResult<(Curriculum, Semester, Major)> {
+        curriculum::table
+            .inner_join(semester::table)
+            .inner_join(major::table)
+            .filter(curriculum::semester_id.eq(semester_id))
+            .filter(curriculum::major_id.eq(major_id))
+            .select((
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+            ))
+            .first(conn)
+    }
+
     pub fn delete(conn: &mut PgConnection, curriculum_id: i64) -> QueryResult<usize> {
         diesel::delete(curriculum::table.filter(curriculum::id.eq(curriculum_id))).execute(conn)
     }
