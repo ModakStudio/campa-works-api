@@ -179,6 +179,22 @@ impl CourseRepository {
             .first(conn)
     }
 
+    pub fn find_course_amount_by_semester_id(conn: &mut PgConnection, semester_id: i64) -> QueryResult<i64> {
+        course::table
+            .inner_join(
+                course_curriculum::table
+                    .inner_join(master_course::table)
+                    .inner_join(
+                        curriculum::table
+                            .inner_join(semester::table)
+                            .inner_join(major::table),
+                    ),
+            )
+            .filter(semester::id.eq(semester_id))
+            .count()
+            .get_result(conn)
+    }
+
     pub fn update(
         conn: &mut PgConnection,
         course_id: i64,
