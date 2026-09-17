@@ -28,6 +28,13 @@ macro_rules! apply_curriculum_query_filters {
 
         query = crate::apply_major_query_filters!(query, $params);
 
+        if let Some(curriculum_grade) = $params
+            .get("curriculum_grade")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(curriculum::curriculum_grade.eq(curriculum_grade));
+        }
+
         query
     }};
 }
@@ -72,6 +79,24 @@ impl CurriculumRepository {
             .inner_join(semester::table)
             .inner_join(major::table)
             .filter(curriculum::id.eq(curriculum_id))
+            .select((
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+            ))
+            .first(conn)
+    }
+
+    pub fn find_by_semester_id_and_major_id(
+        conn: &mut PgConnection,
+        semester_id: i64,
+        major_id: i64,
+    ) -> QueryResult<(Curriculum, Semester, Major)> {
+        curriculum::table
+            .inner_join(semester::table)
+            .inner_join(major::table)
+            .filter(curriculum::semester_id.eq(semester_id))
+            .filter(curriculum::major_id.eq(major_id))
             .select((
                 Curriculum::as_select(),
                 Semester::as_select(),

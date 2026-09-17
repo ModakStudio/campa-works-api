@@ -31,6 +31,23 @@ pub async fn create_timetable(
     Ok((StatusCode::CREATED, Json(timetable)))
 }
 
+pub async fn create_auto_in_new_semester(
+    State(state): State<Arc<AppState>>,
+    Path(new_semester_id): Path<i64>,
+) -> Result<StatusCode, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
+
+    conn.interact(move |conn| TimetableService::create_all_in_new_semester(conn, new_semester_id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
+
+    Ok(StatusCode::CREATED)
+}
+
 pub async fn get_timetables(
     State(state): State<Arc<AppState>>,
     Query(params): Query<std::collections::HashMap<String, String>>,

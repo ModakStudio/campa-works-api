@@ -79,6 +79,22 @@ impl SemesterRepository {
             .first(conn)
     }
 
+    pub fn find_previous_year_semester(
+        conn: &mut PgConnection,
+        semester_id: i64,
+        year_delta: i32,
+    ) -> QueryResult<Semester> {
+        let current_semester = Self::find_by_id(conn, semester_id)?;
+
+        let query = semester::table
+            .filter(semester::year.eq(current_semester.year - year_delta))
+            .filter(semester::semester_.eq(current_semester.semester_))
+            .select(Semester::as_select())
+            .into_boxed();
+
+        query.first(conn)
+    }
+
     pub fn update(
         conn: &mut PgConnection,
         semester_id: i64,

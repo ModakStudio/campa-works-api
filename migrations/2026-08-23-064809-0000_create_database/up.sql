@@ -196,9 +196,10 @@ CREATE TABLE curriculum (
 
     semester_id BIGINT NOT NULL,
     major_id BIGINT NOT NULL,
+    curriculum_grade INTEGER NOT NULL,
 
-    CONSTRAINT curriculum_semester_major_unique
-        UNIQUE (semester_id, major_id),
+    CONSTRAINT curriculum_semester_major_curriculum_grade_unique
+        UNIQUE (semester_id, major_id, curriculum_grade),
 
     CONSTRAINT curriculum_semester_id_fkey
         FOREIGN KEY (semester_id)
@@ -260,7 +261,7 @@ CREATE TABLE course_curriculum (
 CREATE TABLE course (
     id BIGSERIAL PRIMARY KEY,
 
-    master_course_id BIGINT NOT NULL,
+    course_curriculum_id BIGINT NOT NULL,
 
     course_description VARCHAR,
 
@@ -277,12 +278,12 @@ CREATE TABLE course (
     capacity INTEGER NOT NULL,
     participant INTEGER NOT NULL DEFAULT 0,
 
-    CONSTRAINT course_master_course_section_unique
-        UNIQUE (master_course_id, section_number),
+    CONSTRAINT course_course_curriculum_section_unique
+        UNIQUE (course_curriculum_id, section_number),
 
-    CONSTRAINT course_master_course_id_fkey
-        FOREIGN KEY (master_course_id)
-        REFERENCES master_course(id)
+    CONSTRAINT course_course_curriculum_id_fkey
+        FOREIGN KEY (course_curriculum_id)
+        REFERENCES course_curriculum(id)
 );
 
 

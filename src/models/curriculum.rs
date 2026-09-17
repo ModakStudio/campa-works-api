@@ -9,6 +9,7 @@ pub struct Curriculum {
 
     pub semester_id: i64,
     pub major_id: i64,
+    pub curriculum_grade: i32,
 }
 
 #[derive(Debug, Insertable)]
@@ -16,4 +17,5 @@ pub struct Curriculum {
 pub struct NewCurriculum {
     pub semester_id: i64,
     pub major_id: i64,
+    pub curriculum_grade: i32,
 }

@@ -8,7 +8,10 @@ use crate::{
         classroom::Classroom,
         course::Course,
         course_assignment::CourseAssignment,
+        course_curriculum::CourseCurriculum,
+        curriculum::Curriculum,
         enums::*,
+        major::Major,
         master_course::MasterCourse,
         professor::Professor,
         semester::Semester,
@@ -16,7 +19,8 @@ use crate::{
         user::User,
     },
     schema::{
-        classroom, course, course_assignment, master_course, professor, semester, timetable, users,
+        classroom, course, course_assignment, course_curriculum, curriculum, major, master_course,
+        professor, semester, timetable, users,
     },
 };
 
@@ -78,32 +82,44 @@ impl TimetableRepository {
             Timetable,
             CourseAssignment,
             Course,
+            CourseCurriculum,
             MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
             Professor,
             User,
-            Semester,
             Classroom,
         )>,
     > {
         let mut query = timetable::table
             .inner_join(
                 course_assignment::table
-                    .inner_join(course::table.inner_join(master_course::table))
                     .inner_join(
-                        professor::table
-                            .inner_join(users::table)
-                            .inner_join(semester::table),
-                    ),
+                        course::table.inner_join(
+                            course_curriculum::table
+                                .inner_join(master_course::table)
+                                .inner_join(
+                                    curriculum::table
+                                        .inner_join(semester::table)
+                                        .inner_join(major::table),
+                                ),
+                        ),
+                    )
+                    .inner_join(professor::table.inner_join(users::table)),
             )
             .inner_join(classroom::table)
             .select((
                 Timetable::as_select(),
                 CourseAssignment::as_select(),
                 Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
                 Classroom::as_select(),
             ))
             .into_boxed();
@@ -120,21 +136,30 @@ impl TimetableRepository {
         Timetable,
         CourseAssignment,
         Course,
+        CourseCurriculum,
         MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
         Professor,
         User,
-        Semester,
         Classroom,
     )> {
         timetable::table
             .inner_join(
                 course_assignment::table
-                    .inner_join(course::table.inner_join(master_course::table))
                     .inner_join(
-                        professor::table
-                            .inner_join(users::table)
-                            .inner_join(semester::table),
-                    ),
+                        course::table.inner_join(
+                            course_curriculum::table
+                                .inner_join(master_course::table)
+                                .inner_join(
+                                    curriculum::table
+                                        .inner_join(semester::table)
+                                        .inner_join(major::table),
+                                ),
+                        ),
+                    )
+                    .inner_join(professor::table.inner_join(users::table)),
             )
             .inner_join(classroom::table)
             .filter(timetable::id.eq(timetable_id))
@@ -142,13 +167,79 @@ impl TimetableRepository {
                 Timetable::as_select(),
                 CourseAssignment::as_select(),
                 Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
                 Classroom::as_select(),
             ))
             .first(conn)
+    }
+
+    pub fn find_overlapping_timetables(
+        conn: &mut PgConnection,
+        classroom_id: i64,
+        day_of_week: DayOfWeek,
+        start_time: NaiveTime,
+        end_time: NaiveTime,
+    ) -> QueryResult<
+        Vec<(
+            Timetable,
+            CourseAssignment,
+            Course,
+            CourseCurriculum,
+            MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
+            Professor,
+            User,
+            Classroom,
+        )>,
+    > {
+        let query = timetable::table
+            .inner_join(
+                course_assignment::table
+                    .inner_join(
+                        course::table.inner_join(
+                            course_curriculum::table
+                                .inner_join(master_course::table)
+                                .inner_join(
+                                    curriculum::table
+                                        .inner_join(semester::table)
+                                        .inner_join(major::table),
+                                ),
+                        ),
+                    )
+                    .inner_join(professor::table.inner_join(users::table)),
+            )
+            .inner_join(classroom::table)
+            .filter(timetable::classroom_id.eq(classroom_id))
+            .filter(timetable::day_of_week.eq(day_of_week))
+            .filter(
+                timetable::start_time
+                    .lt(end_time)
+                    .or(timetable::end_time.gt(start_time)),
+            )
+            .select((
+                Timetable::as_select(),
+                CourseAssignment::as_select(),
+                Course::as_select(),
+                CourseCurriculum::as_select(),
+                MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+                Professor::as_select(),
+                User::as_select(),
+                Classroom::as_select(),
+            ))
+            .into_boxed();
+
+        query.load(conn)
     }
 
     pub fn update(

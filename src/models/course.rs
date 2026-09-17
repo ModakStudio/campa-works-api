@@ -10,7 +10,7 @@ use crate::{
 pub struct Course {
     pub id: i64,
 
-    pub master_course_id: i64,
+    pub course_curriculum_id: i64,
 
     pub course_description: Option<String>,
 
@@ -31,7 +31,7 @@ pub struct Course {
 #[derive(Debug, Insertable)]
 #[diesel(table_name = course)]
 pub struct NewCourse {
-    pub master_course_id: i64,
+    pub course_curriculum_id: i64,
 
     pub course_description: Option<String>,
 

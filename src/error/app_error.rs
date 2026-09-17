@@ -81,6 +81,8 @@ pub enum AppError {
     TimetableAlreadyExists,
     #[error("Timetable not found")]
     TimetableNotFound,
+    #[error("Timetable overlaps with existing timetable")]
+    TimetableOverlap,
     #[error("Database error")]
     DatabaseError,
 }
@@ -130,6 +132,7 @@ impl IntoResponse for AppError {
             AppError::FacilityNotFound => StatusCode::NOT_FOUND,
             AppError::TimetableAlreadyExists => StatusCode::CONFLICT,
             AppError::TimetableNotFound => StatusCode::NOT_FOUND,
+            AppError::TimetableOverlap => StatusCode::CONFLICT,
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
