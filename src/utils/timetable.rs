@@ -109,16 +109,12 @@ fn get_zero_idx_vec(
     professors_len: usize,
     col_idx: usize,
 ) -> Vec<usize> {
-    let mut zero_idx_vec = vec![];
-    hungarian_matrix.iter().for_each(|row| {
-        for row_idx in 0..professors_len {
-            if row[col_idx] == 0 {
-                zero_idx_vec.push(row_idx);
-            }
-        }
-    });
-
-    zero_idx_vec
+    hungarian_matrix
+        .iter()
+        .take(professors_len)
+        .enumerate()
+        .filter_map(|(row_idx, row)| (row[col_idx] == 0).then_some(row_idx))
+        .collect()
 }
 
 fn get_remaining_professor_quota(
@@ -215,12 +211,52 @@ fn execute_deep(
     )>,
     professors: &mut Vec<(Professor, User, Semester)>,
     hungarian_matrix: &mut Vec<Vec<i32>>,
+    semester_id: i64,
 ) -> Result<bool, AppError> {
-    let mut is_changed = false;
+    // Resolve the most constrained ambiguous course first. When courses have
+    // the same number of zero-cost professors, prefer a professor with fewer
+    // other zero-cost course options so their alternatives remain available.
+    let candidate = (0..courses.len())
+        .filter_map(|col_idx| {
+            let zero_idx_vec = get_zero_idx_vec(hungarian_matrix, professors.len(), col_idx);
+            (zero_idx_vec.len() > 1).then_some((col_idx, zero_idx_vec))
+        })
+        .min_by_key(|(_, zero_idx_vec)| zero_idx_vec.len());
 
-    // ToDo: Implement deep execution logic
+    let Some((col_idx, zero_idx_vec)) = candidate else {
+        return Ok(false);
+    };
 
-    Ok(is_changed)
+    let row_idx = zero_idx_vec
+        .into_iter()
+        .min_by_key(|&row_idx| {
+            hungarian_matrix[row_idx]
+                .iter()
+                .filter(|&&cost| cost == 0)
+                .count()
+        })
+        .expect("an ambiguous course must have at least two zero-cost professors");
+
+    CourseAssignmentRepository::create(
+        conn,
+        &NewCourseAssignment {
+            course_id: courses[col_idx].0.id,
+            professor_id: professors[row_idx].0.id,
+        },
+    )
+    .map_err(|_| AppError::DatabaseError)?;
+
+    if get_remaining_professor_quota(conn, professors[row_idx].0.id, semester_id)? <= 0 {
+        professors.remove(row_idx);
+        hungarian_matrix.remove(row_idx);
+    }
+
+    courses.remove(col_idx);
+    for row in hungarian_matrix.iter_mut() {
+        row.remove(col_idx);
+    }
+
+    Ok(true)
 }
 
 pub fn execute_round(
@@ -248,7 +284,7 @@ pub fn execute_round(
         {
             continue;
         }
-        if let Ok(true) = execute_deep(conn, courses, professors, hungarian_matrix) {
+        if let Ok(true) = execute_deep(conn, courses, professors, hungarian_matrix, semester_id) {
             continue;
         } else {
             break;
