@@ -184,7 +184,6 @@ fn execute_shallow(
                 },
             )
             .map_err(|_| AppError::DatabaseError)?;
-            // ToDo: Update the remaining quota of the professor after assignment
 
             if get_remaining_professor_quota(conn, professors[row_idx].0.id, semester_id)? <= 0 {
                 professors.remove(row_idx);
