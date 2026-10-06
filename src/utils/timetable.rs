@@ -1,19 +1,11 @@
-use std::collections::HashMap;
-
 use diesel::PgConnection;
 
 use crate::{
     error::app_error::AppError,
     models::{
-        course::Course,
-        course_assignment::NewCourseAssignment,
-        course_curriculum::CourseCurriculum,
-        curriculum::Curriculum,
-        enums::QuotaType::{self, Credit, Hour},
-        major::Major,
-        master_course::MasterCourse,
-        professor::Professor,
-        semester::Semester,
+        course::Course, course_assignment::NewCourseAssignment,
+        course_curriculum::CourseCurriculum, curriculum::Curriculum, enums::QuotaType,
+        major::Major, master_course::MasterCourse, professor::Professor, semester::Semester,
         user::User,
     },
     repository::{
@@ -22,7 +14,6 @@ use crate::{
         course_pool_repository::CoursePoolRepository,
         course_preference_repository::CoursePreferenceRepository,
         professor_quota_repository::ProfessorQuotaRepository,
-        professor_repository::ProfessorRepository,
     },
 };
 
@@ -48,14 +39,11 @@ pub fn init_hungarian_matrix(
                     .1
                     .id;
 
-            let course_preferencec_score_query_params = HashMap::from([
-                ("professor_id".to_string(), professor.id.to_string()),
-                ("semester_id".to_string(), semester_id.to_string()),
-                ("master_course_id".to_string(), master_course_id.to_string()),
-            ]);
-            hungarian_matrix[row_idx][col_idx] = match CoursePreferenceRepository::find_all(
+            hungarian_matrix[row_idx][col_idx] = match CoursePreferenceRepository::find_by_professor_id_and_semester_id_and_master_course_id(
                 conn,
-                &course_preferencec_score_query_params,
+                professor.id,
+                semester_id,
+                master_course_id,
             )
             .map_err(|_| AppError::DatabaseError)?
             .into_iter()
@@ -63,12 +51,10 @@ pub fn init_hungarian_matrix(
             {
                 Some((course_preference, _, _, _, _)) => course_preference.priority,
                 None => {
-                    if CoursePoolRepository::find_all(
+                    if CoursePoolRepository::find_by_professor_id_and_master_course_id(
                         conn,
-                        &HashMap::from([
-                            ("professor_id".to_string(), professor.id.to_string()),
-                            ("master_course_id".to_string(), master_course_id.to_string()),
-                        ]),
+                        professor.id,
+                        master_course_id,
                     )
                     .unwrap()
                     .is_empty()
@@ -150,12 +136,10 @@ fn get_remaining_professor_quota(
     let quota_type = professor_quota.0.quota_type;
 
     Ok((professor_quota.0.quota_value
-        - CourseAssignmentRepository::find_all(
+        - CourseAssignmentRepository::find_by_professor_id_and_semester_id(
             conn,
-            &HashMap::from([
-                ("professor_id".to_string(), professor_id.to_string()),
-                ("semester_id".to_string(), semester_id.to_string()),
-            ]),
+            professor_id,
+            semester_id,
         )
         .map_err(|_| AppError::DatabaseError)?
         .iter()
