@@ -9,7 +9,7 @@ use crate::{
         course_assignment_repository::CourseAssignmentRepository,
         course_repository::CourseRepository, professor_repository::ProfessorRepository,
     },
-    utils::timetable::init_hungarian_matrix,
+    utils::timetable::{execute_until_exhausted, init_hungarian_matrix},
 };
 
 pub struct CourseAssignmentService;
@@ -58,23 +58,34 @@ impl CourseAssignmentService {
         conn: &mut PgConnection,
         semester_id: i64,
     ) -> Result<Vec<CourseAssignmentResponse>, AppError> {
-        let courses = CourseRepository::find_all(
+        let mut courses = CourseRepository::find_all(
             conn,
             &HashMap::from([("semester_id".to_string(), semester_id.to_string())]),
         )
         .map_err(|_| AppError::DatabaseError)?;
-        let professors = ProfessorRepository::find_all(
+        let mut professors = ProfessorRepository::find_all(
             conn,
             &HashMap::from([("professor_status".to_string(), "ACTIVE".to_string())]),
         )
         .map_err(|_| AppError::DatabaseError)?;
 
         // Init hungarian matrix(rows: professors, columns: courses, values: course_preference_score)
-        let mut hungarian_matrix = init_hungarian_matrix(conn, &courses, &professors, semester_id);
+        let mut hungarian_matrix = init_hungarian_matrix(conn, &courses, &professors, semester_id)?;
 
-        // ToDo: Implement Round-Based Hungarian algorithm
+        execute_until_exhausted(
+            conn,
+            &mut courses,
+            &mut professors,
+            &mut hungarian_matrix,
+            semester_id,
+        )?;
 
-        Ok(Vec::new())
+        CourseAssignmentRepository::find_all(
+            conn,
+            &HashMap::from([("semester_id".to_string(), semester_id.to_string())]),
+        )
+        .map_err(|_| AppError::DatabaseError)
+        .map(|assignments| assignments.into_iter().map(Into::into).collect())
     }
 
     pub fn get_all(

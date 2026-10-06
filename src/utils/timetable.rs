@@ -76,12 +76,14 @@ fn minimize_hungarian_matrix(
     courses_len: usize,
     professors_len: usize,
 ) {
-    for row_idx in 0..professors_len {
-        let min_value = *hungarian_matrix[row_idx].iter().min().unwrap();
-        for row_idx in 0..professors_len {
-            for col_idx in 0..courses_len {
-                hungarian_matrix[row_idx][col_idx] -= min_value;
-            }
+    if courses_len == 0 || professors_len == 0 {
+        return;
+    }
+
+    for row in hungarian_matrix.iter_mut().take(professors_len) {
+        let min_value = *row.iter().take(courses_len).min().unwrap();
+        for value in row.iter_mut().take(courses_len) {
+            *value -= min_value;
         }
     }
     for col_idx in 0..courses_len {
@@ -92,14 +94,6 @@ fn minimize_hungarian_matrix(
             .unwrap();
         for row_idx in 0..professors_len {
             hungarian_matrix[row_idx][col_idx] -= min_value;
-        }
-    }
-    for row_idx in 0..professors_len {
-        for col_idx in 0..courses_len {
-            hungarian_matrix[row_idx][col_idx] = match hungarian_matrix[row_idx][col_idx] {
-                -1 => 0,
-                _ => hungarian_matrix[row_idx][col_idx],
-            }
         }
     }
 }
@@ -276,17 +270,46 @@ pub fn execute_round(
     let courses_len = courses.len();
     let professors_len = professors.len();
 
+    if courses_len == 0 || professors_len == 0 {
+        return Ok(());
+    }
+
     minimize_hungarian_matrix(hungarian_matrix, courses_len, professors_len);
 
     loop {
-        while let Ok(true) =
-            execute_shallow(conn, courses, professors, hungarian_matrix, semester_id)
-        {
-            continue;
+        while execute_shallow(conn, courses, professors, hungarian_matrix, semester_id)? {
+            // Keep resolving all currently unambiguous columns before choosing
+            // among ambiguous zero-cost professors.
         }
-        if let Ok(true) = execute_deep(conn, courses, professors, hungarian_matrix, semester_id) {
-            continue;
-        } else {
+        if !execute_deep(conn, courses, professors, hungarian_matrix, semester_id)? {
+            break;
+        }
+    }
+
+    Ok(())
+}
+
+pub fn execute_until_exhausted(
+    conn: &mut PgConnection,
+    courses: &mut Vec<(
+        Course,
+        CourseCurriculum,
+        MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
+    )>,
+    professors: &mut Vec<(Professor, User, Semester)>,
+    hungarian_matrix: &mut Vec<Vec<i32>>,
+    semester_id: i64,
+) -> Result<(), AppError> {
+    while !courses.is_empty() && !professors.is_empty() {
+        let courses_before = courses.len();
+        let professors_before = professors.len();
+
+        execute_round(conn, courses, professors, hungarian_matrix, semester_id)?;
+
+        if courses.len() == courses_before && professors.len() == professors_before {
             break;
         }
     }
