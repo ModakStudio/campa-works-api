@@ -61,7 +61,7 @@ impl TimetableService {
         // Create all courses in the new semester
         CourseService::create_all_in_new_semester(conn, new_semester_id)?;
 
-        // ToDo: Assign professors to courses in the new semester
+        // Assign professors to courses in the new semester
         CourseAssignmentService::create_auto_in_new_semester(conn, new_semester_id)?;
 
         // ToDo: Create timetables for the new semester based on the courses and professors
