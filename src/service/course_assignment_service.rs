@@ -9,6 +9,7 @@ use crate::{
         course_assignment_repository::CourseAssignmentRepository,
         course_repository::CourseRepository, professor_repository::ProfessorRepository,
     },
+    utils::timetable::{execute_until_exhausted, init_hungarian_matrix},
 };
 
 pub struct CourseAssignmentService;
@@ -51,6 +52,40 @@ impl CourseAssignmentService {
             .unwrap_or_else(|| unreachable!());
 
         Ok(course_assignment.into())
+    }
+
+    pub fn create_auto_in_new_semester(
+        conn: &mut PgConnection,
+        semester_id: i64,
+    ) -> Result<Vec<CourseAssignmentResponse>, AppError> {
+        let mut courses = CourseRepository::find_all(
+            conn,
+            &HashMap::from([("semester_id".to_string(), semester_id.to_string())]),
+        )
+        .map_err(|_| AppError::DatabaseError)?;
+        let mut professors = ProfessorRepository::find_all(
+            conn,
+            &HashMap::from([("professor_status".to_string(), "ACTIVE".to_string())]),
+        )
+        .map_err(|_| AppError::DatabaseError)?;
+
+        // Init hungarian matrix(rows: professors, columns: courses, values: course_preference_score)
+        let mut hungarian_matrix = init_hungarian_matrix(conn, &courses, &professors, semester_id)?;
+
+        execute_until_exhausted(
+            conn,
+            &mut courses,
+            &mut professors,
+            &mut hungarian_matrix,
+            semester_id,
+        )?;
+
+        CourseAssignmentRepository::find_all(
+            conn,
+            &HashMap::from([("semester_id".to_string(), semester_id.to_string())]),
+        )
+        .map_err(|_| AppError::DatabaseError)
+        .map(|assignments| assignments.into_iter().map(Into::into).collect())
     }
 
     pub fn get_all(

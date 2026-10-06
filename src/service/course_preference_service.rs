@@ -44,6 +44,7 @@ impl CoursePreferenceService {
 
         let new_course_preference = NewCoursePreference {
             professor_id: request.professor_id,
+            semester_id: request.semester_id,
             master_course_id: request.master_course_id,
             priority: request.priority,
         };

@@ -71,6 +71,30 @@ impl CoursePoolRepository {
         query.load(conn)
     }
 
+    pub fn find_by_professor_id_and_master_course_id(
+        conn: &mut PgConnection,
+        professor_id: i64,
+        master_course_id: i64,
+    ) -> QueryResult<Vec<(CoursePool, Professor, User, Semester, MasterCourse)>> {
+        course_pool::table
+            .inner_join(
+                professor::table
+                    .inner_join(users::table)
+                    .inner_join(semester::table),
+            )
+            .inner_join(master_course::table)
+            .filter(course_pool::professor_id.eq(professor_id))
+            .filter(course_pool::master_course_id.eq(master_course_id))
+            .select((
+                CoursePool::as_select(),
+                Professor::as_select(),
+                User::as_select(),
+                Semester::as_select(),
+                MasterCourse::as_select(),
+            ))
+            .load(conn)
+    }
+
     pub fn find_by_id(
         conn: &mut PgConnection,
         course_pool_id: i64,

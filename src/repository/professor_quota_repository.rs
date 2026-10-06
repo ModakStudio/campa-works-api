@@ -97,6 +97,25 @@ impl ProfessorQuotaRepository {
             .first(conn)
     }
 
+    pub fn find_by_professor_id_and_semester_id(
+        conn: &mut PgConnection,
+        professor_id: i64,
+        semester_id: i64,
+    ) -> QueryResult<(ProfessorQuota, Professor, User, Semester)> {
+        professor_quota::table
+            .inner_join(professor::table.inner_join(users::table))
+            .inner_join(semester::table)
+            .filter(professor_quota::professor_id.eq(professor_id))
+            .filter(professor_quota::semester_id.eq(semester_id))
+            .select((
+                ProfessorQuota::as_select(),
+                Professor::as_select(),
+                User::as_select(),
+                Semester::as_select(),
+            ))
+            .first(conn)
+    }
+
     pub fn update(
         conn: &mut PgConnection,
         professor_quota_id: i64,

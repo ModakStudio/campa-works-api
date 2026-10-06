@@ -318,19 +318,24 @@ CREATE TABLE course_preference (
     id BIGSERIAL PRIMARY KEY,
 
     professor_id BIGINT NOT NULL,
+    semester_id BIGINT NOT NULL,
     master_course_id BIGINT NOT NULL,
 
     priority INTEGER NOT NULL,
 
-    CONSTRAINT course_preference_professor_priority_unique
-        UNIQUE (professor_id, priority),
+    CONSTRAINT course_preference_professor_semester_priority_unique
+        UNIQUE (professor_id, semester_id, priority),
 
-    CONSTRAINT course_preference_professor_master_course_unique
-        UNIQUE (professor_id, master_course_id),
+    CONSTRAINT course_preference_professor_semester_master_course_unique
+        UNIQUE (professor_id, semester_id, master_course_id),
 
     CONSTRAINT course_preference_professor_id_fkey
         FOREIGN KEY (professor_id)
         REFERENCES professor(id),
+
+    CONSTRAINT course_preference_semester_id_fkey
+        FOREIGN KEY (semester_id)
+        REFERENCES semester(id),
 
     CONSTRAINT course_preference_master_course_id_fkey
         FOREIGN KEY (master_course_id)

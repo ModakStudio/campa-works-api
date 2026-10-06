@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    dto::{master_course::MasterCourseResponse, professor::ProfessorResponse},
+    dto::{
+        master_course::MasterCourseResponse, professor::ProfessorBriefResponse,
+        semester::SemesterResponse,
+    },
     models::{
         course_preference::CoursePreference, master_course::MasterCourse, professor::Professor,
         semester::Semester, user::User,
@@ -11,6 +14,7 @@ use crate::{
 #[derive(Debug, Deserialize)]
 pub struct CreateCoursePreferenceRequest {
     pub professor_id: i64,
+    pub semester_id: i64,
     pub master_course_id: i64,
 
     pub priority: i32,
@@ -25,7 +29,8 @@ pub struct UpdateCoursePreferenceRequest {
 pub struct CoursePreferenceResponse {
     pub id: i64,
 
-    pub professor: ProfessorResponse,
+    pub professor: ProfessorBriefResponse,
+    pub semester: SemesterResponse,
     pub master_course: MasterCourseResponse,
 
     pub priority: i32,
@@ -46,7 +51,8 @@ impl From<(CoursePreference, Professor, User, Semester, MasterCourse)>
         Self {
             id: course_preference.id,
 
-            professor: ProfessorResponse::from((professor, user, semester)),
+            professor: ProfessorBriefResponse::from((professor, user)),
+            semester: SemesterResponse::from(semester),
             master_course: MasterCourseResponse::from(master_course),
 
             priority: course_preference.priority,
