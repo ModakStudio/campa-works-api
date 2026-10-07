@@ -2,7 +2,8 @@ use diesel::prelude::*;
 
 use crate::{
     dto::basic_timetable::{
-        BasicTimetableResponse, CreateBasicTimetableRequest, UpdateBasicTimetableRequest,
+        BasicTimetableResponse, BasicTimetableSlotRequest, CreateBasicTimetableRequest,
+        UpdateBasicTimetableRequest,
     },
     error::app_error::AppError,
     models::basic_timetable::{
@@ -33,11 +34,10 @@ impl BasicTimetableService {
         conn: &mut PgConnection,
         request: CreateBasicTimetableRequest,
     ) -> Result<BasicTimetableResponse, AppError> {
+        let total_min = calculate_total_min(&request.slots)?;
         let model = BasicTimetableRepository::create(
             conn,
-            &NewBasicTimetableModel {
-                total_min: request.total_min,
-            },
+            &NewBasicTimetableModel { total_min },
             &request
                 .slots
                 .iter()
@@ -59,7 +59,15 @@ impl BasicTimetableService {
         BasicTimetableRepository::find_by_id(conn, model_id)
             .map_err(|_| AppError::BasicTimetableModelNotFound)?;
 
-        let slots = request.slots.map(|slots| {
+        let slots = request
+            .slots
+            .map(|slots| {
+                let total_min = calculate_total_min(&slots);
+                total_min.map(|total_min| (slots, total_min))
+            })
+            .transpose()?;
+        let total_min = slots.as_ref().map(|(_, total_min)| *total_min);
+        let slots = slots.map(|(slots, _)| {
             slots
                 .iter()
                 .map(NewBasicTimetableSlot::from)
@@ -68,9 +76,7 @@ impl BasicTimetableService {
         let model = BasicTimetableRepository::update(
             conn,
             model_id,
-            &UpdateBasicTimetableModel {
-                total_min: request.total_min,
-            },
+            &UpdateBasicTimetableModel { total_min },
             slots.as_deref(),
         )
         .map_err(|_| AppError::DatabaseError)?;
@@ -84,6 +90,24 @@ impl BasicTimetableService {
         BasicTimetableRepository::delete(conn, model_id).map_err(|_| AppError::DatabaseError)?;
         Ok(())
     }
+}
+
+fn calculate_total_min(slots: &[BasicTimetableSlotRequest]) -> Result<i32, AppError> {
+    let mut durations = slots.iter().map(|slot| slot.end_time - slot.start_time);
+    let total_min: i64 = durations
+        .clone()
+        .map(|duration| duration.num_minutes())
+        .sum();
+
+    if slots.is_empty()
+        || durations.any(|duration| duration.num_minutes() < 0)
+        || total_min <= 0
+        || total_min > i32::MAX as i64
+    {
+        return Err(AppError::InvalidBasicTimetableSlots);
+    }
+
+    Ok(total_min as i32)
 }
 
 impl From<&crate::dto::basic_timetable::BasicTimetableSlotRequest> for NewBasicTimetableSlot {

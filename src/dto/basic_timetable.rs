@@ -15,13 +15,11 @@ pub struct BasicTimetableSlotRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct CreateBasicTimetableRequest {
-    pub total_min: i32,
     pub slots: Vec<BasicTimetableSlotRequest>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct UpdateBasicTimetableRequest {
-    pub total_min: Option<i32>,
     pub slots: Option<Vec<BasicTimetableSlotRequest>>,
 }
 

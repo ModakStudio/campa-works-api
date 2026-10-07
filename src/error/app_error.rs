@@ -85,6 +85,8 @@ pub enum AppError {
     TimetableOverlap,
     #[error("Basic timetable model not found")]
     BasicTimetableModelNotFound,
+    #[error("Basic timetable slots must have a positive total duration")]
+    InvalidBasicTimetableSlots,
     #[error("Database error")]
     DatabaseError,
 }
@@ -136,6 +138,7 @@ impl IntoResponse for AppError {
             AppError::TimetableNotFound => StatusCode::NOT_FOUND,
             AppError::TimetableOverlap => StatusCode::CONFLICT,
             AppError::BasicTimetableModelNotFound => StatusCode::NOT_FOUND,
+            AppError::InvalidBasicTimetableSlots => StatusCode::BAD_REQUEST,
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
