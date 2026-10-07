@@ -1,3 +1,4 @@
+pub mod basic_timetable_repository;
 pub mod classroom_facility_repository;
 pub mod classroom_repository;
 pub mod course_assignment_repository;

@@ -1,3 +1,4 @@
+pub mod basic_timetable_service;
 pub mod classroom_facility_service;
 pub mod classroom_service;
 pub mod course_assignment_service;

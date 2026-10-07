@@ -1,3 +1,4 @@
+pub mod basic_timetable;
 pub mod classroom;
 pub mod classroom_facility;
 pub mod course;

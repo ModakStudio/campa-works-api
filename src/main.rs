@@ -21,6 +21,7 @@ use db::pool::create_pool;
 use state::app_state::AppState;
 
 use crate::router::{
+    basic_timetable_router::basic_timetable_router,
     classroom_facility_router::classroom_facility_router, classroom_router::classroom_router,
     course_assignment_router::course_assignment_router,
     course_curriculum_router::course_curriculum_router,
@@ -62,6 +63,7 @@ async fn main() {
         .nest("/api/course-facilities", course_facility_router())
         .nest("/api/classroom-facilities", classroom_facility_router())
         .nest("/api/timetables", timetable_router())
+        .nest("/api/basic-timetables", basic_timetable_router())
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();

@@ -493,3 +493,61 @@ CREATE TABLE timetable (
         FOREIGN KEY (classroom_id)
         REFERENCES classroom(id)
 );
+
+
+/* ============================================================
+   BASIC TIMETABLE SLOT
+============================================================ */
+
+CREATE TABLE basic_timetable_slot (
+    id BIGSERIAL PRIMARY KEY,
+
+    day_of_week day_of_week NOT NULL,
+
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+
+    CONSTRAINT basic_timetable_slot_day_time_unique
+        UNIQUE (day_of_week, start_time, end_time),
+
+    CONSTRAINT basic_timetable_slot_start_end_period_check
+        CHECK (start_time <= end_time)
+);
+
+
+/* ============================================================
+   BASIC TIMETABLE MODEL
+============================================================ */
+
+CREATE TABLE basic_timetable_model (
+    id BIGSERIAL PRIMARY KEY,
+
+    total_min INTEGER NOT NULL,
+
+    CONSTRAINT basic_timetable_model_total_min_positive
+        CHECK (total_min > 0)
+);
+
+
+/* ============================================================
+   MODEL COMPONENT
+============================================================ */
+
+CREATE TABLE model_component (
+    id BIGSERIAL PRIMARY KEY,
+
+    basic_timetable_model_id BIGINT NOT NULL,
+    basic_timetable_slot_id BIGINT NOT NULL,
+
+    CONSTRAINT model_component_model_slot_unique
+        UNIQUE (basic_timetable_model_id, basic_timetable_slot_id),
+
+    CONSTRAINT model_component_basic_timetable_model_id_fkey
+        FOREIGN KEY (basic_timetable_model_id)
+        REFERENCES basic_timetable_model(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT model_component_basic_timetable_slot_id_fkey
+        FOREIGN KEY (basic_timetable_slot_id)
+        REFERENCES basic_timetable_slot(id)
+);

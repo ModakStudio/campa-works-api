@@ -1,7 +1,7 @@
 use axum::{
-    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
+    Json,
 };
 
 use serde::Serialize;
@@ -83,6 +83,12 @@ pub enum AppError {
     TimetableNotFound,
     #[error("Timetable overlaps with existing timetable")]
     TimetableOverlap,
+    #[error("Basic timetable model not found")]
+    BasicTimetableModelNotFound,
+    #[error("Basic timetable slots must have a positive total duration")]
+    InvalidBasicTimetableSlots,
+    #[error("No basic timetable model can be assigned without schedule conflicts")]
+    TimetableSchedulingFailed,
     #[error("Database error")]
     DatabaseError,
 }
@@ -133,6 +139,9 @@ impl IntoResponse for AppError {
             AppError::TimetableAlreadyExists => StatusCode::CONFLICT,
             AppError::TimetableNotFound => StatusCode::NOT_FOUND,
             AppError::TimetableOverlap => StatusCode::CONFLICT,
+            AppError::BasicTimetableModelNotFound => StatusCode::NOT_FOUND,
+            AppError::InvalidBasicTimetableSlots => StatusCode::BAD_REQUEST,
+            AppError::TimetableSchedulingFailed => StatusCode::CONFLICT,
             AppError::DatabaseError => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
