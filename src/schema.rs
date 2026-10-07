@@ -51,6 +51,25 @@ pub mod sql_types {
 }
 
 diesel::table! {
+    basic_timetable_model (id) {
+        id -> Int8,
+        total_min -> Int4,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::DayOfWeek;
+
+    basic_timetable_slot (id) {
+        id -> Int8,
+        day_of_week -> DayOfWeek,
+        start_time -> Time,
+        end_time -> Time,
+    }
+}
+
+diesel::table! {
     classroom (id) {
         id -> Int8,
         building -> Varchar,
@@ -185,6 +204,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    model_component (id) {
+        id -> Int8,
+        basic_timetable_model_id -> Int8,
+        basic_timetable_slot_id -> Int8,
+    }
+}
+
+diesel::table! {
     use diesel::sql_types::*;
     use super::sql_types::ProfessorPosition;
     use super::sql_types::ProfessorStatus;
@@ -275,6 +302,8 @@ diesel::joinable!(course_preference_bookmark -> master_course (master_course_id)
 diesel::joinable!(course_preference_bookmark -> professor (professor_id));
 diesel::joinable!(curriculum -> major (major_id));
 diesel::joinable!(curriculum -> semester (semester_id));
+diesel::joinable!(model_component -> basic_timetable_model (basic_timetable_model_id));
+diesel::joinable!(model_component -> basic_timetable_slot (basic_timetable_slot_id));
 diesel::joinable!(professor -> semester (appointed_at));
 diesel::joinable!(professor -> users (user_id));
 diesel::joinable!(professor_quota -> professor (professor_id));
@@ -283,6 +312,8 @@ diesel::joinable!(timetable -> classroom (classroom_id));
 diesel::joinable!(timetable -> course_assignment (assignment_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    basic_timetable_model,
+    basic_timetable_slot,
     classroom,
     classroom_facility,
     course,
@@ -296,6 +327,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     facility,
     major,
     master_course,
+    model_component,
     professor,
     professor_quota,
     semester,
