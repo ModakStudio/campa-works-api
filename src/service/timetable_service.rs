@@ -3,11 +3,15 @@ use std::collections::HashMap;
 use diesel::prelude::*;
 
 use crate::{
-    dto::timetable::{CreateTimetableRequest, TimetableResponse, UpdateTimetableRequest}, error::app_error::AppError, models::timetable::{NewTimetable, UpdateTimetable}, repository::{
+    dto::timetable::{CreateTimetableRequest, TimetableResponse, UpdateTimetableRequest},
+    error::app_error::AppError,
+    models::timetable::{NewTimetable, UpdateTimetable},
+    repository::{
         classroom_repository::ClassroomRepository,
         course_assignment_repository::CourseAssignmentRepository,
         timetable_repository::TimetableRepository,
-    }, service::{course_assignment_service::CourseAssignmentService, course_service::CourseService},
+    },
+    service::{course_assignment_service::CourseAssignmentService, course_service::CourseService},
 };
 
 pub struct TimetableService;

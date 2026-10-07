@@ -1,3 +1,4 @@
+pub mod basic_timetable_router;
 pub mod classroom_facility_router;
 pub mod classroom_router;
 pub mod course_assignment_router;
