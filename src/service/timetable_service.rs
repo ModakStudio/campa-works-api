@@ -181,7 +181,7 @@ impl TimetableService {
         new_semester_id: i64,
     ) -> Result<(), AppError> {
         // Create all courses in the new semester
-        CourseService::create_all_in_new_semester(conn, new_semester_id)?;
+        CourseService::create_auto(conn, new_semester_id)?;
 
         // Assign professors to courses in the new semester
         CourseAssignmentService::create_auto_in_new_semester(conn, new_semester_id)?;

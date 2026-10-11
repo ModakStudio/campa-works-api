@@ -68,7 +68,7 @@ impl CourseService {
         Ok(course.into())
     }
 
-    pub fn create_all_in_new_semester(
+    pub fn create_auto(
         conn: &mut PgConnection,
         semester_id: i64,
     ) -> Result<Vec<CourseResponse>, AppError> {
