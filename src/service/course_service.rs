@@ -77,69 +77,69 @@ impl CourseService {
     ) -> Result<Vec<CourseResponse>, AppError> {
         let mut courses = Vec::new();
 
-        for major in
-            MajorRepository::find_all(conn, &HashMap::new()).map_err(|_| AppError::DatabaseError)?
+        for (major, curriculum_grade) in MajorRepository::find_all(conn, &HashMap::new())
+            .map_err(|_| AppError::DatabaseError)?
+            .iter()
+            .flat_map(|m| (1..=4).map(move |cg| (m, cg)))
         {
-            for curriculum_grade in 1..=4 {
-                let last_semester = SemesterRepository::find_previous_year_semester(
-                    conn,
-                    semester_id,
-                    curriculum_grade - 1,
-                )
-                .map_err(|_| AppError::SemesterNotFound)?;
+            let last_semester = SemesterRepository::find_previous_year_semester(
+                conn,
+                semester_id,
+                curriculum_grade - 1,
+            )
+            .map_err(|_| AppError::SemesterNotFound)?;
 
-                let last_curriculum = if let Some(last_curriculum) =
-                    CurriculumRepository::find_by_semester_id_and_major_id_and_curriculum_grade(
-                        conn,
-                        last_semester.id,
-                        major.id,
-                        curriculum_grade,
-                    )
-                    .map_err(|_| AppError::CurriculumNotFound)
-                    .ok()
-                {
-                    last_curriculum
-                } else {
-                    continue;
+            let last_curriculum = if let Some(last_curriculum) =
+                CurriculumRepository::find_by_semester_id_and_major_id_and_curriculum_grade(
+                    conn,
+                    last_semester.id,
+                    major.id,
+                    curriculum_grade,
+                )
+                .map_err(|_| AppError::CurriculumNotFound)
+                .ok()
+            {
+                last_curriculum
+            } else {
+                continue;
+            };
+
+            for course_curriculum in
+                CourseCurriculumRepository::find_by_curriculum_id(conn, last_curriculum.0.id)
+                    .map_err(|_| AppError::DatabaseError)?
+            {
+                let new_course = NewCourse {
+                    course_curriculum_id: course_curriculum.0.id,
+
+                    course_description: None,
+
+                    grade: curriculum_grade,
+                    credit: 0,
+                    lecture: 0,
+                    practice: 0,
+
+                    course_category: CourseCategory::GeneralElective,
+
+                    language: Language::Korean,
+
+                    section_number: 1,
+                    capacity: 60,
+                    participant: 0,
                 };
 
-                for course_curriculum in
-                    CourseCurriculumRepository::find_by_curriculum_id(conn, last_curriculum.0.id)
-                        .map_err(|_| AppError::DatabaseError)?
-                {
-                    let new_course = NewCourse {
-                        course_curriculum_id: course_curriculum.0.id,
-
-                        course_description: None,
-
-                        grade: curriculum_grade,
-                        credit: 0,
-                        lecture: 0,
-                        practice: 0,
-
-                        course_category: CourseCategory::GeneralElective,
-
-                        language: Language::Korean,
-
-                        section_number: 1,
-                        capacity: 60,
-                        participant: 0,
-                    };
-
-                    let created_course = CourseRepository::create(conn, &new_course)
-                        .map_err(|_| AppError::DatabaseError)?;
-                    courses.push(
-                        (
-                            created_course,
-                            course_curriculum.0,
-                            course_curriculum.1,
-                            course_curriculum.2,
-                            course_curriculum.3,
-                            course_curriculum.4,
-                        )
-                            .into(),
-                    );
-                }
+                let created_course = CourseRepository::create(conn, &new_course)
+                    .map_err(|_| AppError::DatabaseError)?;
+                courses.push(
+                    (
+                        created_course,
+                        course_curriculum.0,
+                        course_curriculum.1,
+                        course_curriculum.2,
+                        course_curriculum.3,
+                        course_curriculum.4,
+                    )
+                        .into(),
+                );
             }
         }
 
