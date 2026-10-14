@@ -87,16 +87,18 @@ impl CurriculumRepository {
             .first(conn)
     }
 
-    pub fn find_by_semester_id_and_major_id(
+    pub fn find_by_semester_id_and_major_id_and_curriculum_grade(
         conn: &mut PgConnection,
         semester_id: i64,
         major_id: i64,
+        curriculum_grade: i32,
     ) -> QueryResult<(Curriculum, Semester, Major)> {
         curriculum::table
             .inner_join(semester::table)
             .inner_join(major::table)
             .filter(curriculum::semester_id.eq(semester_id))
             .filter(curriculum::major_id.eq(major_id))
+            .filter(curriculum::curriculum_grade.eq(curriculum_grade))
             .select((
                 Curriculum::as_select(),
                 Semester::as_select(),
