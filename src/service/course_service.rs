@@ -79,12 +79,16 @@ impl CourseService {
                 ("semester_id".to_string(), semester_id.to_string()),
                 ("major_id".to_string(), major.id.to_string()),
             ]);
-            let current_course_curriculum =
+            let current_course_curriculum = if let Some(course_curriculum) =
                 CourseCurriculumRepository::find_all(conn, &query_parmas)
                     .map_err(|_| AppError::DatabaseError)?
                     .into_iter()
                     .next()
-                    .unwrap_or_else(|| unreachable!());
+            {
+                course_curriculum
+            } else {
+                continue;
+            };
 
             for grade in 1..=4 {
                 let check_semester =
