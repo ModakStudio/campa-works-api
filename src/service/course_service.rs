@@ -11,9 +11,9 @@ use crate::{
     },
     repository::{
         course_curriculum_repository::CourseCurriculumRepository,
-        course_repository::CourseRepository, curriculum_repository::CurriculumRepository,
-        major_repository::MajorRepository, semester_repository::SemesterRepository,
+        course_repository::CourseRepository,
     },
+    service::curriculum_service::CurriculumService,
 };
 
 pub struct CourseService;
@@ -72,32 +72,11 @@ impl CourseService {
     ) -> Result<Vec<CourseResponse>, AppError> {
         let mut courses = Vec::new();
 
-        for (major, grade) in MajorRepository::find_all(conn, &HashMap::new())
-            .map_err(|_| AppError::DatabaseError)?
-            .iter()
-            .flat_map(|m| (1..=4).map(move |cg| (m, cg)))
+        for last_curriculum in
+            CurriculumService::get_curriculums_for_all_grades_from_semester_id(conn, semester_id)?
         {
-            let last_semester =
-                SemesterRepository::find_previous_year_semester(conn, semester_id, grade - 1)
-                    .map_err(|_| AppError::SemesterNotFound)?;
-
-            let last_curriculum = if let Some(last_curriculum) =
-                CurriculumRepository::find_by_semester_id_and_major_id_and_grade(
-                    conn,
-                    last_semester.id,
-                    major.id,
-                    grade,
-                )
-                .map_err(|_| AppError::CurriculumNotFound)
-                .ok()
-            {
-                last_curriculum
-            } else {
-                continue;
-            };
-
             for course_curriculum in
-                CourseCurriculumRepository::find_by_curriculum_id(conn, last_curriculum.0.id)
+                CourseCurriculumRepository::find_by_curriculum_id(conn, last_curriculum.id)
                     .map_err(|_| AppError::DatabaseError)?
             {
                 let new_course = NewCourse {
@@ -109,8 +88,8 @@ impl CourseService {
 
                     language: Language::Korean,
 
-                    section_number: 1,
-                    capacity: 60,
+                    section_number: 1, // ToDo: Make the section number be determined based on previous data
+                    capacity: 60, // ToDo: Make the capacity be determined based on class type (lecture or practice)
                     participant: 0,
                 };
 
