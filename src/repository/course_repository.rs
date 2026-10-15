@@ -37,30 +37,6 @@ macro_rules! apply_course_query_filters {
             query =
                 query.filter(course::course_description.ilike(format!("%{}%", course_description)));
         }
-        if let Some(grade) = $params
-            .get("grade")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::grade.eq(grade));
-        }
-        if let Some(credit) = $params
-            .get("credit")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::credit.eq(credit));
-        }
-        if let Some(lecture) = $params
-            .get("lecture")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::lecture.eq(lecture));
-        }
-        if let Some(practice) = $params
-            .get("practice")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::practice.eq(practice));
-        }
         if let Some(course_category) = $params
             .get("course_category")
             .map(|value| value.trim())

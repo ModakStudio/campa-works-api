@@ -46,11 +46,6 @@ impl CourseService {
 
             course_description: request.course_description,
 
-            grade: request.grade,
-            credit: request.credit,
-            lecture: request.lecture,
-            practice: request.practice,
-
             course_category: request.course_category,
 
             language: request.language,
@@ -113,11 +108,6 @@ impl CourseService {
 
                     course_description: None,
 
-                    grade: curriculum_grade,
-                    credit: 0,
-                    lecture: 0,
-                    practice: 0,
-
                     course_category: CourseCategory::GeneralElective,
 
                     language: Language::Korean,
@@ -172,11 +162,6 @@ impl CourseService {
 
         let update_course = UpdateCourse {
             course_description: request.course_description,
-
-            grade: request.grade,
-            credit: request.credit,
-            lecture: request.lecture,
-            practice: request.practice,
 
             course_category: request.course_category,
 

@@ -19,11 +19,6 @@ pub struct CreateCourseRequest {
 
     pub course_description: Option<String>,
 
-    pub grade: i32,
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
-
     pub course_category: CourseCategory,
 
     pub language: Language,
@@ -36,11 +31,6 @@ pub struct CreateCourseRequest {
 #[derive(Debug, Deserialize)]
 pub struct UpdateCourseRequest {
     pub course_description: Option<String>,
-
-    pub grade: Option<i32>,
-    pub credit: Option<i32>,
-    pub lecture: Option<i32>,
-    pub practice: Option<i32>,
 
     pub course_category: Option<CourseCategory>,
 
@@ -58,11 +48,6 @@ pub struct CourseResponse {
     pub course_curriculum: CourseCurriculumResponse,
 
     pub course_description: Option<String>,
-
-    pub grade: i32,
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
 
     pub course_category: CourseCategory,
 
@@ -105,11 +90,6 @@ impl
             )),
 
             course_description: course.course_description,
-
-            grade: course.grade,
-            credit: course.credit,
-            lecture: course.lecture,
-            practice: course.practice,
 
             course_category: course.course_category,
 

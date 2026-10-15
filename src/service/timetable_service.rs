@@ -278,9 +278,9 @@ impl TimetableService {
                 continue;
             }
 
-            let total_min = course
+            let total_min = master_course
                 .lecture
-                .checked_add(course.practice)
+                .checked_add(master_course.practice)
                 .and_then(|hours| hours.checked_mul(60))
                 .filter(|total_min| *total_min > 0)
                 .ok_or(AppError::TimetableSchedulingFailed)?;

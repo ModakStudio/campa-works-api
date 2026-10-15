@@ -14,11 +14,6 @@ pub struct Course {
 
     pub course_description: Option<String>,
 
-    pub grade: i32,
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
-
     pub course_category: CourseCategory,
 
     pub language: Language,
@@ -35,11 +30,6 @@ pub struct NewCourse {
 
     pub course_description: Option<String>,
 
-    pub grade: i32,
-    pub credit: i32,
-    pub lecture: i32,
-    pub practice: i32,
-
     pub course_category: CourseCategory,
 
     pub language: Language,
@@ -53,11 +43,6 @@ pub struct NewCourse {
 #[diesel(table_name = course)]
 pub struct UpdateCourse {
     pub course_description: Option<String>,
-
-    pub grade: Option<i32>,
-    pub credit: Option<i32>,
-    pub lecture: Option<i32>,
-    pub practice: Option<i32>,
 
     pub course_category: Option<CourseCategory>,
 
