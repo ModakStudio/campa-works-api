@@ -9,7 +9,7 @@ use crate::{
 pub struct CreateCurriculumRequest {
     pub semester_id: i64,
     pub major_id: i64,
-    pub curriculum_grade: i32,
+    pub grade: i32,
 }
 
 #[derive(Debug, Serialize)]
@@ -18,7 +18,7 @@ pub struct CurriculumResponse {
 
     pub semester: SemesterResponse,
     pub major: MajorResponse,
-    pub curriculum_grade: i32,
+    pub grade: i32,
 }
 
 impl From<(Curriculum, Semester, Major)> for CurriculumResponse {
@@ -28,7 +28,7 @@ impl From<(Curriculum, Semester, Major)> for CurriculumResponse {
 
             semester: SemesterResponse::from(semester),
             major: MajorResponse::from(major),
-            curriculum_grade: curriculum.curriculum_grade,
+            grade: curriculum.grade,
         }
     }
 }

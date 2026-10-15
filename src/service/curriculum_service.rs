@@ -27,10 +27,7 @@ impl CurriculumService {
         let query_params = HashMap::from([
             ("semester_id".to_string(), request.semester_id.to_string()),
             ("major_id".to_string(), request.major_id.to_string()),
-            (
-                "curriculum_grade".to_string(),
-                request.curriculum_grade.to_string(),
-            ),
+            ("grade".to_string(), request.grade.to_string()),
         ]);
 
         if !CurriculumRepository::find_all(conn, &query_params)
@@ -43,7 +40,7 @@ impl CurriculumService {
         let new_curriculum = NewCurriculum {
             semester_id: request.semester_id,
             major_id: request.major_id,
-            curriculum_grade: request.curriculum_grade,
+            grade: request.grade,
         };
 
         CurriculumRepository::create(conn, &new_curriculum).map_err(|_| AppError::DatabaseError)?;
@@ -86,20 +83,17 @@ impl CurriculumService {
         for major in
             MajorRepository::find_all(conn, &HashMap::new()).map_err(|_| AppError::DatabaseError)?
         {
-            for curriculum_grade in 1..=4 {
-                let last_semester = SemesterRepository::find_previous_year_semester(
-                    conn,
-                    semester_id,
-                    curriculum_grade - 1,
-                )
-                .map_err(|_| AppError::SemesterNotFound)?;
+            for grade in 1..=4 {
+                let last_semester =
+                    SemesterRepository::find_previous_year_semester(conn, semester_id, grade - 1)
+                        .map_err(|_| AppError::SemesterNotFound)?;
 
                 if let Some(curriculum) =
-                    CurriculumRepository::find_by_semester_id_and_major_id_and_curriculum_grade(
+                    CurriculumRepository::find_by_semester_id_and_major_id_and_grade(
                         conn,
                         last_semester.id,
                         major.id,
-                        curriculum_grade,
+                        grade,
                     )
                     .map_err(|_| AppError::CurriculumNotFound)
                     .ok()

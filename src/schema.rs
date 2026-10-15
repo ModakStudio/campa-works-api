@@ -159,7 +159,7 @@ diesel::table! {
         id -> Int8,
         semester_id -> Int8,
         major_id -> Int8,
-        curriculum_grade -> Int4,
+        grade -> Int4,
     }
 }
 

@@ -72,24 +72,21 @@ impl CourseService {
     ) -> Result<Vec<CourseResponse>, AppError> {
         let mut courses = Vec::new();
 
-        for (major, curriculum_grade) in MajorRepository::find_all(conn, &HashMap::new())
+        for (major, grade) in MajorRepository::find_all(conn, &HashMap::new())
             .map_err(|_| AppError::DatabaseError)?
             .iter()
             .flat_map(|m| (1..=4).map(move |cg| (m, cg)))
         {
-            let last_semester = SemesterRepository::find_previous_year_semester(
-                conn,
-                semester_id,
-                curriculum_grade - 1,
-            )
-            .map_err(|_| AppError::SemesterNotFound)?;
+            let last_semester =
+                SemesterRepository::find_previous_year_semester(conn, semester_id, grade - 1)
+                    .map_err(|_| AppError::SemesterNotFound)?;
 
             let last_curriculum = if let Some(last_curriculum) =
-                CurriculumRepository::find_by_semester_id_and_major_id_and_curriculum_grade(
+                CurriculumRepository::find_by_semester_id_and_major_id_and_grade(
                     conn,
                     last_semester.id,
                     major.id,
-                    curriculum_grade,
+                    grade,
                 )
                 .map_err(|_| AppError::CurriculumNotFound)
                 .ok()
