@@ -4,6 +4,10 @@
 
 DROP TABLE IF EXISTS timetable;
 
+DROP TABLE IF EXISTS model_component;
+DROP TABLE IF EXISTS basic_timetable_model;
+DROP TABLE IF EXISTS basic_timetable_slot;
+
 DROP TABLE IF EXISTS course_facility;
 DROP TABLE IF EXISTS classroom_facility;
 

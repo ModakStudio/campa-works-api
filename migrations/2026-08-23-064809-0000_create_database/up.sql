@@ -222,6 +222,10 @@ CREATE TABLE master_course (
     course_name VARCHAR NOT NULL,
     course_en_name VARCHAR NOT NULL,
 
+    credit INTEGER NOT NULL,
+    lecture INTEGER NOT NULL,
+    practice INTEGER NOT NULL,
+
     course_type course_type NOT NULL,
 
     is_core BOOLEAN NOT NULL DEFAULT FALSE,
@@ -265,11 +269,6 @@ CREATE TABLE course (
 
     course_description VARCHAR,
 
-    grade INTEGER NOT NULL,
-    credit INTEGER NOT NULL,
-    lecture INTEGER NOT NULL,
-    practice INTEGER NOT NULL,
-
     course_category course_category NOT NULL,
 
     language language NOT NULL,
@@ -280,6 +279,12 @@ CREATE TABLE course (
 
     CONSTRAINT course_course_curriculum_section_unique
         UNIQUE (course_curriculum_id, section_number),
+
+    CONSTRAINT course_capacity_nonnegative_check
+        CHECK (capacity >= 0),
+
+    CONSTRAINT course_participant_nonnegative_check
+        CHECK (participant >= 0),
 
     CONSTRAINT course_course_curriculum_id_fkey
         FOREIGN KEY (course_curriculum_id)
@@ -551,3 +556,47 @@ CREATE TABLE model_component (
         FOREIGN KEY (basic_timetable_slot_id)
         REFERENCES basic_timetable_slot(id)
 );
+
+
+/* ============================================================
+   FOREIGN KEY INDEXES
+============================================================ */
+
+CREATE INDEX professor_quota_semester_id_idx
+    ON professor_quota (semester_id);
+
+CREATE INDEX curriculum_major_id_idx
+    ON curriculum (major_id);
+
+CREATE INDEX course_curriculum_curriculum_id_idx
+    ON course_curriculum (curriculum_id);
+
+CREATE INDEX course_pool_master_course_id_idx
+    ON course_pool (master_course_id);
+
+CREATE INDEX course_preference_semester_id_idx
+    ON course_preference (semester_id);
+
+CREATE INDEX course_preference_master_course_id_idx
+    ON course_preference (master_course_id);
+
+CREATE INDEX course_preference_bookmark_master_course_id_idx
+    ON course_preference_bookmark (master_course_id);
+
+CREATE INDEX course_assignment_professor_id_idx
+    ON course_assignment (professor_id);
+
+CREATE INDEX classroom_facility_facility_id_idx
+    ON classroom_facility (facility_id);
+
+CREATE INDEX course_facility_facility_id_idx
+    ON course_facility (facility_id);
+
+CREATE INDEX timetable_assignment_id_idx
+    ON timetable (assignment_id);
+
+CREATE INDEX timetable_classroom_day_start_idx
+    ON timetable (classroom_id, day_of_week, start_time);
+
+CREATE INDEX model_component_basic_timetable_slot_id_idx
+    ON model_component (basic_timetable_slot_id);
