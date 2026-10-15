@@ -129,6 +129,25 @@ impl CourseService {
         Ok(courses.into_iter().map(Into::into).collect())
     }
 
+    pub fn get_offered_courses_by_semester_id(
+        conn: &mut PgConnection,
+        semester_id: i64,
+    ) -> Result<Vec<CourseResponse>, AppError> {
+        Ok(
+            CurriculumService::get_curriculums_for_all_grades_from_semester_id(conn, semester_id)?
+                .into_iter()
+                .flat_map(|curriculum| {
+                    CourseRepository::find_by_curriculum_id(conn, curriculum.id)
+                        .map_err(|_| AppError::DatabaseError)
+                        .unwrap_or_else(|_| Vec::new())
+                        .into_iter()
+                        .map(Into::into)
+                        .collect::<Vec<CourseResponse>>()
+                })
+                .collect::<Vec<CourseResponse>>(),
+        )
+    }
+
     pub fn update(
         conn: &mut PgConnection,
         course_id: i64,

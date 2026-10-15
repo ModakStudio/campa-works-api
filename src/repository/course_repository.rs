@@ -190,6 +190,41 @@ impl CourseRepository {
             .load(conn)
     }
 
+    pub fn find_by_curriculum_id(
+        conn: &mut PgConnection,
+        curriculum_id: i64,
+    ) -> QueryResult<
+        Vec<(
+            Course,
+            CourseCurriculum,
+            MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
+        )>,
+    > {
+        course::table
+            .inner_join(
+                course_curriculum::table
+                    .inner_join(master_course::table)
+                    .inner_join(
+                        curriculum::table
+                            .inner_join(semester::table)
+                            .inner_join(major::table),
+                    ),
+            )
+            .filter(course_curriculum::curriculum_id.eq(curriculum_id))
+            .select((
+                Course::as_select(),
+                CourseCurriculum::as_select(),
+                MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
+            ))
+            .load(conn)
+    }
+
     pub fn find_course_amount_by_semester_id_and_major_id(
         conn: &mut PgConnection,
         semester_id: i64,
