@@ -77,6 +77,41 @@ impl CurriculumService {
         Ok(curriculum.into())
     }
 
+    pub fn get_curriculums_for_all_grades_from_semester_id(
+        conn: &mut PgConnection,
+        semester_id: i64,
+    ) -> Result<Vec<CurriculumResponse>, AppError> {
+        let mut curriculums = Vec::new();
+
+        for major in
+            MajorRepository::find_all(conn, &HashMap::new()).map_err(|_| AppError::DatabaseError)?
+        {
+            for curriculum_grade in 1..=4 {
+                let last_semester = SemesterRepository::find_previous_year_semester(
+                    conn,
+                    semester_id,
+                    curriculum_grade - 1,
+                )
+                .map_err(|_| AppError::SemesterNotFound)?;
+
+                if let Some(curriculum) =
+                    CurriculumRepository::find_by_semester_id_and_major_id_and_curriculum_grade(
+                        conn,
+                        last_semester.id,
+                        major.id,
+                        curriculum_grade,
+                    )
+                    .map_err(|_| AppError::CurriculumNotFound)
+                    .ok()
+                {
+                    curriculums.push(curriculum.into());
+                }
+            }
+        }
+
+        Ok(curriculums)
+    }
+
     pub fn delete(conn: &mut PgConnection, curriculum_id: i64) -> Result<(), AppError> {
         CurriculumRepository::find_by_id(conn, curriculum_id)
             .map_err(|_| AppError::CurriculumNotFound)?;
