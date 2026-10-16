@@ -88,8 +88,20 @@ impl CourseService {
 
                     language: Language::Korean,
 
-                    section_number: 1, // ToDo: Make the section number be determined based on previous data
-                    capacity: 60, // ToDo: Make the capacity be determined based on class type (lecture or practice)
+                    section_number:
+                        CourseRepository::find_course_amount_by_semester_id_and_master_course_id(
+                            conn,
+                            semester_id,
+                            course_curriculum.1.id,
+                        )
+                        .map_err(|_| AppError::DatabaseError)
+                        .unwrap_or(0) as i32
+                            + 1,
+                    capacity: if course_curriculum.1.lecture > course_curriculum.1.practice {
+                        60
+                    } else {
+                        70
+                    },
                     participant: 0,
                 };
 

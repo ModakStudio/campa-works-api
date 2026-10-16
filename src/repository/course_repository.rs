@@ -225,10 +225,10 @@ impl CourseRepository {
             .load(conn)
     }
 
-    pub fn find_course_amount_by_semester_id_and_major_id(
+    pub fn find_course_amount_by_semester_id_and_master_course_id(
         conn: &mut PgConnection,
         semester_id: i64,
-        major_id: i64,
+        master_course_id: i64,
     ) -> QueryResult<i64> {
         course::table
             .inner_join(
@@ -241,7 +241,7 @@ impl CourseRepository {
                     ),
             )
             .filter(semester::id.eq(semester_id))
-            .filter(major::id.eq(major_id))
+            .filter(master_course::id.eq(master_course_id))
             .count()
             .get_result(conn)
     }
