@@ -145,16 +145,14 @@ impl TimetableService {
         ClassroomRepository::find_by_id(conn, request.classroom_id)
             .map_err(|_| AppError::ClassroomNotFound)?;
 
-        if TimetableRepository::find_overlapping_timetables(
+        if !TimetableRepository::find_overlapping_timetables(
             conn,
             request.classroom_id,
             request.day_of_week,
             request.start_time,
             request.end_time,
         )
-        .map_err(|_| AppError::DatabaseError)?
-        .len()
-            > 0
+        .map_err(|_| AppError::DatabaseError)?.is_empty()
         {
             return Err(AppError::TimetableOverlap);
         }

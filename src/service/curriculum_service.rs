@@ -88,15 +88,13 @@ impl CurriculumService {
                     SemesterRepository::find_previous_year_semester(conn, semester_id, grade - 1)
                         .map_err(|_| AppError::SemesterNotFound)?;
 
-                if let Some(curriculum) =
-                    CurriculumRepository::find_by_semester_id_and_major_id_and_grade(
+                if let Ok(curriculum) = CurriculumRepository::find_by_semester_id_and_major_id_and_grade(
                         conn,
                         last_semester.id,
                         major.id,
                         grade,
                     )
                     .map_err(|_| AppError::CurriculumNotFound)
-                    .ok()
                 {
                     curriculums.push(curriculum.into());
                 }

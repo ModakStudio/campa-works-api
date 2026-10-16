@@ -56,13 +56,11 @@ impl FacilityService {
         facility_id: i64,
         request: UpdateFacilityRequest,
     ) -> Result<FacilityResponse, AppError> {
-        if let Some(ref facility_name) = request.facility_name {
-            if let Ok(existing) = FacilityRepository::find_by_name(conn, facility_name) {
-                if existing.id != facility_id {
+        if let Some(ref facility_name) = request.facility_name
+            && let Ok(existing) = FacilityRepository::find_by_name(conn, facility_name)
+                && existing.id != facility_id {
                     return Err(AppError::FacilityAlreadyExists);
                 }
-            }
-        }
 
         let update_facility = UpdateFacility {
             facility_name: request.facility_name,

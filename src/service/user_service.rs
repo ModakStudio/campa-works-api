@@ -62,11 +62,7 @@ impl UserService {
         let update_user = UpdateUser {
             email: request.email,
             username: request.username,
-            password: if let Some(password) = request.password {
-                Some(hash_password(&password))
-            } else {
-                None
-            },
+            password: request.password.map(|password| hash_password(&password)),
             role: request.role,
             is_super: request.is_super,
         };
