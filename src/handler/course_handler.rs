@@ -85,6 +85,24 @@ pub async fn get_course(
     Ok(Json(course))
 }
 
+pub async fn get_offered_courses_by_semester_id(
+    State(state): State<Arc<AppState>>,
+    Path(semester_id): Path<i64>,
+) -> Result<Json<Vec<CourseResponse>>, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
+
+    let courses = conn
+        .interact(move |conn| CourseService::get_offered_courses_by_semester_id(conn, semester_id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
+
+    Ok(Json(courses))
+}
+
 pub async fn update_course(
     State(state): State<Arc<AppState>>,
     Path(course_id): Path<i64>,
