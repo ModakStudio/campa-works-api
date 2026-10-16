@@ -14,6 +14,10 @@ pub struct MasterCourse {
     pub course_name: String,
     pub course_en_name: String,
 
+    pub credit: i32,
+    pub lecture: i32,
+    pub practice: i32,
+
     pub course_type: CourseType,
 
     pub is_core: bool,
@@ -28,6 +32,10 @@ pub struct NewMasterCourse {
     pub course_name: String,
     pub course_en_name: String,
 
+    pub credit: i32,
+    pub lecture: i32,
+    pub practice: i32,
+
     pub course_type: CourseType,
 
     pub is_core: bool,
@@ -41,6 +49,10 @@ pub struct UpdateMasterCourse {
     pub course_code: Option<String>,
     pub course_name: Option<String>,
     pub course_en_name: Option<String>,
+
+    pub credit: Option<i32>,
+    pub lecture: Option<i32>,
+    pub practice: Option<i32>,
 
     pub course_type: Option<CourseType>,
 

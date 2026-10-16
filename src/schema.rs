@@ -96,10 +96,6 @@ diesel::table! {
         id -> Int8,
         course_curriculum_id -> Int8,
         course_description -> Nullable<Varchar>,
-        grade -> Int4,
-        credit -> Int4,
-        lecture -> Int4,
-        practice -> Int4,
         course_category -> CourseCategory,
         language -> Language,
         section_number -> Int4,
@@ -163,7 +159,7 @@ diesel::table! {
         id -> Int8,
         semester_id -> Int8,
         major_id -> Int8,
-        curriculum_grade -> Int4,
+        grade -> Int4,
     }
 }
 
@@ -197,6 +193,9 @@ diesel::table! {
         course_code -> Varchar,
         course_name -> Varchar,
         course_en_name -> Varchar,
+        credit -> Int4,
+        lecture -> Int4,
+        practice -> Int4,
         course_type -> CourseType,
         is_core -> Bool,
         course_status -> CourseStatus,

@@ -37,30 +37,6 @@ macro_rules! apply_course_query_filters {
             query =
                 query.filter(course::course_description.ilike(format!("%{}%", course_description)));
         }
-        if let Some(grade) = $params
-            .get("grade")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::grade.eq(grade));
-        }
-        if let Some(credit) = $params
-            .get("credit")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::credit.eq(credit));
-        }
-        if let Some(lecture) = $params
-            .get("lecture")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::lecture.eq(lecture));
-        }
-        if let Some(practice) = $params
-            .get("practice")
-            .and_then(|value| value.parse::<i32>().ok())
-        {
-            query = query.filter(course::practice.eq(practice));
-        }
         if let Some(course_category) = $params
             .get("course_category")
             .map(|value| value.trim())
@@ -179,9 +155,9 @@ impl CourseRepository {
             .first(conn)
     }
 
-    pub fn find_by_master_course_id(
+    pub fn find_by_curriculum_id(
         conn: &mut PgConnection,
-        master_course_id: i64,
+        curriculum_id: i64,
     ) -> QueryResult<
         Vec<(
             Course,
@@ -202,7 +178,7 @@ impl CourseRepository {
                             .inner_join(major::table),
                     ),
             )
-            .filter(course_curriculum::master_course_id.eq(master_course_id))
+            .filter(course_curriculum::curriculum_id.eq(curriculum_id))
             .select((
                 Course::as_select(),
                 CourseCurriculum::as_select(),
@@ -214,10 +190,10 @@ impl CourseRepository {
             .load(conn)
     }
 
-    pub fn find_course_amount_by_semester_id_and_major_id(
+    pub fn find_course_amount_by_semester_id_and_master_course_id(
         conn: &mut PgConnection,
         semester_id: i64,
-        major_id: i64,
+        master_course_id: i64,
     ) -> QueryResult<i64> {
         course::table
             .inner_join(
@@ -230,7 +206,7 @@ impl CourseRepository {
                     ),
             )
             .filter(semester::id.eq(semester_id))
-            .filter(major::id.eq(major_id))
+            .filter(master_course::id.eq(master_course_id))
             .count()
             .get_result(conn)
     }

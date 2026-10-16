@@ -31,8 +31,15 @@ impl MasterCourseService {
             course_code: request.course_code,
             course_name: request.course_name,
             course_en_name: request.course_en_name,
+
+            credit: request.credit,
+            lecture: request.lecture,
+            practice: request.practice,
+
             course_type: request.course_type,
+
             is_core: request.is_core,
+
             course_status: request.course_status,
         };
 
@@ -84,8 +91,15 @@ impl MasterCourseService {
             course_code: request.course_code,
             course_name: request.course_name,
             course_en_name: request.course_en_name,
+
+            credit: request.credit,
+            lecture: request.lecture,
+            practice: request.practice,
+
             course_type: request.course_type,
+
             is_core: request.is_core,
+
             course_status: request.course_status,
         };
 

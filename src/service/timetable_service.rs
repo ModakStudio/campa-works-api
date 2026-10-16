@@ -145,16 +145,14 @@ impl TimetableService {
         ClassroomRepository::find_by_id(conn, request.classroom_id)
             .map_err(|_| AppError::ClassroomNotFound)?;
 
-        if TimetableRepository::find_overlapping_timetables(
+        if !TimetableRepository::find_overlapping_timetables(
             conn,
             request.classroom_id,
             request.day_of_week,
             request.start_time,
             request.end_time,
         )
-        .map_err(|_| AppError::DatabaseError)?
-        .len()
-            > 0
+        .map_err(|_| AppError::DatabaseError)?.is_empty()
         {
             return Err(AppError::TimetableOverlap);
         }
@@ -181,7 +179,7 @@ impl TimetableService {
         new_semester_id: i64,
     ) -> Result<(), AppError> {
         // Create all courses in the new semester
-        CourseService::create_all_in_new_semester(conn, new_semester_id)?;
+        CourseService::create_auto(conn, new_semester_id)?;
 
         // Assign professors to courses in the new semester
         CourseAssignmentService::create_auto_in_new_semester(conn, new_semester_id)?;
@@ -278,9 +276,9 @@ impl TimetableService {
                 continue;
             }
 
-            let total_min = course
+            let total_min = master_course
                 .lecture
-                .checked_add(course.practice)
+                .checked_add(master_course.practice)
                 .and_then(|hours| hours.checked_mul(60))
                 .filter(|total_min| *total_min > 0)
                 .ok_or(AppError::TimetableSchedulingFailed)?;

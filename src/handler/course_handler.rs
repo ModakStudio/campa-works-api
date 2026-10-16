@@ -31,6 +31,24 @@ pub async fn create_course(
     Ok((StatusCode::CREATED, Json(course)))
 }
 
+pub async fn create_courses_auto(
+    State(state): State<Arc<AppState>>,
+    Path(semester_id): Path<i64>,
+) -> Result<(StatusCode, Json<Vec<CourseResponse>>), AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
+
+    let courses = conn
+        .interact(move |conn| CourseService::create_auto(conn, semester_id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
+
+    Ok((StatusCode::CREATED, Json(courses)))
+}
+
 pub async fn get_courses(
     State(state): State<Arc<AppState>>,
     Query(params): Query<std::collections::HashMap<String, String>>,
@@ -65,6 +83,24 @@ pub async fn get_course(
         .map_err(|_| AppError::DatabaseError)??;
 
     Ok(Json(course))
+}
+
+pub async fn get_offered_courses_by_semester_id(
+    State(state): State<Arc<AppState>>,
+    Path(semester_id): Path<i64>,
+) -> Result<Json<Vec<CourseResponse>>, AppError> {
+    let conn = state
+        .pool
+        .get()
+        .await
+        .map_err(|_| AppError::DatabaseError)?;
+
+    let courses = conn
+        .interact(move |conn| CourseService::get_offered_courses_by_semester_id(conn, semester_id))
+        .await
+        .map_err(|_| AppError::DatabaseError)??;
+
+    Ok(Json(courses))
 }
 
 pub async fn update_course(

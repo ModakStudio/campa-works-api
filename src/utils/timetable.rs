@@ -133,9 +133,9 @@ fn get_remaining_professor_quota(
         )
         .map_err(|_| AppError::DatabaseError)?
         .iter()
-        .map(|(_, course, _, _, _, _, _, _, _)| match quota_type {
-            QuotaType::Credit => course.credit,
-            QuotaType::Hour => course.lecture + course.practice,
+        .map(|(_, _, _, master_course, _, _, _, _, _)| match quota_type {
+            QuotaType::Credit => master_course.credit,
+            QuotaType::Hour => master_course.lecture + master_course.practice,
         })
         .sum::<i32>())
         * match quota_type {

@@ -27,10 +27,7 @@ impl CurriculumService {
         let query_params = HashMap::from([
             ("semester_id".to_string(), request.semester_id.to_string()),
             ("major_id".to_string(), request.major_id.to_string()),
-            (
-                "curriculum_grade".to_string(),
-                request.curriculum_grade.to_string(),
-            ),
+            ("grade".to_string(), request.grade.to_string()),
         ]);
 
         if !CurriculumRepository::find_all(conn, &query_params)
@@ -43,7 +40,7 @@ impl CurriculumService {
         let new_curriculum = NewCurriculum {
             semester_id: request.semester_id,
             major_id: request.major_id,
-            curriculum_grade: request.curriculum_grade,
+            grade: request.grade,
         };
 
         CurriculumRepository::create(conn, &new_curriculum).map_err(|_| AppError::DatabaseError)?;
@@ -55,37 +52,6 @@ impl CurriculumService {
             .unwrap_or_else(|| unreachable!());
 
         Ok(curriculum.into())
-    }
-
-    pub fn create_all_in_new_semester(
-        conn: &mut PgConnection,
-        semester_id: i64,
-    ) -> Result<Vec<CurriculumResponse>, AppError> {
-        SemesterRepository::find_by_id(conn, semester_id)
-            .map_err(|_| AppError::SemesterNotFound)?;
-
-        let majors = MajorRepository::find_all(conn, &HashMap::new())
-            .map_err(|_| AppError::DatabaseError)?;
-
-        for major in majors {
-            CurriculumService::create(
-                conn,
-                CreateCurriculumRequest {
-                    semester_id,
-                    major_id: major.id,
-                    // curriculum_grade: major.curriculum_grade,
-                    curriculum_grade: 1, // ToDo: Change this to major.curriculum_grade when the curriculum_grade is added to the Major model
-                },
-            )?;
-        }
-
-        let curriculums = CurriculumRepository::find_all(
-            conn,
-            &HashMap::from([("semester_id".to_string(), semester_id.to_string())]),
-        )
-        .map_err(|_| AppError::DatabaseError)?;
-
-        Ok(curriculums.into_iter().map(Into::into).collect())
     }
 
     pub fn get_all(
@@ -106,6 +72,36 @@ impl CurriculumService {
             .map_err(|_| AppError::CurriculumNotFound)?;
 
         Ok(curriculum.into())
+    }
+
+    pub fn get_curriculums_for_all_grades_from_semester_id(
+        conn: &mut PgConnection,
+        semester_id: i64,
+    ) -> Result<Vec<CurriculumResponse>, AppError> {
+        let mut curriculums = Vec::new();
+
+        for major in
+            MajorRepository::find_all(conn, &HashMap::new()).map_err(|_| AppError::DatabaseError)?
+        {
+            for grade in 1..=4 {
+                let last_semester =
+                    SemesterRepository::find_previous_year_semester(conn, semester_id, grade - 1)
+                        .map_err(|_| AppError::SemesterNotFound)?;
+
+                if let Ok(curriculum) = CurriculumRepository::find_by_semester_id_and_major_id_and_grade(
+                        conn,
+                        last_semester.id,
+                        major.id,
+                        grade,
+                    )
+                    .map_err(|_| AppError::CurriculumNotFound)
+                {
+                    curriculums.push(curriculum.into());
+                }
+            }
+        }
+
+        Ok(curriculums)
     }
 
     pub fn delete(conn: &mut PgConnection, curriculum_id: i64) -> Result<(), AppError> {

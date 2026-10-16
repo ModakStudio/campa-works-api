@@ -11,6 +11,10 @@ pub struct CreateMasterCourseRequest {
     pub course_name: String,
     pub course_en_name: String,
 
+    pub credit: i32,
+    pub lecture: i32,
+    pub practice: i32,
+
     pub course_type: CourseType,
 
     pub is_core: bool,
@@ -23,6 +27,10 @@ pub struct UpdateMasterCourseRequest {
     pub course_code: Option<String>,
     pub course_name: Option<String>,
     pub course_en_name: Option<String>,
+
+    pub credit: Option<i32>,
+    pub lecture: Option<i32>,
+    pub practice: Option<i32>,
 
     pub course_type: Option<CourseType>,
 
@@ -39,6 +47,10 @@ pub struct MasterCourseResponse {
     pub course_name: String,
     pub course_en_name: String,
 
+    pub credit: i32,
+    pub lecture: i32,
+    pub practice: i32,
+
     pub course_type: CourseType,
 
     pub is_core: bool,
@@ -54,6 +66,10 @@ impl From<MasterCourse> for MasterCourseResponse {
             course_code: course.course_code,
             course_name: course.course_name,
             course_en_name: course.course_en_name,
+
+            credit: course.credit,
+            lecture: course.lecture,
+            practice: course.practice,
 
             course_type: course.course_type,
 

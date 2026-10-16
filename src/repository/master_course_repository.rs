@@ -43,6 +43,24 @@ macro_rules! apply_master_course_query_filters {
             query =
                 query.filter(master_course::course_en_name.ilike(format!("%{}%", course_en_name)));
         }
+        if let Some(credit) = $params
+            .get("credit")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::credit.eq(credit));
+        }
+        if let Some(lecture) = $params
+            .get("lecture")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::lecture.eq(lecture));
+        }
+        if let Some(practice) = $params
+            .get("practice")
+            .and_then(|value| value.parse::<i32>().ok())
+        {
+            query = query.filter(master_course::practice.eq(practice));
+        }
         if let Some(course_type) = $params
             .get("course_type")
             .map(|value| value.trim())
