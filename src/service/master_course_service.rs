@@ -42,8 +42,6 @@ impl MasterCourseService {
 
             course_type: request.course_type,
 
-            is_core: request.is_core,
-
             course_status: request.course_status,
         };
 
@@ -118,8 +116,6 @@ impl MasterCourseService {
             practice: request.practice,
 
             course_type: request.course_type,
-
-            is_core: request.is_core,
 
             course_status: request.course_status,
         };

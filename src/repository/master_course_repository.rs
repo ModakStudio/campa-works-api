@@ -68,12 +68,6 @@ macro_rules! apply_master_course_query_filters {
         {
             query = query.filter(master_course::course_type.eq(CourseType::from(course_type)));
         }
-        if let Some(is_core) = $params
-            .get("is_core")
-            .and_then(|value| value.parse::<bool>().ok())
-        {
-            query = query.filter(master_course::is_core.eq(is_core));
-        }
         if let Some(course_status) = $params
             .get("course_status")
             .map(|value| value.trim())
