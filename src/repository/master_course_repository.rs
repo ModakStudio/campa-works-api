@@ -120,6 +120,24 @@ impl MasterCourseRepository {
             .first(conn)
     }
 
+    pub fn find_by_key_value(
+        conn: &mut PgConnection,
+        course_code: &str,
+        course_name: &str,
+        credit: i32,
+        lecture: i32,
+        practice: i32,
+    ) -> QueryResult<MasterCourse> {
+        master_course::table
+            .filter(master_course::course_code.eq(course_code))
+            .filter(master_course::course_name.eq(course_name))
+            .filter(master_course::credit.eq(credit))
+            .filter(master_course::lecture.eq(lecture))
+            .filter(master_course::practice.eq(practice))
+            .select(MasterCourse::as_select())
+            .first(conn)
+    }
+
     pub fn update(
         conn: &mut PgConnection,
         course_id: i64,

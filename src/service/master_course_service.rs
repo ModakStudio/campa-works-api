@@ -18,11 +18,15 @@ impl MasterCourseService {
         conn: &mut PgConnection,
         request: CreateMasterCourseRequest,
     ) -> Result<MasterCourseResponse, AppError> {
-        let query_params =
-            HashMap::from([("course_code".to_string(), request.course_code.clone())]);
-        if !MasterCourseRepository::find_all(conn, &query_params)
-            .unwrap_or_else(|_| Vec::new())
-            .is_empty()
+        if MasterCourseRepository::find_by_key_value(
+            conn,
+            &request.course_code,
+            &request.course_name,
+            request.credit,
+            request.lecture,
+            request.practice,
+        )
+        .is_ok()
         {
             return Err(AppError::MasterCourseAlreadyExists);
         }
