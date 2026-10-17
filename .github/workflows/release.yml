@@ -19,6 +19,7 @@ permissions:
 
 # This task will run whenever you push a git tag that looks like a version
 # like "1.0.0", "v0.1.0-prerelease.1", "my-app/0.1.0", "releases/v1.0.0", etc.
+# The tag version must match the package version in Cargo.toml (for example, 0.0.3 uses v0.0.3).
 # Various formats will be parsed into a VERSION and an optional PACKAGE_NAME, where
 # PACKAGE_NAME must be the name of a Cargo package in your workspace, and VERSION
 # must be a Cargo-style SemVer Version (must have at least major.minor.patch).
