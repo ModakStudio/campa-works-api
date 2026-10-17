@@ -152,7 +152,8 @@ impl TimetableService {
             request.start_time,
             request.end_time,
         )
-        .map_err(|_| AppError::DatabaseError)?.is_empty()
+        .map_err(|_| AppError::DatabaseError)?
+        .is_empty()
         {
             return Err(AppError::TimetableOverlap);
         }

@@ -68,12 +68,6 @@ macro_rules! apply_master_course_query_filters {
         {
             query = query.filter(master_course::course_type.eq(CourseType::from(course_type)));
         }
-        if let Some(is_core) = $params
-            .get("is_core")
-            .and_then(|value| value.parse::<bool>().ok())
-        {
-            query = query.filter(master_course::is_core.eq(is_core));
-        }
         if let Some(course_status) = $params
             .get("course_status")
             .map(|value| value.trim())
@@ -116,6 +110,24 @@ impl MasterCourseRepository {
     pub fn find_by_id(conn: &mut PgConnection, course_id: i64) -> QueryResult<MasterCourse> {
         master_course::table
             .filter(master_course::id.eq(course_id))
+            .select(MasterCourse::as_select())
+            .first(conn)
+    }
+
+    pub fn find_by_key_value(
+        conn: &mut PgConnection,
+        course_code: &str,
+        course_name: &str,
+        credit: i32,
+        lecture: i32,
+        practice: i32,
+    ) -> QueryResult<MasterCourse> {
+        master_course::table
+            .filter(master_course::course_code.eq(course_code))
+            .filter(master_course::course_name.eq(course_name))
+            .filter(master_course::credit.eq(credit))
+            .filter(master_course::lecture.eq(lecture))
+            .filter(master_course::practice.eq(practice))
             .select(MasterCourse::as_select())
             .first(conn)
     }

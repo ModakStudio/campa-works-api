@@ -18,11 +18,15 @@ impl MasterCourseService {
         conn: &mut PgConnection,
         request: CreateMasterCourseRequest,
     ) -> Result<MasterCourseResponse, AppError> {
-        let query_params =
-            HashMap::from([("course_code".to_string(), request.course_code.clone())]);
-        if !MasterCourseRepository::find_all(conn, &query_params)
-            .unwrap_or_else(|_| Vec::new())
-            .is_empty()
+        if MasterCourseRepository::find_by_key_value(
+            conn,
+            &request.course_code,
+            &request.course_name,
+            request.credit,
+            request.lecture,
+            request.practice,
+        )
+        .is_ok()
         {
             return Err(AppError::MasterCourseAlreadyExists);
         }
@@ -37,8 +41,6 @@ impl MasterCourseService {
             practice: request.practice,
 
             course_type: request.course_type,
-
-            is_core: request.is_core,
 
             course_status: request.course_status,
         };
@@ -74,17 +76,34 @@ impl MasterCourseService {
         course_id: i64,
         request: UpdateMasterCourseRequest,
     ) -> Result<MasterCourseResponse, AppError> {
-        MasterCourseRepository::find_by_id(conn, course_id)
+        let mut check_course = MasterCourseRepository::find_by_id(conn, course_id)
             .map_err(|_| AppError::MasterCourseNotFound)?;
-
-        if let Some(ref code) = request.course_code {
-            let query_params = HashMap::from([("course_code".to_string(), code.clone())]);
-            if !MasterCourseRepository::find_all(conn, &query_params)
-                .unwrap_or_else(|_| Vec::new())
-                .is_empty()
-            {
-                return Err(AppError::MasterCourseAlreadyExists);
-            }
+        if let Some(course_code) = &request.course_code {
+            check_course.course_code = course_code.clone();
+        }
+        if let Some(course_name) = &request.course_name {
+            check_course.course_name = course_name.clone();
+        }
+        if let Some(credit) = request.credit {
+            check_course.credit = credit;
+        }
+        if let Some(lecture) = request.lecture {
+            check_course.lecture = lecture;
+        }
+        if let Some(practice) = request.practice {
+            check_course.practice = practice;
+        }
+        if MasterCourseRepository::find_by_key_value(
+            conn,
+            &check_course.course_code,
+            &check_course.course_name,
+            check_course.credit,
+            check_course.lecture,
+            check_course.practice,
+        )
+        .is_ok()
+        {
+            return Err(AppError::MasterCourseAlreadyExists);
         }
 
         let update_course = UpdateMasterCourse {
@@ -97,8 +116,6 @@ impl MasterCourseService {
             practice: request.practice,
 
             course_type: request.course_type,
-
-            is_core: request.is_core,
 
             course_status: request.course_status,
         };
