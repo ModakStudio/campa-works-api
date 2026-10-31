@@ -34,7 +34,7 @@ pub struct NewMasterCourse {
     pub credit: i32,
     pub lecture: i32,
     pub practice: i32,
-    
+
     pub course_type: CourseType,
     pub is_core: bool,
 
