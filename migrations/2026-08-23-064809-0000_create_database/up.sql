@@ -227,6 +227,7 @@ CREATE TABLE master_course (
     practice INTEGER NOT NULL,
 
     course_type course_type NOT NULL,
+    is_core BOOLEAN NOT NULL DEFAULT FALSE,
 
     course_status course_status NOT NULL
         DEFAULT 'ACTIVE'
