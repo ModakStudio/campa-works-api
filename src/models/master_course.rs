@@ -19,6 +19,7 @@ pub struct MasterCourse {
     pub practice: i32,
 
     pub course_type: CourseType,
+    pub is_core: bool,
 
     pub course_status: CourseStatus,
 }
@@ -35,6 +36,7 @@ pub struct NewMasterCourse {
     pub practice: i32,
 
     pub course_type: CourseType,
+    pub is_core: bool,
 
     pub course_status: CourseStatus,
 }
@@ -51,6 +53,7 @@ pub struct UpdateMasterCourse {
     pub practice: Option<i32>,
 
     pub course_type: Option<CourseType>,
+    pub is_core: Option<bool>,
 
     pub course_status: Option<CourseStatus>,
 }

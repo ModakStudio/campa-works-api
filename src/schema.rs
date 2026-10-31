@@ -197,6 +197,7 @@ diesel::table! {
         lecture -> Int4,
         practice -> Int4,
         course_type -> CourseType,
+        is_core -> Bool,
         course_status -> CourseStatus,
     }
 }
