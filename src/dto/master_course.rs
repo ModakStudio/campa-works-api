@@ -16,6 +16,7 @@ pub struct CreateMasterCourseRequest {
     pub practice: i32,
 
     pub course_type: CourseType,
+    pub is_core: bool,
 
     pub course_status: CourseStatus,
 }
@@ -31,6 +32,7 @@ pub struct UpdateMasterCourseRequest {
     pub practice: Option<i32>,
 
     pub course_type: Option<CourseType>,
+    pub is_core: Option<bool>,
 
     pub course_status: Option<CourseStatus>,
 }
@@ -48,6 +50,7 @@ pub struct MasterCourseResponse {
     pub practice: i32,
 
     pub course_type: CourseType,
+    pub is_core: bool,
 
     pub course_status: CourseStatus,
 }
@@ -66,6 +69,7 @@ impl From<MasterCourse> for MasterCourseResponse {
             practice: course.practice,
 
             course_type: course.course_type,
+            is_core: course.is_core,
 
             course_status: course.course_status,
         }
