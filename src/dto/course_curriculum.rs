@@ -13,7 +13,7 @@ use crate::{
 pub struct CreateCourseCurriculumRequest {
     pub master_course_id: i64,
     pub curriculum_id: i64,
-    
+
     pub course_category: CourseCategory,
 }
 
