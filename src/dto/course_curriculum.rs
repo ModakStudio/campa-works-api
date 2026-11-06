@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     dto::{curriculum::CurriculumResponse, master_course::MasterCourseResponse},
+    models::enums::CourseCategory,
     models::{
         course_curriculum::CourseCurriculum, curriculum::Curriculum, major::Major,
         master_course::MasterCourse, semester::Semester,
@@ -12,6 +13,8 @@ use crate::{
 pub struct CreateCourseCurriculumRequest {
     pub master_course_id: i64,
     pub curriculum_id: i64,
+    
+    pub course_category: CourseCategory,
 }
 
 #[derive(Debug, Serialize)]
@@ -20,6 +23,8 @@ pub struct CourseCurriculumResponse {
 
     pub master_course_id: MasterCourseResponse,
     pub curriculum: CurriculumResponse,
+
+    pub course_category: CourseCategory,
 }
 
 impl From<(CourseCurriculum, MasterCourse, Curriculum, Semester, Major)>
@@ -39,6 +44,8 @@ impl From<(CourseCurriculum, MasterCourse, Curriculum, Semester, Major)>
 
             master_course_id: MasterCourseResponse::from(master_course),
             curriculum: CurriculumResponse::from((curriculum, semester, major)),
+
+            course_category: course_curriculum.course_category,
         }
     }
 }

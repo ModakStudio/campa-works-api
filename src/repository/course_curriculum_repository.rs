@@ -30,6 +30,16 @@ macro_rules! apply_course_curriculum_query_filters {
 
         query = crate::apply_curriculum_query_filters!(query, $params);
 
+        if let Some(course_category) = $params
+            .get("course_category")
+            .map(|value| value.trim())
+            .filter(|value| !value.is_empty())
+        {
+            query = query.filter(
+                course_curriculum::course_category.eq(CourseCategory::from(course_category)),
+            );
+        }
+
         query
     }};
 }
