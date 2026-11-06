@@ -89,14 +89,12 @@ diesel::table! {
 
 diesel::table! {
     use diesel::sql_types::*;
-    use super::sql_types::CourseCategory;
     use super::sql_types::Language;
 
     course (id) {
         id -> Int8,
         course_curriculum_id -> Int8,
         course_description -> Nullable<Varchar>,
-        course_category -> CourseCategory,
         language -> Language,
         section_number -> Int4,
         capacity -> Int4,
@@ -113,10 +111,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::CourseCategory;
+
     course_curriculum (id) {
         id -> Int8,
         master_course_id -> Int8,
         curriculum_id -> Int8,
+        course_category -> CourseCategory,
     }
 }
 

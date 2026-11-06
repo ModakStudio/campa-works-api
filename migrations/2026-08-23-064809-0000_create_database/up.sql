@@ -244,6 +244,8 @@ CREATE TABLE course_curriculum (
     master_course_id BIGINT NOT NULL,
     curriculum_id BIGINT NOT NULL,
 
+    course_category course_category NOT NULL,
+
     CONSTRAINT course_curriculum_master_course_curriculum_unique
         UNIQUE (master_course_id, curriculum_id),
 
@@ -267,8 +269,6 @@ CREATE TABLE course (
     course_curriculum_id BIGINT NOT NULL,
 
     course_description VARCHAR,
-
-    course_category course_category NOT NULL,
 
     language language NOT NULL,
 
