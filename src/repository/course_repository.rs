@@ -37,13 +37,6 @@ macro_rules! apply_course_query_filters {
             query =
                 query.filter(course::course_description.ilike(format!("%{}%", course_description)));
         }
-        if let Some(course_category) = $params
-            .get("course_category")
-            .map(|value| value.trim())
-            .filter(|value| !value.is_empty())
-        {
-            query = query.filter(course::course_category.eq(CourseCategory::from(course_category)));
-        }
         if let Some(language) = $params
             .get("language")
             .map(|value| value.trim())

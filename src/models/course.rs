@@ -1,9 +1,6 @@
 use diesel::prelude::*;
 
-use crate::{
-    models::enums::{CourseCategory, Language},
-    schema::course,
-};
+use crate::{models::enums::Language, schema::course};
 
 #[derive(Debug, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = course)]
@@ -13,8 +10,6 @@ pub struct Course {
     pub course_curriculum_id: i64,
 
     pub course_description: Option<String>,
-
-    pub course_category: CourseCategory,
 
     pub language: Language,
 
@@ -30,8 +25,6 @@ pub struct NewCourse {
 
     pub course_description: Option<String>,
 
-    pub course_category: CourseCategory,
-
     pub language: Language,
 
     pub section_number: i32,
@@ -43,8 +36,6 @@ pub struct NewCourse {
 #[diesel(table_name = course)]
 pub struct UpdateCourse {
     pub course_description: Option<String>,
-
-    pub course_category: Option<CourseCategory>,
 
     pub language: Option<Language>,
 
