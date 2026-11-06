@@ -146,7 +146,7 @@ pub enum CourseStatus {
 }
 
 //
-// Course
+// Course Curriculum
 //
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
@@ -165,6 +165,10 @@ pub enum CourseCategory {
     #[db_rename = "GENERAL_ELECTIVE"]
     GeneralElective,
 }
+
+//
+// Course
+//
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, DbEnum)]
 #[ExistingTypePath = "crate::schema::sql_types::Language"]
