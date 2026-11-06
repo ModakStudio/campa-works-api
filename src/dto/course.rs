@@ -99,8 +99,9 @@ impl From<&str> for CourseCategory {
         match value {
             "MAJOR_REQUIRED" => CourseCategory::MajorRequired,
             "MAJOR_ELECTIVE" => CourseCategory::MajorElective,
-            "GENERAL_REQUIRED" => CourseCategory::GeneralRequired,
             "GENERAL_ELECTIVE" => CourseCategory::GeneralElective,
+            "FREE_ELECTIVE" => CourseCategory::FreeElective,
+            "TEACHER_EDUCATION" => CourseCategory::TeacherEducation,
             _ => panic!("Invalid course category"),
         }
     }
