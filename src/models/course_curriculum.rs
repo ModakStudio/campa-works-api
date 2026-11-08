@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 
-use crate::schema::course_curriculum;
+use crate::{models::enums::CourseCategory, schema::course_curriculum};
 
 #[derive(Debug, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = course_curriculum)]
@@ -9,6 +9,8 @@ pub struct CourseCurriculum {
 
     pub master_course_id: i64,
     pub curriculum_id: i64,
+
+    pub course_category: CourseCategory,
 }
 
 #[derive(Debug, Insertable)]
@@ -16,4 +18,6 @@ pub struct CourseCurriculum {
 pub struct NewCourseCurriculum {
     pub master_course_id: i64,
     pub curriculum_id: i64,
+
+    pub course_category: CourseCategory,
 }

@@ -47,6 +47,7 @@ impl CourseCurriculumService {
         let new_course_curriculum = NewCourseCurriculum {
             master_course_id: request.master_course_id,
             curriculum_id: request.curriculum_id,
+            course_category: request.course_category,
         };
 
         CourseCurriculumRepository::create(conn, &new_course_curriculum)

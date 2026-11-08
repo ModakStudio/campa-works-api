@@ -7,7 +7,7 @@ use crate::{
     error::app_error::AppError,
     models::{
         course::{NewCourse, UpdateCourse},
-        enums::{CourseCategory, Language},
+        enums::Language,
     },
     repository::{
         course_curriculum_repository::CourseCurriculumRepository,
@@ -46,8 +46,6 @@ impl CourseService {
 
             course_description: request.course_description,
 
-            course_category: request.course_category,
-
             language: request.language,
 
             section_number: request.section_number,
@@ -83,8 +81,6 @@ impl CourseService {
                     course_curriculum_id: course_curriculum.0.id,
 
                     course_description: None,
-
-                    course_category: CourseCategory::GeneralElective,
 
                     language: Language::Korean,
 
@@ -169,8 +165,6 @@ impl CourseService {
 
         let update_course = UpdateCourse {
             course_description: request.course_description,
-
-            course_category: request.course_category,
 
             language: request.language,
 

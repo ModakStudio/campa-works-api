@@ -19,8 +19,6 @@ pub struct CreateCourseRequest {
 
     pub course_description: Option<String>,
 
-    pub course_category: CourseCategory,
-
     pub language: Language,
 
     pub section_number: i32,
@@ -31,8 +29,6 @@ pub struct CreateCourseRequest {
 #[derive(Debug, Deserialize)]
 pub struct UpdateCourseRequest {
     pub course_description: Option<String>,
-
-    pub course_category: Option<CourseCategory>,
 
     pub language: Option<Language>,
 
@@ -48,8 +44,6 @@ pub struct CourseResponse {
     pub course_curriculum: CourseCurriculumResponse,
 
     pub course_description: Option<String>,
-
-    pub course_category: CourseCategory,
 
     pub language: Language,
 
@@ -91,8 +85,6 @@ impl
 
             course_description: course.course_description,
 
-            course_category: course.course_category,
-
             language: course.language,
 
             section_number: course.section_number,
@@ -107,8 +99,9 @@ impl From<&str> for CourseCategory {
         match value {
             "MAJOR_REQUIRED" => CourseCategory::MajorRequired,
             "MAJOR_ELECTIVE" => CourseCategory::MajorElective,
-            "GENERAL_REQUIRED" => CourseCategory::GeneralRequired,
             "GENERAL_ELECTIVE" => CourseCategory::GeneralElective,
+            "FREE_ELECTIVE" => CourseCategory::FreeElective,
+            "TEACHER_EDUCATION" => CourseCategory::TeacherEducation,
             _ => panic!("Invalid course category"),
         }
     }
