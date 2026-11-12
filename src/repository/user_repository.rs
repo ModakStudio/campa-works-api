@@ -34,7 +34,7 @@ macro_rules! apply_user_query_filters {
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(users::username.ilike(format!("%{}%", username)));
+            query = query.filter(users::username.eq(username));
         }
         if let Some(role) = $params
             .get("role")
