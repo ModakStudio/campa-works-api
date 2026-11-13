@@ -26,14 +26,14 @@ macro_rules! apply_major_query_filters {
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(major::major_name.ilike(format!("%{}%", major_name)));
+            query = query.filter(major::major_name.eq(major_name));
         }
         if let Some(major_code) = $params
             .get("major_code")
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            query = query.filter(major::major_code.ilike(format!("%{}%", major_code)));
+            query = query.filter(major::major_code.eq(major_code));
         }
         if let Some(major_status) = $params
             .get("major_status")
