@@ -147,7 +147,7 @@ CREATE TABLE professor (
     tel VARCHAR,
     research_field VARCHAR,
 
-    appointed_at BIGINT NOT NULL UNIQUE,
+    appointed_at BIGINT NOT NULL,
 
     professor_status professor_status NOT NULL
         DEFAULT 'ACTIVE',
