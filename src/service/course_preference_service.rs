@@ -24,15 +24,12 @@ impl CoursePreferenceService {
         ProfessorRepository::find_by_id(conn, request.professor_id)
             .map_err(|_| AppError::ProfessorNotFound)?;
 
-        MasterCourseRepository::find_by_id(conn, request.master_course_id)
+        MasterCourseRepository::find_by_id(conn, request.course_id)
             .map_err(|_| AppError::MasterCourseNotFound)?;
 
         let query_params = HashMap::from([
             ("professor_id".to_string(), request.professor_id.to_string()),
-            (
-                "master_course_id".to_string(),
-                request.master_course_id.to_string(),
-            ),
+            ("course_id".to_string(), request.course_id.to_string()),
         ]);
 
         if CoursePreferenceRepository::find_all(conn, &query_params)
@@ -44,8 +41,7 @@ impl CoursePreferenceService {
 
         let new_course_preference = NewCoursePreference {
             professor_id: request.professor_id,
-            semester_id: request.semester_id,
-            master_course_id: request.master_course_id,
+            course_id: request.course_id,
             priority: request.priority,
         };
 
