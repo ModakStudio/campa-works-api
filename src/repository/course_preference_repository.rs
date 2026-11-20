@@ -3,14 +3,21 @@ use std::collections::HashMap;
 
 use crate::{
     models::{
+        course::Course,
+        course_curriculum::CourseCurriculum,
         course_preference::{CoursePreference, NewCoursePreference, UpdateCoursePreference},
+        curriculum::Curriculum,
         enums::*,
+        major::Major,
         master_course::MasterCourse,
         professor::Professor,
         semester::Semester,
         user::User,
     },
-    schema::{course_preference, master_course, professor, semester, users},
+    schema::{
+        course, course_curriculum, course_preference, curriculum, major, master_course, professor,
+        semester, users,
+    },
 };
 
 #[macro_export]
@@ -56,17 +63,42 @@ impl CoursePreferenceRepository {
     pub fn find_all(
         conn: &mut PgConnection,
         params: &HashMap<String, String>,
-    ) -> QueryResult<Vec<(CoursePreference, Professor, User, Semester, MasterCourse)>> {
+    ) -> QueryResult<
+        Vec<(
+            CoursePreference,
+            Professor,
+            User,
+            Course,
+            CourseCurriculum,
+            MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
+        )>,
+    > {
         let mut query = course_preference::table
             .inner_join(professor::table.inner_join(users::table))
-            .inner_join(semester::table)
-            .inner_join(master_course::table)
+            .inner_join(
+                course::table.inner_join(
+                    course_curriculum::table
+                        .inner_join(master_course::table)
+                        .inner_join(
+                            curriculum::table
+                                .inner_join(semester::table)
+                                .inner_join(major::table),
+                        ),
+                ),
+            )
             .select((
                 CoursePreference::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
+                Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
             ))
             .into_boxed();
 
@@ -75,25 +107,48 @@ impl CoursePreferenceRepository {
         query.load(conn)
     }
 
+    // ToDo: Delete this function after the course_preference table is updated to remove semester_id and master_course_id columns
     pub fn find_by_professor_id_and_semester_id_and_master_course_id(
         conn: &mut PgConnection,
         professor_id: i64,
         semester_id: i64,
         master_course_id: i64,
-    ) -> QueryResult<Vec<(CoursePreference, Professor, User, Semester, MasterCourse)>> {
+    ) -> QueryResult<
+        Vec<(
+            CoursePreference,
+            Professor,
+            User,
+            Course,
+            CourseCurriculum,
+            MasterCourse,
+            Curriculum,
+            Semester,
+            Major,
+        )>,
+    > {
         course_preference::table
             .inner_join(professor::table.inner_join(users::table))
-            .inner_join(semester::table)
-            .inner_join(master_course::table)
-            .filter(course_preference::professor_id.eq(professor_id))
-            .filter(course_preference::semester_id.eq(semester_id))
-            .filter(course_preference::master_course_id.eq(master_course_id))
+            .inner_join(
+                course::table.inner_join(
+                    course_curriculum::table
+                        .inner_join(master_course::table)
+                        .inner_join(
+                            curriculum::table
+                                .inner_join(semester::table)
+                                .inner_join(major::table),
+                        ),
+                ),
+            )
             .select((
                 CoursePreference::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
+                Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
             ))
             .load(conn)
     }
@@ -101,18 +156,41 @@ impl CoursePreferenceRepository {
     pub fn find_by_id(
         conn: &mut PgConnection,
         course_preference_id: i64,
-    ) -> QueryResult<(CoursePreference, Professor, User, Semester, MasterCourse)> {
+    ) -> QueryResult<(
+        CoursePreference,
+        Professor,
+        User,
+        Course,
+        CourseCurriculum,
+        MasterCourse,
+        Curriculum,
+        Semester,
+        Major,
+    )> {
         course_preference::table
             .inner_join(professor::table.inner_join(users::table))
-            .inner_join(semester::table)
-            .inner_join(master_course::table)
+            .inner_join(
+                course::table.inner_join(
+                    course_curriculum::table
+                        .inner_join(master_course::table)
+                        .inner_join(
+                            curriculum::table
+                                .inner_join(semester::table)
+                                .inner_join(major::table),
+                        ),
+                ),
+            )
             .filter(course_preference::id.eq(course_preference_id))
             .select((
                 CoursePreference::as_select(),
                 Professor::as_select(),
                 User::as_select(),
-                Semester::as_select(),
+                Course::as_select(),
+                CourseCurriculum::as_select(),
                 MasterCourse::as_select(),
+                Curriculum::as_select(),
+                Semester::as_select(),
+                Major::as_select(),
             ))
             .first(conn)
     }
