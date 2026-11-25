@@ -141,19 +141,17 @@ impl CourseService {
         conn: &mut PgConnection,
         semester_id: i64,
     ) -> Result<Vec<CourseResponse>, AppError> {
-        Ok(
-            CurriculumService::get_curriculums_for_all_grades_from_semester_id(conn, semester_id)?
-                .into_iter()
-                .flat_map(|curriculum| {
-                    CourseRepository::find_by_curriculum_id(conn, curriculum.id)
-                        .map_err(|_| AppError::DatabaseError)
-                        .unwrap_or_else(|_| Vec::new())
-                        .into_iter()
-                        .map(Into::into)
-                        .collect::<Vec<CourseResponse>>()
-                })
-                .collect::<Vec<CourseResponse>>(),
-        )
+        let curriculums =
+            CurriculumService::get_curriculums_for_all_grades_from_semester_id(conn, semester_id)?;
+        let mut courses = Vec::new();
+
+        for curriculum in curriculums {
+            let curriculum_courses = CourseRepository::find_by_curriculum_id(conn, curriculum.id)
+                .map_err(|_| AppError::DatabaseError)?;
+            courses.extend(curriculum_courses.into_iter().map(Into::into));
+        }
+
+        Ok(courses)
     }
 
     pub fn update(

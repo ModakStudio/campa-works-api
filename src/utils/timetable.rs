@@ -49,7 +49,7 @@ pub fn init_hungarian_matrix(
             .into_iter()
             .next()
             {
-                Some((course_preference, _, _, _, _)) => course_preference.priority,
+                Some((course_preference, _, _, _, _, _, _, _, _)) => course_preference.priority,
                 None => {
                     if CoursePoolRepository::find_by_professor_id_and_master_course_id(
                         conn,

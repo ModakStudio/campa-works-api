@@ -32,9 +32,9 @@ macro_rules! apply_course_preference_query_filters {
             query = query.filter(course_preference::id.eq(course_preference_id));
         }
 
-        query = crate::apply_master_course_query_filters!(query, $params);
-
         query = crate::apply_professor_query_filters!(query, $params);
+
+        query = crate::apply_course_query_filters!(query, $params);
 
         if let Some(priority) = $params
             .get("priority")

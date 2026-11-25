@@ -9,8 +9,7 @@ use crate::{
     models::course_preference::{NewCoursePreference, UpdateCoursePreference},
     repository::{
         course_preference_repository::CoursePreferenceRepository,
-        master_course_repository::MasterCourseRepository,
-        professor_repository::ProfessorRepository,
+        course_repository::CourseRepository, professor_repository::ProfessorRepository,
     },
 };
 
@@ -24,15 +23,16 @@ impl CoursePreferenceService {
         ProfessorRepository::find_by_id(conn, request.professor_id)
             .map_err(|_| AppError::ProfessorNotFound)?;
 
-        MasterCourseRepository::find_by_id(conn, request.course_id)
-            .map_err(|_| AppError::MasterCourseNotFound)?;
+        CourseRepository::find_by_id(conn, request.course_id)
+            .map_err(|_| AppError::CourseNotFound)?;
 
         let query_params = HashMap::from([
             ("professor_id".to_string(), request.professor_id.to_string()),
             ("course_id".to_string(), request.course_id.to_string()),
+            ("priority".to_string(), request.priority.to_string()),
         ]);
 
-        if CoursePreferenceRepository::find_all(conn, &query_params)
+        if !CoursePreferenceRepository::find_all(conn, &query_params)
             .unwrap_or_else(|_| Vec::new())
             .is_empty()
         {
