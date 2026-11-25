@@ -9,8 +9,7 @@ use crate::{
     models::course_preference::{NewCoursePreference, UpdateCoursePreference},
     repository::{
         course_preference_repository::CoursePreferenceRepository,
-        course_repository::CourseRepository,
-        professor_repository::ProfessorRepository,
+        course_repository::CourseRepository, professor_repository::ProfessorRepository,
     },
 };
 
